@@ -1,0 +1,1312 @@
+LK3D = LK3D or {}
+LK3D.LIGHTMAP_RES = (256 + 64 + 16) * 1
+LK3D.LIGHTMAP_TRISZ = 10 * 1.5
+LK3D.LIGHTMAP_TRIPAD = 4
+
+LK3D.RADIOSITY_STEPS = 3
+LK3D.RADIOSITY_BUFFER_SZ = 128
+LK3D.RADIOSITY_AVGCALC_DIV = 4
+LK3D.RADIOSITY_FOV = 120
+LK3D.RADIOSITY_MUL_CGATHER = 196
+
+
+local math = math
+local math_Round = math.Round
+local math_abs = math.abs
+local math_min = math.min
+local math_max = math.max
+local math_floor = math.floor
+local math_Clamp = math.Clamp
+
+
+--[[
+	lk3d_radiosity.lua
+
+	LK3D bakeable radiosity (lightmapping!)
+	held together by duct tape!
+
+	Coded by Lokachop, contact at Lokachop#5862
+]]--
+
+
+
+local function copyUV(uv)
+	return {uv[1], uv[2]}
+end
+
+local function copyTable(tblpointer)
+	local new = {}
+	for k, v in pairs(tblpointer) do
+		if type(v) == "table" then
+			new[k] = copyTable(v)
+		elseif type(v) == "Vector" then
+			new[k] = Vector(v)
+		elseif type(v) == "Angle" then
+			new[k] = Angle(v)
+		else
+			new[k] = v
+		end
+	end
+	return new
+end
+
+-- returns a hash from a vector (string)
+local concat_tbl_vert = {}
+local concat_round = 4
+local function hashVec(v)
+	concat_tbl_vert[1] = "x"
+	concat_tbl_vert[2] = math_Round(v[1], concat_round)
+	concat_tbl_vert[3] = "y"
+	concat_tbl_vert[4] = math_Round(v[2], concat_round)
+	concat_tbl_vert[5] = "z"
+	concat_tbl_vert[6] = math_Round(v[3], concat_round)
+
+	return table.concat(concat_tbl_vert, "")
+end
+
+-- gets the tris of a mesh as a non tblptr table
+-- (verts n uvs are copied)
+local function getTriTable(obj)
+	if not obj then
+		return
+	end
+
+	if not LK3D.CurrUniv["objects"][obj] then
+		return
+	end
+
+	local obj_ptr = LK3D.CurrUniv["objects"][obj]
+	local mdl = obj_ptr.mdl
+
+	if not LK3D.Models[mdl] then
+		return
+	end
+
+
+	local mdlpointer = LK3D.Models[mdl]
+	local verts = mdlpointer.verts
+	local uvs = mdlpointer.uvs
+	local uvs_lm = obj_ptr.lightmap_uvs
+	local dolm = (uvs_lm ~= nil)
+
+	local indices = mdlpointer.indices
+
+	local tri_list_genned = {}
+	for i = 1, #indices do
+		local ind = indices[i]
+		local v1 = Vector(verts[ind[1][1]]) -- lets copy aswell to be safe, even if slow
+		local v2 = Vector(verts[ind[2][1]])
+		local v3 = Vector(verts[ind[3][1]])
+
+		local uv1 = copyUV(uvs[ind[1][2]]) -- same here
+		local uv2 = copyUV(uvs[ind[2][2]])
+		local uv3 = copyUV(uvs[ind[3][2]])
+
+		local lm_uv1 = {0, 0}
+		local lm_uv2 = {0, 0}
+		local lm_uv3 = {0, 0}
+		if dolm then
+			lm_uv1 = copyUV(uvs_lm[ind[1][3]])
+			lm_uv2 = copyUV(uvs_lm[ind[2][3]])
+			lm_uv3 = copyUV(uvs_lm[ind[3][3]])
+		end
+
+
+
+		local norm = (v2 - v1):Cross(v3 - v1)
+		norm:Normalize()
+
+		tri_list_genned[#tri_list_genned + 1] = {
+			{
+				pos = v1,
+				uv = uv1,
+				ind_pos = ind[1][1],
+				ind_uv = ind[1][2],
+				ind_uv_lm = ind[1][3],
+				norm = norm,
+				hash_pos = hashVec(v1),
+				lm_uv = lm_uv1,
+			},
+			{
+				pos = v2,
+				uv = uv2,
+				ind_pos = ind[2][1],
+				ind_uv = ind[2][2],
+				ind_uv_lm = ind[2][3],
+				norm = norm,
+				hash_pos = hashVec(v2),
+				lm_uv = lm_uv2,
+			},
+			{
+				pos = v3,
+				uv = uv3,
+				ind_pos = ind[3][1],
+				ind_uv = ind[3][2],
+				ind_uv_lm = ind[3][3],
+				norm = norm,
+				hash_pos = hashVec(v3),
+				lm_uv = lm_uv3,
+			}
+		}
+	end
+
+	return tri_list_genned
+end
+
+
+-- leaf packer thing, https://blackpawn.com/texts/lightmaps/default.html
+local function uv_tri_size(uvtri)
+	local bm_u = math_min(uvtri[1][1], uvtri[2][1], uvtri[3][1])
+	local bm_v = math_min(uvtri[1][2], uvtri[2][2], uvtri[3][2])
+
+	local bMa_u = math_max(uvtri[1][1], uvtri[2][1], uvtri[3][1])
+	local bMa_v = math_max(uvtri[1][2], uvtri[2][2], uvtri[3][2])
+
+	local w, h = math_floor(bMa_u - bm_u) + LK3D.LIGHTMAP_TRIPAD, math_floor(bMa_v - bm_v) + LK3D.LIGHTMAP_TRIPAD
+	return w, h, bm_u, bm_v
+end
+
+
+local function newleaf(sx, sy, ox, oy)
+	return {
+		children = {},
+		ox = ox or 0,
+		oy = oy or 0,
+		sx = sx,
+		sy = sy,
+		has_tri = false,
+	}
+end
+
+
+local function insert_into_leaf(leaf, tri)
+	if (#leaf.children > 0) then
+		local new_uv = insert_into_leaf(leaf.children[1], tri)
+		if new_uv ~= nil then
+			return new_uv
+		end
+
+		-- no room, insert second
+		return insert_into_leaf(leaf.children[2], tri)
+	else
+		if leaf.has_tri then
+			return
+		end
+
+		local triw, trih, tri_minw, tri_minh = uv_tri_size(tri)
+
+		if leaf.sx < triw or leaf.sy < trih then
+			return
+		end
+
+		if leaf.sx == triw and leaf.sy == trih then
+			leaf.has_tri = true
+			return {
+				{{leaf.ox + (tri[1][1] - tri_minw), leaf.oy + (tri[1][2] - tri_minh)}, tri[1][3]},
+				{{leaf.ox + (tri[2][1] - tri_minw), leaf.oy + (tri[2][2] - tri_minh)}, tri[2][3]},
+				{{leaf.ox + (tri[3][1] - tri_minw), leaf.oy + (tri[3][2] - tri_minh)}, tri[3][3]},
+			}
+		end
+
+
+		-- we have to split
+		local dw = leaf.sx - triw
+		local dh = leaf.sy - trih
+
+
+		if dw > dh then -- if (the leafsize - triw) > (the leafsize - trih)
+			leaf.children[1] = newleaf( -- left, stores og lightmap
+				triw,
+				leaf.sy,
+				leaf.ox,
+				leaf.oy
+			)
+			leaf.children[2] = newleaf( -- right
+				dw,
+				leaf.sy,
+				leaf.ox + triw,
+				leaf.oy
+			)
+		else
+			leaf.children[1] = newleaf( -- up, stores lightmap
+				leaf.sx,
+				trih,
+				leaf.ox,
+				leaf.oy
+			)
+			leaf.children[2] = newleaf( -- down
+				leaf.sx,
+				dh,
+				leaf.ox,
+				leaf.oy + trih
+			)
+		end
+
+
+		return insert_into_leaf(leaf.children[1], tri)
+	end
+end
+
+
+-- makes lightmap uvs from a object
+-- packs them automatically given w, h
+local lightmap_exist_univs = {}
+local function makeLightMapUV(obj, w, h)
+	if not obj then
+		return
+	end
+
+	if (not w) or (not h) then
+		return
+	end
+
+	if not lightmap_exist_univs[LK3D.CurrUniv["tag"]] then
+		lightmap_exist_univs[LK3D.CurrUniv["tag"]] = {}
+	end
+
+	if lightmap_exist_univs[LK3D.CurrUniv["tag"]][obj] then
+		return
+	end
+
+	local obj_ptr = LK3D.CurrUniv["objects"][obj]
+	if not obj_ptr then
+		return
+	end
+	local mdl = obj_ptr.mdl
+
+	if not LK3D.Models[mdl] then
+		return
+	end
+
+
+	local mdlpointer = LK3D.Models[mdl]
+	local indices = mdlpointer.indices
+	local verts = mdlpointer.verts
+
+	local tri_count = #indices
+	print(tri_count .. " tris...")
+
+	local new_uvs = {}
+	local uvs_to_pack_in_thing = {}
+
+	for i = 1, #indices do
+		local indice_1 = indices[i]
+
+		local i1_v1 = verts[indice_1[1][1]] * obj_ptr.scl
+		local i1_v2 = verts[indice_1[2][1]] * obj_ptr.scl
+		local i1_v3 = verts[indice_1[3][1]] * obj_ptr.scl
+
+		local norm_1 = (i1_v2 - i1_v1):Cross(i1_v3 - i1_v1)
+		norm_1:Normalize()
+
+
+		local ihalf = i
+		local w_sub = (w - LK3D.LIGHTMAP_TRISZ)
+		local sz_padded = (LK3D.LIGHTMAP_TRISZ + (LK3D.LIGHTMAP_TRIPAD + 1))
+
+		local tri_xc = (ihalf * sz_padded) % w_sub
+
+		local tri_yc = math_floor((ihalf * sz_padded) / w_sub) * sz_padded
+
+		local tri_xc_psz = tri_xc + LK3D.LIGHTMAP_TRISZ
+		local tri_yc_psz = tri_yc + LK3D.LIGHTMAP_TRISZ
+
+		local u1_n, v1_n = tri_xc / w, tri_yc / h
+		local u2_n, v2_n = tri_xc / w, tri_yc_psz / h
+		local u3_n, v3_n = tri_xc_psz / w, tri_yc_psz / h
+
+
+
+		-- https://web.archive.org/web/20071024115118/http://www.flipcode.org/cgi-bin/fcarticles.cgi?show=64423
+		local dens = LK3D.LIGHTMAP_TRISZ
+		if math_abs(norm_1[1]) > math_abs(norm_1[2]) and math_abs(norm_1[1]) > math_abs(norm_1[3]) then
+			u1_n = i1_v1[3] * dens
+			v1_n = -i1_v1[2] * dens
+
+			u2_n = i1_v2[3] * dens
+			v2_n = -i1_v2[2] * dens
+
+			u3_n = i1_v3[3] * dens
+			v3_n = -i1_v3[2] * dens
+		elseif math_abs(norm_1[2]) > math_abs(norm_1[1]) and math_abs(norm_1[2]) > math_abs(norm_1[3]) then
+			u1_n = i1_v1[1] * dens
+			v1_n = -i1_v1[3] * dens
+
+			u2_n = i1_v2[1] * dens
+			v2_n = -i1_v2[3] * dens
+
+			u3_n = i1_v3[1] * dens
+			v3_n = -i1_v3[3] * dens
+		else
+			u1_n = i1_v1[1] * dens
+			v1_n = -i1_v1[2] * dens
+
+			u2_n = i1_v2[1] * dens
+			v2_n = -i1_v2[2] * dens
+
+			u3_n = i1_v3[1] * dens
+			v3_n = -i1_v3[2] * dens
+		end
+
+
+		local min_u = math_floor(math_min(u1_n, u2_n, u3_n))
+		local min_v = math_floor(math_min(v1_n, v2_n, v3_n))
+
+		u1_n = (u1_n - min_u)
+		v1_n = (v1_n - min_v)
+
+		u2_n = (u2_n - min_u)
+		v2_n = (v2_n - min_v)
+
+		u3_n = (u3_n - min_u)
+		v3_n = (v3_n - min_v)
+
+		uvs_to_pack_in_thing[#uvs_to_pack_in_thing + 1] = {
+			{u1_n, v1_n, indice_1[1]},
+			{u2_n, v2_n, indice_1[2]},
+			{u3_n, v3_n, indice_1[3]}
+		}
+
+		local uv1_ind = #new_uvs + 1
+		new_uvs[#new_uvs + 1] = {
+			u1_n, v1_n
+		}
+
+		local uv2_ind = #new_uvs + 1
+		new_uvs[#new_uvs + 1] = {
+			u2_n, v2_n
+		}
+
+		local uv3_ind = #new_uvs + 1
+		new_uvs[#new_uvs + 1] = {
+			u3_n, v3_n
+		}
+
+		-- uv lightmap is indice 3
+		indice_1[1][3] = uv1_ind
+		indice_1[2][3] = uv2_ind
+		indice_1[3][3] = uv3_ind
+	end
+
+	-- https://blackpawn.com/texts/lightmaps/default.html
+	local tree = newleaf(LK3D.LIGHTMAP_RES, LK3D.LIGHTMAP_RES)
+	tree.children[1] = newleaf(LK3D.LIGHTMAP_RES, LK3D.LIGHTMAP_RES)
+	tree.children[2] = newleaf(0, 0)
+	local new_uvs_2 = {}
+	local fail = false
+	for k, v in ipairs(uvs_to_pack_in_thing) do
+		local ret = insert_into_leaf(tree, v)
+
+		if not ret then
+			fail = true
+			break
+		end
+
+		local uv1_ind = #new_uvs_2 + 1
+		new_uvs_2[#new_uvs_2 + 1] = {ret[1][1][1] / w, ret[1][1][2] / h}
+
+		local uv2_ind = #new_uvs_2 + 1
+		new_uvs_2[#new_uvs_2 + 1] = {ret[2][1][1] / w, ret[2][1][2] / h}
+
+		local uv3_ind = #new_uvs_2 + 1
+		new_uvs_2[#new_uvs_2 + 1] = {ret[3][1][1] / w, ret[3][1][2] / h}
+
+		ret[1][2][3] = uv1_ind
+		ret[2][2][3] = uv2_ind
+		ret[3][2][3] = uv3_ind
+	end
+
+
+
+
+	if not fail then
+		obj_ptr["lightmap_uvs"] = new_uvs_2
+	else
+		obj_ptr["lightmap_uvs"] = new_uvs
+	end
+
+	lightmap_exist_univs[LK3D.CurrUniv["tag"]][obj] = true
+
+	--n_makeLightMapUV(mdl, w, h)
+end
+
+
+
+-- point inside tri
+-- https://stackoverflow.com/questions/2049582/how-to-determine-if-a-point-is-in-a-2d-triangle
+local function uv_inside_tri(uv, uv1, uv2, uv3)
+	local s = (uv1[1] - uv3[1]) * (uv[2] - uv3[2]) - (uv1[2] - uv3[2]) * (uv[1] - uv3[1])
+	local t = (uv2[1] - uv1[1]) * (uv[2] - uv1[2]) - (uv2[2] - uv1[2]) * (uv[1] - uv1[1])
+
+	if ((s < 0) ~= (t < 0) and s ~= 0 and t ~= 0) then
+		return false
+	end
+
+	local d = (uv3[1] - uv2[1]) * (uv[2] - uv2[2]) - (uv3[2] - uv2[2]) * (uv[1] - uv2[1])
+
+	return d == 0 or (d < 0) == (s + t <= 0)
+end
+
+
+-- builds a lookup table of any pixel inside of {sx, sy} as to which triangle it corresponds
+local c_red = Color(255, 0, 0)
+local c_yellow = Color(255, 255, 0)
+local c_blue = Color(0, 128, 255)
+local uv_tri_lookups = {}
+local function buildTriUVLUT(obj, sx, sy)
+	if not obj then
+		return
+	end
+
+	if not sx then
+		return
+	end
+
+	if not sy then
+		return
+	end
+
+	if not uv_tri_lookups[LK3D.CurrUniv["tag"]] then
+		uv_tri_lookups[LK3D.CurrUniv["tag"]] = {}
+	end
+
+	if uv_tri_lookups[LK3D.CurrUniv["tag"]][obj] then
+		return
+	end
+
+	local obj_ptr = LK3D.CurrUniv["objects"][obj]
+	if not obj_ptr then
+		return
+	end
+	local mdl = obj_ptr.mdl
+
+	if not LK3D.Models[mdl] then
+		return
+	end
+
+	local tri_list_genned = getTriTable(obj)
+
+	local uv_sz_c = (1 / LK3D.LIGHTMAP_RES)
+	local tbl_ret = {}
+	for i = 0, (sx * sy) - 1 do
+		if (i % 512) == 0 then
+			LK3D.RenderProcessingMessage("Radiosity generate tri table\n[" .. obj .. "]", (i / ((sx * sy) - 1)) * 100)
+		end
+
+
+		local xc = i % sx
+		local yc = math_floor(i / sx)
+
+		local uc = xc / sx
+		local vc = yc / sy
+
+
+		--local uvself = {uc, vc}
+		local uv_list = {
+			{uc, vc},
+			{uc + uv_sz_c, vc},
+			{uc - uv_sz_c, vc},
+			{uc, vc + uv_sz_c},
+			{uc, vc - uv_sz_c},
+
+			{uc + uv_sz_c, vc + uv_sz_c},
+			{uc - uv_sz_c, vc + uv_sz_c},
+			{uc + uv_sz_c, vc - uv_sz_c},
+			{uc - uv_sz_c, vc - uv_sz_c}
+		}
+		-- check if u, v is inside triangle if it is, assign and break
+		local has = false
+		for k, v in ipairs(tri_list_genned) do
+			local uv1 = v[1].lm_uv
+			local uv2 = v[2].lm_uv
+			local uv3 = v[3].lm_uv
+
+			for _, v2 in ipairs(uv_list) do
+				local inside = uv_inside_tri(v2, uv1, uv2, uv3)
+				if inside then
+					tbl_ret[i] = k
+					has = true
+					break
+				end
+			end
+		end
+		if not has then
+			tbl_ret[i] = 0 -- mark as 0 which we know is nothing
+		end
+	end
+	print(LK3D.CurrUniv["tag"])
+	print(obj)
+	uv_tri_lookups[LK3D.CurrUniv["tag"]][obj] = tbl_ret
+end
+
+
+
+-- https://community.khronos.org/t/generate-lightmap-for-triangle-mesh/24335
+local function texturi_to_world(obj, x, y, w, h)
+	if not obj then
+		return
+	end
+
+	local obj_ptr = LK3D.CurrUniv["objects"][obj]
+	if not obj_ptr then
+		return
+	end
+
+	local tri_lookup_idx = (x + (y * w))
+
+	local realtag = LK3D.CurrUniv["tag"]
+	if obj_ptr.ORIG_UNIV then
+		realtag = obj_ptr.ORIG_UNIV
+		obj_ptr = LK3D.UniverseRegistry[obj_ptr.ORIG_UNIV]["objects"][obj] -- hax hax hax
+	end
+
+	local tri = uv_tri_lookups[realtag][obj][tri_lookup_idx]
+
+	if tri == 0 then
+		return
+	end
+
+	local mdlpointer = LK3D.Models[obj_ptr.mdl]
+	local verts = mdlpointer.verts
+	local uvs = mdlpointer.uvs
+	local lm_uvs = obj_ptr.lightmap_uvs
+	local indices = mdlpointer.indices
+
+	local the_tri_in_question = indices[tri]
+
+	local v1 = verts[the_tri_in_question[1][1]] * obj_ptr.scl
+	local v2 = verts[the_tri_in_question[2][1]] * obj_ptr.scl
+	local v3 = verts[the_tri_in_question[3][1]] * obj_ptr.scl
+
+	v1:Rotate(obj_ptr.ang)
+	v1:Add(obj_ptr.pos)
+
+	v2:Rotate(obj_ptr.ang)
+	v2:Add(obj_ptr.pos)
+
+	v3:Rotate(obj_ptr.ang)
+	v3:Add(obj_ptr.pos)
+
+	local tri_uv1 = lm_uvs[the_tri_in_question[1][3]]
+	local tri_uv2 = lm_uvs[the_tri_in_question[2][3]]
+	local tri_uv3 = lm_uvs[the_tri_in_question[3][3]]
+
+	local t1 = {tri_uv1[1], tri_uv1[2]}
+	local t2 = {tri_uv2[1], tri_uv2[2]}
+	local t3 = {tri_uv3[1], tri_uv3[2]}
+
+	local p = {x / w, y / h}
+
+	local i = 1 / ((t2[2] - t1[2]) * (t3[1] - t1[1]) - (t2[1] - t1[1]) * (t3[2] - t1[2]))
+	local s = i * ( (t3[1] - t1[1]) * (p[2] - t1[2]) - (t3[2] - t1[2]) * (p[1] - t1[1]))
+	local t = i * (-(t2[1] - t1[1]) * (p[2] - t1[2]) + (t2[2] - t1[2]) * (p[1] - t1[1]))
+	local vec = Vector(
+		v1[1] + s * (v2[1] - v1[1]) + t * (v3[1] - v1[1]),
+		v1[2] + s * (v2[2] - v1[2]) + t * (v3[2] - v1[2]),
+		v1[3] + s * (v2[3] - v1[3]) + t * (v3[3] - v1[3])
+	)
+
+	local norm = (v2 - v1):Cross(v3 - v1)
+	norm:Normalize()
+
+
+	return vec, norm
+end
+
+local function calcLighting(pos, norm)
+	local tr_hp = pos + (norm * .0085)
+	local tr_hp_nonorm = pos
+
+	local ac_r, ac_g, ac_b = 0, 0, 0
+	for k, v in pairs(LK3D.CurrUniv["lights"]) do
+		local pos_l = Vector(v[1])
+		local inten_l = v[2]
+		local col_l = v[3]
+		local sm = v[4]
+
+		local pd = tr_hp_nonorm:Distance(pos_l)
+		if pd > (sm and inten_l ^ 2 or inten_l) then
+			continue
+		end
+
+		if sm then
+			pd = pd ^ .5
+		end
+
+		LK3D.SetTraceReturnTable(true)
+		local dirc = (pos_l - tr_hp_nonorm):GetNormalized()
+		local trCheck = LK3D.TraceRayScene(tr_hp, dirc, true, (sm and inten_l ^ 2 or inten_l) * 0.9999)
+		LK3D.SetTraceReturnTable(false)
+
+		if trCheck.dist < (pd * 1) then
+			continue
+		end
+
+		local vinv = (inten_l - pd)
+		ac_r = ac_r + (col_l[1] * math_min(math_abs(math_max(vinv, 0)), 1))
+		ac_g = ac_g + (col_l[2] * math_min(math_abs(math_max(vinv, 0)), 1))
+		ac_b = ac_b + (col_l[3] * math_min(math_abs(math_max(vinv, 0)), 1))
+	end
+
+	ac_r = math_min(math_max(ac_r, 0), 1)
+	ac_g = math_min(math_max(ac_g, 0), 1)
+	ac_b = math_min(math_max(ac_b, 0), 1)
+
+	return ac_r, ac_g, ac_b
+end
+
+
+local radios_rt = GetRenderTarget("lk3d_radiosity_buffer_avg_" .. LK3D.RADIOSITY_BUFFER_SZ, LK3D.RADIOSITY_BUFFER_SZ, LK3D.RADIOSITY_BUFFER_SZ)
+local universeCloneRadiosity = LK3D.NewUniverse("lk3d_radiosity_clone")
+local objects_to_lightmap = {}
+
+
+
+-- clones the active universe to radiosity while adding white boxes to where the lights are
+-- make sure to add box and inverted normal box
+-- every other texture should be black, we use this to render n average colour
+local sorted_objects_render = {}
+local function cloneUnivToRadioUniv()
+	local last_univ = LK3D.CurrUniv
+
+	LK3D.PushUniverse(universeCloneRadiosity)
+		LK3D.WipeUniverse()
+		sorted_objects_render = {}
+
+		for k, v in pairs(last_univ["objects"]) do
+			if v.RENDER_NOGLOBAL then
+				continue
+			end
+
+			if v.NO_RADIOSITY then
+				continue
+			end
+
+
+
+			LK3D.AddModelToUniverse(k, v.mdl)
+			LK3D.SetModelPosAng(k, v.pos, v.ang)
+			LK3D.SetModelScale(k, v.scl)
+			LK3D.SetModelMat(k, v.mat)
+			LK3D.SetModelFlag(k, "NO_SHADING", true)
+			LK3D.SetModelFlag(k, "NO_LIGHTING", true)
+			LK3D.SetModelCol(k, v.col)
+			LK3D.SetModelFlag(k, "CONSTANT", true)
+			LK3D.SetModelFlag(k, "ORIG_UNIV", last_univ["tag"])
+			LK3D.SetModelFlag(k, "lightmap_uvs", v.lightmap_uvs)
+
+			if v.RADIOSITY_LIT then
+				LK3D.SetModelCol(k, Color(255, 255, 255))
+			end
+
+
+			if not objects_to_lightmap[k] then
+				LK3D.SetModelCol(k, Color(0, 0, 0))
+				LK3D.SetModelMat(k, "white")
+			end
+
+			local idx_inv = k .. "_lm_inv"
+			LK3D.AddModelToUniverse(idx_inv, v.mdl)
+			LK3D.SetModelPosAng(idx_inv, v.pos, v.ang)
+			LK3D.SetModelScale(idx_inv, v.scl)
+			LK3D.SetModelMat(idx_inv, "white")
+			LK3D.SetModelFlag(idx_inv, "NO_SHADING", true)
+			LK3D.SetModelFlag(idx_inv, "NO_LIGHTING", true)
+			LK3D.SetModelCol(idx_inv, Color(0, 0, 0))
+			LK3D.SetModelFlag(idx_inv, "CONSTANT", true)
+			LK3D.SetModelFlag(idx_inv, "NORM_INVERT", true)
+			LK3D.SetModelFlag(idx_inv, "ORIG_UNIV", last_univ["tag"])
+
+
+			local lm_idx = "lightmap_object_" .. k .. "_res_" .. LK3D.LIGHTMAP_RES .. "_copy"
+			if LK3D.Textures[lm_idx] ~= nil then
+				LK3D.SetModelFlag(k, "limap_tex", lm_idx)
+			end
+		end
+
+		local l_mul = 1
+
+
+		for k, v in pairs(last_univ["lights"]) do
+			local inten_h = v[2] / 4
+
+
+			local lr_c, lg_c, lb_c = math.Clamp(v[3][1] * 255 * l_mul, 0, 255), math.Clamp(v[3][2] * 255 * l_mul, 0, 255), math.Clamp(v[3][3] * 255 * l_mul, 0, 255)
+			local l_c = Color(lr_c, lg_c, lb_c)
+
+			local idx = k .. "_in"
+			LK3D.AddModelToUniverse(idx, "sphere_simple")
+			LK3D.SetModelPosAng(idx, v[1], Angle(0, 45, 45))
+			LK3D.SetModelScale(idx, Vector(inten_h, inten_h, inten_h))
+			LK3D.SetModelFlag(idx, "NO_SHADING", true)
+			LK3D.SetModelFlag(idx, "NO_LIGHTING", true)
+			LK3D.SetModelFlag(idx, "NO_TRACE", true)
+			LK3D.SetModelFlag(idx, "CONSTANT", true)
+			LK3D.SetModelFlag(idx, "NORM_INVERT", true)
+			LK3D.SetModelCol(idx, Color(255, 0, 0))
+			LK3D.SetModelFlag(idx, "RENDER_PARAMETRI_AFTER", true)
+			LK3D.SetModelFlag(idx, "RENDER_PARAMETRI_PRE", function()
+				render.SetStencilEnable(true)
+				render.SetStencilWriteMask(0xFF)
+				render.SetStencilTestMask(0xFF)
+				render.SetStencilReferenceValue(0)
+				render.SetStencilCompareFunction(STENCIL_ALWAYS)
+				render.SetStencilPassOperation(STENCIL_KEEP)
+				render.SetStencilFailOperation(STENCIL_KEEP)
+				render.SetStencilZFailOperation(STENCIL_KEEP)
+				render.ClearStencil()
+
+				render.SetStencilReferenceValue(1)
+				render.SetStencilPassOperation(STENCIL_KEEP)
+				render.SetStencilFailOperation(STENCIL_KEEP)
+				render.SetStencilZFailOperation(STENCIL_INCR)
+				render.OverrideDepthEnable(true, false)
+				render.OverrideColorWriteEnable(true, false)
+			end)
+			LK3D.SetModelFlag(idx, "RENDER_PARAMETRI_POST", function()
+				render.OverrideDepthEnable(false, false)
+				render.OverrideColorWriteEnable(false, false)
+			end)
+			LK3D.SetModelHide(idx, true)
+
+
+
+			idx = k .. "_out"
+			LK3D.AddModelToUniverse(idx, "sphere_simple")
+			LK3D.SetModelPosAng(idx, v[1], Angle(0, 45, 45))
+			LK3D.SetModelScale(idx, Vector(inten_h, inten_h, inten_h))
+			LK3D.SetModelFlag(idx, "NO_SHADING", true)
+			LK3D.SetModelFlag(idx, "NO_LIGHTING", true)
+			LK3D.SetModelFlag(idx, "NO_TRACE", true)
+			LK3D.SetModelFlag(idx, "CONSTANT", true)
+			LK3D.SetModelCol(idx, Color(0, 255, 0))
+
+			LK3D.SetModelFlag(idx, "RENDER_PARAMETRI_AFTER", true)
+			LK3D.SetModelFlag(idx, "RENDER_PARAMETRI_PRE", function()
+				render.SetStencilReferenceValue(1)
+				render.SetStencilPassOperation(STENCIL_KEEP)
+				render.SetStencilFailOperation(STENCIL_KEEP)
+				render.SetStencilZFailOperation(STENCIL_DECRSAT)
+				render.OverrideDepthEnable(true, false)
+				render.OverrideColorWriteEnable(true, false)
+			end)
+			LK3D.SetModelFlag(idx, "RENDER_PARAMETRI_POST", function()
+				render.OverrideColorWriteEnable(false, false)
+
+				render.SetStencilReferenceValue(1)
+				render.SetStencilCompareFunction(STENCIL_EQUAL)
+				render.ClearBuffersObeyStencil(lr_c, lg_c, lb_c, 255)
+
+
+				render.SetStencilEnable(false)
+				render.OverrideDepthEnable(false, false)
+			end)
+			LK3D.SetModelHide(idx, true)
+
+
+			idx = k .. "_also"
+			LK3D.AddModelToUniverse(idx, "sphere_simple")
+			LK3D.SetModelPosAng(idx, v[1], Angle(0, 45, 45))
+			LK3D.SetModelScale(idx, Vector(inten_h, inten_h, inten_h))
+			LK3D.SetModelFlag(idx, "NO_SHADING", true)
+			LK3D.SetModelFlag(idx, "NO_LIGHTING", true)
+			LK3D.SetModelFlag(idx, "NO_TRACE", true)
+			LK3D.SetModelFlag(idx, "CONSTANT", true)
+			LK3D.SetModelCol(idx, l_c)
+
+
+			idx = k .. "_invr_also"
+			LK3D.AddModelToUniverse(idx, "sphere_simple")
+			LK3D.SetModelPosAng(idx, v[1], Angle(0, 45, 45))
+			LK3D.SetModelScale(idx, Vector(inten_h, inten_h, inten_h))
+			LK3D.SetModelFlag(idx, "NO_SHADING", true)
+			LK3D.SetModelFlag(idx, "NO_LIGHTING", true)
+			LK3D.SetModelFlag(idx, "NO_TRACE", true)
+			LK3D.SetModelFlag(idx, "CONSTANT", true)
+			LK3D.SetModelFlag(idx, "NORM_INVERT", true)
+			LK3D.SetModelCol(idx, l_c)
+
+			sorted_objects_render[#sorted_objects_render + 1] = {k .. "_in", k .. "_out"}
+		end
+
+
+	LK3D.PopUniverse()
+end
+
+
+local function setRadiosaTexturesPost()
+	local last_univ = LK3D.CurrUniv
+	LK3D.PushUniverse(universeCloneRadiosity)
+		for k, v in pairs(last_univ["objects"]) do
+			if v.RENDER_NOGLOBAL then
+				continue
+			end
+
+			if v.NO_RADIOSITY then
+				continue
+			end
+
+			local lm_idx = "lightmap_object_" .. k .. "_res_" .. LK3D.LIGHTMAP_RES .. "_copy"
+			if LK3D.Textures[lm_idx] ~= nil then
+				LK3D.SetModelFlag(k, "limap_tex", lm_idx)
+			end
+		end
+	LK3D.PopUniverse()
+end
+
+
+local capt_r, capt_g, capt_b = 0, 0, 0
+local radios_rt_sz_div_avg = LK3D.RADIOSITY_BUFFER_SZ / LK3D.RADIOSITY_AVGCALC_DIV
+local function blur_the_rt()
+	render.CapturePixels()
+
+	-- get true average
+	local count = (radios_rt_sz_div_avg * radios_rt_sz_div_avg) - 1
+	for i = 0, count do
+		local xc = (i % radios_rt_sz_div_avg) * LK3D.RADIOSITY_AVGCALC_DIV
+		local yc = math.floor(i / radios_rt_sz_div_avg) * LK3D.RADIOSITY_AVGCALC_DIV
+		local r_r, r_g, r_b = render.ReadPixel(xc, yc)
+		capt_r = capt_r + r_r
+		capt_g = capt_g + r_g
+		capt_b = capt_b + r_b
+	end
+	capt_r = math.pow((capt_r / count) * LK3D.RADIOSITY_MUL_CGATHER, .45)
+	capt_g = math.pow((capt_g / count) * LK3D.RADIOSITY_MUL_CGATHER, .45)
+	capt_b = math.pow((capt_b / count) * LK3D.RADIOSITY_MUL_CGATHER, .45)
+end
+
+local function get_lighting_via_cam(pos, norm)
+	LK3D.PushRenderTarget(radios_rt)
+		LK3D.RenderClear(0, 0, 0)
+		LK3D.SetCamPos(pos)
+		LK3D.SetCamAng(norm:Angle())
+		local last = LK3D.FOV
+		LK3D.SetFOV(LK3D.RADIOSITY_FOV)
+		LK3D.RenderActiveUniverse()
+
+		for k, v in ipairs(sorted_objects_render) do
+			LK3D.RenderObject(v[1])
+			LK3D.RenderObject(v[2])
+		end
+
+		LK3D.RenderQuick(blur_the_rt)
+	LK3D.PopRenderTarget()
+	LK3D.SetFOV(last)
+
+	return capt_r / 255, capt_g / 255, capt_b / 255
+end
+
+local both_lut = {
+	1, 1, 2, 2,
+	3, 3, 3, 3
+}
+local offsets = {
+	{-1, 0}, {1, 0}, {0, -1}, {0, 1},
+	{-1, 1}, {1, 1}, {1, -1}, {-1, -1}
+}
+
+local function expandBorders(object, pixa_buff, bad_pixels)
+	pixa_buff = pixa_buff or {}
+	local pixa_to_update = {}
+
+	for i = 0, (LK3D.LIGHTMAP_RES * LK3D.LIGHTMAP_RES) - 1 do
+		-- avoid crashing ur game
+		if (i % 128) == 0 then
+			local the_rt = render.GetRenderTarget()
+			LK3D.RenderProcessingMessage("Radiosity expand borders\n[" .. object .. "]", (i / ((LK3D.LIGHTMAP_RES * LK3D.LIGHTMAP_RES) - 1)) * 100, function()
+				render.DrawTextureToScreenRect(the_rt, 0, (12 * 24) * (ScrH() / 512), 512, 512)
+			end)
+		end
+
+		if not bad_pixels[i] then
+			continue
+		end
+
+
+		local xc = i % LK3D.LIGHTMAP_RES
+		local yc = math_floor(i / LK3D.LIGHTMAP_RES)
+
+		local nearby_accum_r = 0
+		local nearby_accum_g = 0
+		local nearby_accum_b = 0
+		local found = false
+
+
+		-- https://shaderbits.com/blog/uv-dilation/
+		for k, v in ipairs(offsets) do
+			local p_offx = math_Clamp(xc + v[1], 0, LK3D.LIGHTMAP_RES - 1)
+			local p_offy = math_Clamp(yc + v[2], 0, LK3D.LIGHTMAP_RES - 1)
+
+			local both_lut_v = both_lut[k]
+			if both_lut_v == 3 then
+				if (p_offx == xc) and (p_offy == yc) then
+					continue
+				end
+			elseif both_lut_v == 2 then
+				if (p_offy == yc) then
+					continue
+				end
+			else
+				if (p_offx == xc) then
+					continue
+				end
+			end
+
+			local id = (p_offx + (p_offy * LK3D.LIGHTMAP_RES))
+			if bad_pixels[id] then
+				continue
+			end
+
+
+			if not pixa_buff[id] then
+				local r_r, r_g, r_b = render.ReadPixel(p_offx, p_offy)
+
+				pixa_buff[id] = {r_r, r_g, r_b}
+			end
+			local pb = pixa_buff[id]
+			nearby_accum_r = pb[1]
+			nearby_accum_g = pb[2]
+			nearby_accum_b = pb[3]
+
+			found = true
+			break
+		end
+
+		if found then
+			surface.SetDrawColor(nearby_accum_r, nearby_accum_g, nearby_accum_b, 255)
+			surface.DrawRect(xc, yc, 1, 1)
+			local idex = xc + (yc * LK3D.LIGHTMAP_RES)
+			pixa_to_update[#pixa_to_update + 1] = {idex, nearby_accum_r, nearby_accum_g, nearby_accum_b}
+		end
+	end
+
+	for k, v in ipairs(pixa_to_update) do
+		local vid = v[1]
+		pixa_buff[vid] = {v[2], v[3], v[4]}
+		bad_pixels[vid] = nil
+	end
+end
+
+
+local function getLMTexNames(object)
+	return "lightmap_object_" .. object .. "_res_" .. LK3D.LIGHTMAP_RES .. "_orig", "lightmap_object_" .. object .. "_res_" .. LK3D.LIGHTMAP_RES .. "_copy"
+end
+
+local function lightmapInit()
+	for k, v in pairs(objects_to_lightmap) do
+		local obj_ptr = LK3D.CurrUniv["objects"][k]
+		if not obj_ptr then
+			return
+		end
+
+		makeLightMapUV(k, LK3D.LIGHTMAP_RES, LK3D.LIGHTMAP_RES)
+		buildTriUVLUT(k, LK3D.LIGHTMAP_RES, LK3D.LIGHTMAP_RES)
+
+		local idx_orig, idx_cpy = getLMTexNames(k)
+		LK3D.DeclareTextureFromFunc(idx_orig, LK3D.LIGHTMAP_RES, LK3D.LIGHTMAP_RES, function()
+			if obj_ptr.RADIOSITY_LIT then
+				render.Clear(255, 255, 255, 255)
+			else
+				render.Clear(0, 0, 0, 255)
+			end
+		end)
+
+		LK3D.DeclareTextureFromFunc(idx_cpy, LK3D.LIGHTMAP_RES, LK3D.LIGHTMAP_RES, function()
+			if obj_ptr.RADIOSITY_LIT then
+				render.Clear(255, 255, 255, 255)
+			else
+				render.Clear(0, 0, 0, 255)
+			end
+		end)
+	end
+
+	cloneUnivToRadioUniv()
+end
+
+
+local function lightmapCalcObject(object)
+	local idx_orig = getLMTexNames(object)
+	local obj_ptr = LK3D.CurrUniv["objects"][object]
+
+	if obj_ptr.RADIOSITY_LIT then
+		return
+	end
+
+
+	LK3D.UpdateTexture(idx_orig, function()
+		local bad_pixels = {}
+		local o_lr, o_lg, o_lb = LK3D.GetLightIntensity(obj_ptr.pos)
+		LK3D.PushUniverse(universeCloneRadiosity)
+		for i = 0, (LK3D.LIGHTMAP_RES * LK3D.LIGHTMAP_RES) - 1 do
+			local xc = i % LK3D.LIGHTMAP_RES
+			local yc = math_floor(i / LK3D.LIGHTMAP_RES)
+
+			local pos_c, norm_c = texturi_to_world(object, xc, yc, LK3D.LIGHTMAP_RES, LK3D.LIGHTMAP_RES)
+
+			local lr, lg, lb
+			if pos_c == nil then
+				bad_pixels[i] = true
+				lr, lg, lb = o_lr, o_lg, o_lb
+			else
+				--local c = HSVToColor(tri_c, ((tri_c % 2) == 0) and 1 or .5, 1)
+				--lr, lg, lb = c.r / 255, c.g / 255, c.b / 255
+				--lr, lg, lb = LK3D.GetLightIntensity(pos_c)
+				lr, lg, lb = get_lighting_via_cam(pos_c, norm_c)
+				--lr, lg, lb = calcLighting(pos_c, norm_c)
+				--lr, lg, lb = o_lr, o_lg, o_lb
+			end
+
+			surface.SetDrawColor(lr * 255, lg * 255, lb * 255, 255)
+			surface.DrawRect(xc, yc, 1, 1)
+
+
+			if (i % 128) == 0 then
+				local the_rt = render.GetRenderTarget()
+				LK3D.RenderProcessingMessage("Radiosity calculate light\n[" .. object .. "]", (i / ((LK3D.LIGHTMAP_RES * LK3D.LIGHTMAP_RES) - 1)) * 100, function()
+					render.DrawTextureToScreenRect(the_rt, 0, 288 * (ScrH() / 512), 512, 512)
+					render.DrawTextureToScreenRect(radios_rt, 288 * (ScrH() / 512) * 2, 288 * (ScrH() / 512), 512, 512)
+				end)
+			end
+		end
+		LK3D.PopUniverse()
+
+		local pixa_buff = {}
+		for _ = 1, LK3D.LIGHTMAP_TRIPAD do
+			render.CapturePixels()
+			expandBorders(object, pixa_buff, bad_pixels)
+		end
+	end)
+end
+
+
+local function lightmapStep()
+	setRadiosaTexturesPost()
+
+	-- calc lightmapping
+	for k, v in pairs(objects_to_lightmap) do
+		local obj_ptr = LK3D.CurrUniv["objects"][k]
+		if not obj_ptr then
+			return
+		end
+
+		lightmapCalcObject(k)
+	end
+
+	-- copy texture
+	for k, v in pairs(objects_to_lightmap) do
+		local idx_orig, idx_cpy = getLMTexNames(k)
+
+		LK3D.CopyTexture(idx_orig, idx_cpy)
+	end
+end
+
+local function lightmapFinalize()
+	for k, v in pairs(objects_to_lightmap) do
+		local obj_ptr = LK3D.CurrUniv["objects"][k]
+		if not obj_ptr then
+			return
+		end
+
+		local idx_orig = getLMTexNames(k)
+
+		obj_ptr.limap_tex = idx_orig
+	end
+
+	objects_to_lightmap = {}
+end
+
+
+
+function LK3D.SetLightmapped(object)
+	objects_to_lightmap[object] = true
+end
+
+
+-- lightmaps all of the objects with radiosity
+function LK3D.CommitLightmapping()
+	lightmapInit()
+
+	local last_dbg = LK3D.Debug
+	LK3D.Debug = false
+	for i = 1, LK3D.RADIOSITY_STEPS do
+		lightmapStep()
+	end
+	LK3D.Debug = last_dbg
+
+	lightmapFinalize()
+end
+
+
+function LK3D.PackTest()
+	LK3D.DeclareTextureFromFunc("packtest", LK3D.LIGHTMAP_RES, LK3D.LIGHTMAP_RES, function()
+		render.Clear(0, 0, 0, 255)
+		local tree = newleaf(LK3D.LIGHTMAP_RES, LK3D.LIGHTMAP_RES)
+		tree.children[1] = newleaf(LK3D.LIGHTMAP_RES, LK3D.LIGHTMAP_RES)
+		tree.children[2] = newleaf(0, 0)
+		local faketris = {}
+		for i = 1, 128 do
+			faketris[#faketris + 1] = {
+				{0, 0},
+				{math.random(8, 24), 0},
+				{math.random(8, 24), math.random(8, 24)}
+			}
+		end
+
+		for k, v in pairs(faketris) do
+			local ret = insert_into_leaf(tree, v)
+
+			if not ret then
+				print("EPIC FAIL")
+				break
+			end
+
+			surface.SetDrawColor(HSVToColor((k / 128) * 360, 1, 1))
+			draw.NoTexture()
+			surface.DrawPoly({
+				{
+					x = ret[1][1][1],
+					y = ret[1][1][2],
+				},
+				{
+					x = ret[2][1][1],
+					y = ret[2][1][2],
+				},
+				{
+					x = ret[3][1][1],
+					y = ret[3][1][2],
+				}
+			})
+		end
+	end)
+end
+
+
+
+
+
+-- LLM format!
+-- colours are 15 BIT
+-- its weird but ill do dithering to make it nice
+-- also ill have to store these as .ain files so i can upload them to the ws
+-- fucking hacky i know but eh
+
+
+local bayer = {
+	0 ,  8,  2, 10,
+	12,  4, 14,  6,
+	3 , 11,  1,  9,
+	15,  7, 13,  5,
+}
+
+
+-- x, y for dithering
+local bits = 5 -- bits per num
+local bits_hnum = bit.lshift(1, bits) - 1
+local step_size = 255 / bits_hnum
+local function write_lb_colour(fp, r, g, b, x, y)
+	if not fp then
+		return
+	end
+
+
+	-- convert 24 bit rgb to 5 bit colours
+	local invr = math_abs(8 - bits)
+	local r_n = math_Clamp(bit.rshift(r, invr), 0, bits_hnum)
+	local g_n = math_Clamp(bit.rshift(g, invr), 0, bits_hnum)
+	local b_n = math_Clamp(bit.rshift(b, invr), 0, bits_hnum)
+
+
+	local intens_r = (r_n / bits_hnum)
+	local intens_g = (g_n / bits_hnum)
+	local intens_b = (b_n / bits_hnum)
+
+	-- do dithering...
+	local rx = (x % 4) + 1
+	local ry = (y % 4)
+	local threshold = bayer[rx + (ry * 4)]
+	if (intens_r * 16) > threshold then
+		r_n = math_Clamp(bit.rshift(r, invr) + 1, 0, bits_hnum)
+	end
+
+	if (intens_g * 16) > threshold then
+		g_n = math_Clamp(bit.rshift(g, invr) + 1, 0, bits_hnum)
+	end
+
+	if (intens_b * 16) > threshold then
+		b_n = math_Clamp(bit.rshift(b, invr) + 1, 0, bits_hnum)
+	end
+
+
+	local comb_rgb = bit.lshift(r_n, bits * 2) + bit.lshift(g_n, bits) + b_n
+	return comb_rgb
+end
+
+
+local function read_lb_colour(fp, col)
+	if not fp then
+		return
+	end
+
+	local bp1 = (bits_hnum + 1)
+
+	local c_r = bit.rshift(col, bits * 2) % bp1
+	local c_g = bit.rshift(col, bits) % bp1
+	local c_b = (col % bp1)
+
+	return math.floor(c_r * step_size), math.floor(c_g * step_size), math.floor(c_b * step_size)
+end
+
+-- exports all of the lightmaps from the curr univ along with their object lightmap uvs
+file.CreateDir("lk3d/lightmap_export")
+function LK3D.ExportLightmaps()
+	if not LK3D.CurrUniv["tag"] then
+		LK3D.New_D_Print("Attempting to export lightmaps for a universe without a tag!", 4, "Radiosity")
+		return
+	end
+
+
+	-- lm uvs need alot of detail
+	local lm_uvs = {}
+	local lightmaps = {}
+
+	local tag = LK3D.CurrUniv["tag"]
+	
+
+
+
+	for k, v in pairs(LK3D.CurrUniv["objects"]) do
+		
+	end
+
+	local lm_tex = obj_ptr.limap_tex
+end
+
+function LK3D.CompressLMTest(obj_test)
+	--LK3D.PushUniverse(DeepDive.universePly)
+		LK3D.ApplyShaderEffect("lightmap_object_" .. obj_test .. "_res_" .. LK3D.LIGHTMAP_RES .. "_orig", function(xc, yc, img_arr)
+			local w_p, w_n = texturi_to_world(obj_test, xc, yc, LK3D.LIGHTMAP_RES, LK3D.LIGHTMAP_RES)
+			if not w_p then
+				return
+			end
+			-- localize to normal
+			local n_ang = w_n:Angle()
+
+			local xdir = n_ang:Right()
+			local xc_dth = (w_p * xdir):Length()
+
+			local ydir = n_ang:Up()
+			local yc_dth = (w_p * ydir):Length()
+
+
+			local curr_col = img_arr[xc][yc]
+
+			local tri_sz_h = LK3D.LIGHTMAP_TRISZ
+
+			local comp = write_lb_colour("asd", curr_col[1], curr_col[2], curr_col[3], math.floor(xc_dth * tri_sz_h), math.floor(yc_dth * tri_sz_h))
+			local dr, dg, db = read_lb_colour("asd", comp)
+
+			surface.SetDrawColor(dr, dg, db)
+			surface.DrawRect(xc, yc, 1, 1)
+		end)
+	--LK3D.PopUniverse()
+end
