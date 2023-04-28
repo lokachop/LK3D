@@ -226,8 +226,13 @@ local rt_raytrace = GetRenderTarget("rt_lk3d_raytracer_" .. g_div, wDiv, hDiv)
 local currpx = 0
 local rt_pos = LK3D.CamPos
 local rt_ang = LK3D.CamAng
+local targ_univ = ""
 function LK3D.RaytraceThink()
 	if not LK3D.Raytracing then
+		return
+	end
+
+	if not LK3D.UniverseRegistry[targ_univ] then
 		return
 	end
 
@@ -236,7 +241,7 @@ function LK3D.RaytraceThink()
 		return
 	end
 
-	LK3D.PushUniverse(DeepDive.EGActive and DeepDive.EGUniv or DeepDive.universePly)
+	LK3D.PushUniverse(LK3D.UniverseRegistry[targ_univ])
 	render.PushRenderTarget(rt_raytrace)
 	local ow, oh = ScrW(), ScrH()
 	for i = currpx, currpx + rt_itr do
@@ -266,10 +271,23 @@ function LK3D.RaytraceThink()
 	print(currpx .. " / " .. (sWDiv * sHDiv))
 end
 
-concommand.Add("LK3D_raytraceCurrent", function()
+concommand.Add("LK3D_raytraceCurrent", function(ply, cmd, args, argstr)
 	if LK3D.Raytracing then
 		return
 	end
+
+	if not args[1] then
+		LK3D.D_Print("LK3D_raytraceCurrent (universeName)", 3, "Base")
+		return
+	end
+
+	if LK3D.UniverseRegistry[args[1]] == nil then
+		LK3D.D_Print("TargetUniverse \"" .. args[1] .. "\" doesnt exist!", 3, "Base")
+		return
+	end
+
+	targ_univ = args[1]
+
 	rt_pos = LocalPlayer():EyePos() / 100
 	rt_ang = LocalPlayer():EyeAngles()
 	currpx = 0

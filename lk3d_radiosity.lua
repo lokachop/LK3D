@@ -1282,7 +1282,6 @@ function LK3D.ExportLightmaps()
 end
 
 function LK3D.CompressLMTest(obj_test)
-	--LK3D.PushUniverse(DeepDive.universePly)
 		LK3D.ApplyShaderEffect("lightmap_object_" .. obj_test .. "_res_" .. LK3D.LIGHTMAP_RES .. "_orig", function(xc, yc, img_arr)
 			local w_p, w_n = texturi_to_world(obj_test, xc, yc, LK3D.LIGHTMAP_RES, LK3D.LIGHTMAP_RES)
 			if not w_p then

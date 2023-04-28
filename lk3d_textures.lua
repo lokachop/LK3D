@@ -914,10 +914,4 @@ function LK3D.DecompressTexture(name, trasp, ignorez, data)
 
 	f_pointer:Close()
 end
-
-
---local m_Cursor = Material("deepdive/cursor_s_cross.png", "ignorez nocull")
---LK3D.DeclareTextureFromMatObj("gui_cursor_cross", 16, 8, m_Cursor, true)
---LK3D.CompressTexture("gui_cursor_cross")
-
 LK3D.New_D_Print("LK3D textures fully loaded!", 2, "Base")
