@@ -213,6 +213,77 @@ LK3D.Shaders["norm_screenspace"] = {
 	end
 }
 
+LK3D.Shaders["norm_screenspace_rot"] = {
+	sh_parametri = {
+		[1] = false, -- vpos
+		[2] = false, -- vuv
+		[3] = true, -- vrgb
+		[4] = false, -- shader obj ref
+		[5] = true, -- vnorm
+	},
+	sh_func = function(vpos, vuv, vrgb, vnorm)
+		local v_nrot = Vector(vnorm)
+		v_nrot:Rotate(Angle(0, -LK3D.CamAng[2], 0))
+		v_nrot:Rotate(Angle(-LK3D.CamAng[1], 0, 0))
+		v_nrot:Normalize()
+
+
+		vrgb[1] = (v_nrot[1] + 1) * 128
+		vrgb[2] = (v_nrot[2] + 1) * 128
+		vrgb[3] = (v_nrot[3] + 1) * 128
+	end
+}
+
+
+LK3D.Shaders["world_pos"] = {
+	sh_parametri = {
+		[1] = true, -- vpos
+		[2] = false, -- vuv
+		[3] = true, -- vrgb
+		[4] = true, -- shader obj ref
+		[5] = false, -- vnorm
+	},
+	sh_func = function(vpos, vuv, vrgb, vnorm)
+		local obj_nfo = LK3D.SHADER_OBJREF
+		local vp_world = Vector(vpos)
+		vp_world = obj_nfo.tmatrix * vp_world
+
+
+		vrgb[1] = (vp_world[1] + 8) * 15
+		vrgb[2] = (vp_world[2] + 8) * 15
+		vrgb[3] = (vp_world[3] + 8) * 15
+
+		vrgb[1] = math.max(math.min(vrgb[1], 255), 0)
+		vrgb[2] = math.max(math.min(vrgb[2], 255), 0)
+		vrgb[3] = math.max(math.min(vrgb[3], 255), 0)
+	end
+}
+
+LK3D.Shaders["world_pos_local"] = {
+	sh_parametri = {
+		[1] = true, -- vpos
+		[2] = false, -- vuv
+		[3] = true, -- vrgb
+		[4] = false, -- shader obj ref
+		[5] = false, -- vnorm
+	},
+	sh_func = function(vpos, vuv, vrgb, vnorm)
+		local obj_nfo = LK3D.SHADER_OBJREF
+		local vp_world = Vector(vpos)
+		vp_world = obj_nfo.tmatrix * vp_world
+		vp_world:Sub(LK3D.CamPos)
+
+
+		vrgb[1] = (vp_world[1] + 8) * 15
+		vrgb[2] = (vp_world[2] + 8) * 15
+		vrgb[3] = (vp_world[3] + 8) * 15
+
+		vrgb[1] = math.max(math.min(vrgb[1], 255), 0)
+		vrgb[2] = math.max(math.min(vrgb[2], 255), 0)
+		vrgb[3] = math.max(math.min(vrgb[3], 255), 0)
+	end
+}
+
 
 
 
@@ -279,5 +350,25 @@ LK3D.Shaders["ps1"] = {
 
 		--vuv[1] = math.Round(vuv[1], 2)
 		--vuv[2] = math.Round(vuv[2], 2)
+	end
+}
+
+
+LK3D.Shaders["reflective_screen_rot"] = {
+	sh_parametri = {
+		[1] = false, -- vpos
+		[2] = true, -- vuv
+		[3] = false, -- vrgb
+		[4] = false, -- shader obj ref
+		[5] = true, -- vnorm
+	},
+	sh_func = function(vpos, vuv, vrgb, vnorm)
+		local v_nrot = Vector(vnorm)
+		v_nrot:Rotate(Angle(0, -LK3D.CamAng[2], 0))
+		v_nrot:Rotate(Angle(-LK3D.CamAng[1], 0, 0))
+		v_nrot:Normalize()
+
+		vuv[1] = .5 + math.abs(v_nrot[1])
+		vuv[2] = math.abs(v_nrot[2] * .5 + .5)
 	end
 }

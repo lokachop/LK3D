@@ -5,6 +5,14 @@ LK3D = LK3D or {}
 
 LK3D.Textures = LK3D.Textures or {}
 
+function LK3D.GetTextureByIndex(index)
+	if not LK3D.Textures[index] then
+		return LK3D.Textures["fail"]
+	end
+
+	return LK3D.Textures[index]
+end
+
 function LK3D.FriendlySourceTextureNTNC(matsrc)
 	local matc = CreateMaterial(matsrc .. "_friendly_ntnc_", "UnlitGeneric", {
 		["$basetexture"] = matsrc,
@@ -246,7 +254,7 @@ function LK3D.GetTextureSize(index)
 end
 
 
-function LK3D.GetTexturePixelArray(index)
+function LK3D.GetTexturePixelArray(index, inline)
 	if not LK3D.Textures[index] then
 		LK3D.D_Print("no texture \"" .. index .. "\"!", 4, "Textures")
 		return
@@ -273,12 +281,16 @@ function LK3D.GetTexturePixelArray(index)
 		for i = 0, (iw * ih) - 1 do
 			local xc = i % iw
 			local yc = math.floor(i / iw)
-			if not img_arr[xc] then
+			if (not inline) and (not img_arr[xc]) then
 				img_arr[xc] = {}
 			end
 
 			local rr, rg, rb, ra = render.ReadPixel(xc, yc)
-			img_arr[xc][yc] = {rr, rg, rb, ra}
+			if not inline then
+				img_arr[xc][yc] = {rr, rg, rb, ra}
+			else
+				img_arr[i + 1] = {rr, rg, rb, ra}
+			end
 		end
 	render.PopRenderTarget()
 	cam.End2D()
@@ -494,6 +506,15 @@ function LK3D.SetupBaseMaterials()
 	end, true)
 
 
+	LK3D.DeclareTextureFromFunc("dither_white", 2, 2, function()
+		render.Clear(255, 255, 255, 0)
+
+		surface.SetDrawColor(255, 255, 255)
+		surface.DrawRect(0, 0, 1, 1)
+		surface.DrawRect(1, 1, 1, 1)
+	end, true)
+
+
 
 	local function reScale(p1, p2, p3, p4)
 		local c1 = ((p1 / 256) * ScrW())
@@ -700,13 +721,6 @@ end
 LK3D.SetupBaseMaterials()
 
 
-function LK3D.GetTextureByIndex(index)
-	if not LK3D.Textures[index] then
-		return LK3D.Textures["fail"]
-	end
-
-	return LK3D.Textures[index]
-end
 
 
 
@@ -723,7 +737,7 @@ end
 
 local LKTCOMP_VER = 1
 local LKTCOMP_ENCODERS = {
-	[1] = function(name, f_pointer, fname) -- rev1
+	[1] = function(name, f_pointer, fname, actual_fname) -- rev1
 		f_pointer:Seek(0)
 
 		-- marker
@@ -786,17 +800,19 @@ local LKTCOMP_ENCODERS = {
 		f_pointer:Close()
 
 		-- do lzma
-		local act_name = fname .. ".txt"
-		file.Write(fname .. "_raw" .. ".txt", file.Read(act_name, "DATA"))
-		file.Write(fname .. "_nolzma" .. ".txt", util.Base64Encode(file.Read(act_name, "DATA"), true))
-
-		file.Write(act_name, util.Base64Encode(util.Compress(file.Read(act_name, "DATA")), true))
+		if actual_fname then
+			file.Write(actual_fname .. ".txt", util.Compress(file.Read(act_name, "DATA"))) -- this is dumb why are you like this loka
+		else
+			local act_name = fname .. ".txt"
+			file.Write(act_name, util.Base64Encode(util.Compress(file.Read(act_name, "DATA")), true))
+			file.Write(fname .. "_nob64" .. ".txt", util.Compress(file.Read(act_name, "DATA")))
+		end
 	end
 }
 
 
 -- compresses texture into base64 string which can be later loaded in
-function LK3D.CompressTexture(name)
+function LK3D.CompressTexture(name, path, actual_fname)
 	LK3D.D_Print("Compressing texture \"" .. name .. "\" with LKTCOMP revision " .. LKTCOMP_VER .. "....")
 	if not LK3D.Textures[name] then
 		LK3D.D_Print("Texture \"" .. name .. "\" doesnt exist!")
@@ -806,11 +822,14 @@ function LK3D.CompressTexture(name)
 	file.CreateDir("lk3d/lktcomp_textures")
 
 	local fnm = "lk3d/lktcomp_textures/" .. name
+	if path then
+		fnm = path .. name
+	end
 	file.Write(fnm, "")
 
 	local f_pointer = file.Open(fnm .. ".txt", "wb", "DATA")
 	if LKTCOMP_ENCODERS[LKTCOMP_VER] then
-		local fine, err = pcall(LKTCOMP_ENCODERS[LKTCOMP_VER], name, f_pointer, fnm)
+		local fine, err = pcall(LKTCOMP_ENCODERS[LKTCOMP_VER], name, f_pointer, fnm, actual_fname)
 		if not fine then
 			LK3D.D_Print("Error compressing texture \"" .. name .. "\" with LKTCOMP revision " .. LKTCOMP_VER .. ": \"" .. err .. "\"")
 		end

@@ -526,6 +526,10 @@ local function cacheModel(name, tag, func, delta, m_ind)
 	mesh_End()
 
 
+	if not object.mdlCache then
+		object.mdlCache = {}
+	end
+
 	if not tag then
 		object.mdlCache[1] = mesh_obj
 	else

@@ -514,6 +514,7 @@ include("lk3d_textures.lua")
 function LK3D.AddModelToUniverse(index, mdl, pos, ang)
 	LK3D.New_D_Print("Adding \"" .. index .. "\" to universe with model \"" .. (mdl or "cube") .. "\"", 2, "LK3D")
 	if not LK3D.Models[mdl] then
+		LK3D.New_D_Print("Model \"" .. mdl .. "\" doesnt exist!", 3, "LK3D")
 		mdl = "fail"
 	end
 
@@ -663,6 +664,7 @@ include("lk3d_univ_explorer.lua")
 include("lk3d_baseshaders.lua")
 include("lk3d_radiosity.lua")
 include("lk3d_skeleton.lua")
+include("lk3d_lkpack.lua")
 include("lk3d_intro.lua")
 -- todo surface2d (3d mesh. based 2d lib for lk3d)
 

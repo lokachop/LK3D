@@ -1,13 +1,30 @@
 LK3D = LK3D or {}
-LK3D.LIGHTMAP_RES = (256 + 64 + 16) * 1
-LK3D.LIGHTMAP_TRISZ = 10 * 1.5
-LK3D.LIGHTMAP_TRIPAD = 4
+LK3D.LIGHTMAP_RES = (256 + 64 + 16) * 1.5
+LK3D.LIGHTMAP_TRISZ = 10 * 1
+LK3D.LIGHTMAP_TRIPAD = 5
 
+-- additive preset; buggy...
+--[[
+LK3D.RADIOSITY_STEPS = 5
+LK3D.RADIOSITY_BUFFER_SZ = 256
+LK3D.RADIOSITY_AVGCALC_DIV = 4
+LK3D.RADIOSITY_FOV = 90
+LK3D.RADIOSITY_MUL_CGATHER = 4
+LK3D.RADIOSITY_POW_CGATHER = .95
+LK3D.RADIOSITY_ADDITIVE_CALC = true
+LK3D.RADIOSITY_LIGHTSCL_DIV = 12
+]]--
+
+-- legacy
 LK3D.RADIOSITY_STEPS = 3
 LK3D.RADIOSITY_BUFFER_SZ = 128
 LK3D.RADIOSITY_AVGCALC_DIV = 4
 LK3D.RADIOSITY_FOV = 120
 LK3D.RADIOSITY_MUL_CGATHER = 196
+LK3D.RADIOSITY_POW_CGATHER = .45
+LK3D.RADIOSITY_ADDITIVE_CALC = false
+LK3D.RADIOSITY_LIGHTSCL_DIV = 4
+
 
 
 local math = math
@@ -728,7 +745,7 @@ local function cloneUnivToRadioUniv()
 
 
 		for k, v in pairs(last_univ["lights"]) do
-			local inten_h = v[2] / 4
+			local inten_h = v[2] / LK3D.RADIOSITY_LIGHTSCL_DIV
 
 
 			local lr_c, lg_c, lb_c = math.Clamp(v[3][1] * 255 * l_mul, 0, 255), math.Clamp(v[3][2] * 255 * l_mul, 0, 255), math.Clamp(v[3][3] * 255 * l_mul, 0, 255)
@@ -870,9 +887,9 @@ local function blur_the_rt()
 		capt_g = capt_g + r_g
 		capt_b = capt_b + r_b
 	end
-	capt_r = math.pow((capt_r / count) * LK3D.RADIOSITY_MUL_CGATHER, .45)
-	capt_g = math.pow((capt_g / count) * LK3D.RADIOSITY_MUL_CGATHER, .45)
-	capt_b = math.pow((capt_b / count) * LK3D.RADIOSITY_MUL_CGATHER, .45)
+	capt_r = math.pow((capt_r / count) * LK3D.RADIOSITY_MUL_CGATHER, LK3D.RADIOSITY_POW_CGATHER)
+	capt_g = math.pow((capt_g / count) * LK3D.RADIOSITY_MUL_CGATHER, LK3D.RADIOSITY_POW_CGATHER)
+	capt_b = math.pow((capt_b / count) * LK3D.RADIOSITY_MUL_CGATHER, LK3D.RADIOSITY_POW_CGATHER)
 end
 
 local function get_lighting_via_cam(pos, norm)
@@ -1024,6 +1041,8 @@ local function lightmapInit()
 end
 
 
+
+local o_temp_pixelvals = {}
 local function lightmapCalcObject(object)
 	local idx_orig = getLMTexNames(object)
 	local obj_ptr = LK3D.CurrUniv["objects"][object]
@@ -1033,7 +1052,12 @@ local function lightmapCalcObject(object)
 	end
 
 
+
+	o_temp_pixelvals[object] = o_temp_pixelvals[object] or {}
 	LK3D.UpdateTexture(idx_orig, function()
+		local ow, oh = ScrW(), ScrH()
+
+
 		local bad_pixels = {}
 		local o_lr, o_lg, o_lb = LK3D.GetLightIntensity(obj_ptr.pos)
 		LK3D.PushUniverse(universeCloneRadiosity)
@@ -1056,8 +1080,38 @@ local function lightmapCalcObject(object)
 				--lr, lg, lb = o_lr, o_lg, o_lb
 			end
 
-			surface.SetDrawColor(lr * 255, lg * 255, lb * 255, 255)
-			surface.DrawRect(xc, yc, 1, 1)
+
+
+			if LK3D.RADIOSITY_ADDITIVE_CALC then
+				local fr, fg, fb
+				if o_temp_pixelvals[object][i] then
+					fr = math.min(o_temp_pixelvals[object][i][1] + (lr * 255), 255)
+					fg = math.min(o_temp_pixelvals[object][i][2] + (lg * 255), 255)
+					fb = math.min(o_temp_pixelvals[object][i][3] + (lb * 255), 255)
+				else
+					fr = math.min(lr * 255, 255)
+					fg = math.min(lg * 255, 255)
+					fb = math.min(lb * 255, 255)
+				end
+
+
+				o_temp_pixelvals[object][i] = {
+					fr,
+					fg,
+					fb
+				}
+				render.SetViewPort(xc, yc, 1, 1)
+				render.Clear(fr, fg, fb, 255)
+
+				--surface.SetDrawColor(fr, fg, fb)-- additive
+				--surface.DrawRect(xc, yc, 1, 1)
+			else
+				--surface.SetDrawColor(lr * 255, lg * 255, lb * 255)
+				--surface.DrawRect(xc, yc, 1, 1)
+
+				render.SetViewPort(xc, yc, 1, 1)
+				render.Clear(lr * 255, lg * 255, lb * 255, 255)
+			end
 
 
 			if (i % 128) == 0 then
@@ -1069,6 +1123,8 @@ local function lightmapCalcObject(object)
 			end
 		end
 		LK3D.PopUniverse()
+
+		render.SetViewPort(0, 0, ow, oh)
 
 		local pixa_buff = {}
 		for _ = 1, LK3D.LIGHTMAP_TRIPAD do
@@ -1183,129 +1239,243 @@ end
 
 
 
+file.CreateDir("lk3d/lightmap_temp")
+file.CreateDir("lk3d/lightmap_temp/" .. engine.ActiveGamemode())
+local targ_temp = "lk3d/lightmap_temp/" .. engine.ActiveGamemode() .. "/"
+local function loadLightmapObject(data, tag, obj_idx)
+	if not data then
+		LK3D.New_D_Print("Attempting to load lightmap with no data!", 4, "Radiosity")
+		return
+	end
 
--- LLM format!
--- colours are 15 BIT
--- its weird but ill do dithering to make it nice
--- also ill have to store these as .ain files so i can upload them to the ws
--- fucking hacky i know but eh
-
-
-local bayer = {
-	0 ,  8,  2, 10,
-	12,  4, 14,  6,
-	3 , 11,  1,  9,
-	15,  7, 13,  5,
-}
+	file.Write(targ_temp .. "temp1.txt", util.Decompress(data))
 
 
--- x, y for dithering
-local bits = 5 -- bits per num
-local bits_hnum = bit.lshift(1, bits) - 1
-local step_size = 255 / bits_hnum
-local function write_lb_colour(fp, r, g, b, x, y)
-	if not fp then
+	local f_pointer_temp = file.Open(targ_temp .. "temp1.txt", "rb", "DATA")
+	local header = f_pointer_temp:Read(4)
+	if header ~= "LKLM" then
+		LK3D.New_D_Print("Failure decoding LKLM file! (start header no match)", 4, "Radiosity")
+		f_pointer_temp:Close()
+		return
+	end
+
+	local tw = f_pointer_temp:ReadULong()
+	local th = f_pointer_temp:ReadULong()
+
+
+	local lm_tex_idx = "lightmap_" .. tag .. "_" .. obj_idx
+
+	LK3D.DeclareTextureFromFunc(lm_tex_idx, tw, th, function()
+		render.Clear(64, 255, 64, 255)
+		for i = 0, (tw * th) - 1 do
+			if (i % 1024) == 0 then
+				LK3D.RenderProcessingMessage("Load radiosity...\n[" .. obj_idx .. "]", (i / ((tw * th) - 1)) * 100)
+			end
+
+
+			local xc = (i % tw)
+			local yc = math.floor(i / tw)
+
+
+			local r = f_pointer_temp:ReadByte()
+			local g = f_pointer_temp:ReadByte()
+			local b = f_pointer_temp:ReadByte()
+
+			render.SetViewPort(xc, yc, 1, 1)
+			render.Clear(r, g, b, 255)
+		end
+		render.SetViewPort(0, 0, tw, th)
+	end)
+	local read_post_verif = f_pointer_temp:Read(3)
+	if read_post_verif ~= "DNE" then
+		LK3D.New_D_Print("Failure decoding LKLM file! (colour DNE fail)", 4, "Radiosity")
+		f_pointer_temp:Close()
+		return
+	end
+
+	local lm_uvs = {}
+	local tri_count = f_pointer_temp:ReadULong()
+	for i = 1, tri_count do
+		lm_uvs[#lm_uvs + 1] = {
+			math.Round(f_pointer_temp:ReadDouble(), 8),
+			math.Round(f_pointer_temp:ReadDouble(), 8)
+		}
+		lm_uvs[#lm_uvs + 1] = {
+			math.Round(f_pointer_temp:ReadDouble(), 8),
+			math.Round(f_pointer_temp:ReadDouble(), 8)
+		}
+		lm_uvs[#lm_uvs + 1] = {
+			math.Round(f_pointer_temp:ReadDouble(), 8),
+			math.Round(f_pointer_temp:ReadDouble(), 8)
+		}
+	end
+
+	read_post_verif = f_pointer_temp:Read(3)
+	if read_post_verif ~= "DNE" then
+		LK3D.New_D_Print("Failure decoding LKLM file! (lm_uv DNE fail)", 4, "Radiosity")
+		f_pointer_temp:Close()
+		return
+	end
+
+	local obj_ptr = LK3D.CurrUniv["objects"][obj_idx]
+	local mdlinfo = LK3D.Models[obj_ptr.mdl]
+	local indices = mdlinfo.indices
+
+	local index_count = f_pointer_temp:ReadULong()
+	for i = 1, index_count do
+		indices[i][1][3] = f_pointer_temp:ReadULong()
+		indices[i][2][3] = f_pointer_temp:ReadULong()
+		indices[i][3][3] = f_pointer_temp:ReadULong()
+	end
+
+	read_post_verif = f_pointer_temp:Read(3)
+	if read_post_verif ~= "DNE" then
+		LK3D.New_D_Print("Failure decoding LKLM file! (index_lm DNE fail)", 4, "Radiosity")
+		f_pointer_temp:Close()
+		return
+	end
+
+	local read_header_end = f_pointer_temp:Read(4)
+	f_pointer_temp:Close()
+	if read_header_end ~= "LKLM" then
+		LK3D.New_D_Print("Failure decoding LKLM file! (end header fail)", 4, "Radiosity")
 		return
 	end
 
 
-	-- convert 24 bit rgb to 5 bit colours
-	local invr = math_abs(8 - bits)
-	local r_n = math_Clamp(bit.rshift(r, invr), 0, bits_hnum)
-	local g_n = math_Clamp(bit.rshift(g, invr), 0, bits_hnum)
-	local b_n = math_Clamp(bit.rshift(b, invr), 0, bits_hnum)
 
-
-	local intens_r = (r_n / bits_hnum)
-	local intens_g = (g_n / bits_hnum)
-	local intens_b = (b_n / bits_hnum)
-
-	-- do dithering...
-	local rx = (x % 4) + 1
-	local ry = (y % 4)
-	local threshold = bayer[rx + (ry * 4)]
-	if (intens_r * 16) > threshold then
-		r_n = math_Clamp(bit.rshift(r, invr) + 1, 0, bits_hnum)
-	end
-
-	if (intens_g * 16) > threshold then
-		g_n = math_Clamp(bit.rshift(g, invr) + 1, 0, bits_hnum)
-	end
-
-	if (intens_b * 16) > threshold then
-		b_n = math_Clamp(bit.rshift(b, invr) + 1, 0, bits_hnum)
-	end
-
-
-	local comb_rgb = bit.lshift(r_n, bits * 2) + bit.lshift(g_n, bits) + b_n
-	return comb_rgb
+	LK3D.CurrUniv["objects"][obj_idx].limap_tex = lm_tex_idx
+	LK3D.CurrUniv["objects"][obj_idx].lightmap_uvs = lm_uvs
+	--lightmap_uvs
 end
 
 
-local function read_lb_colour(fp, col)
-	if not fp then
+function LK3D.LoadLightmapFromFile(obj_idx)
+	local tag = LK3D.CurrUniv["tag"]
+	if not tag then
+		LK3D.New_D_Print("Attempting to load lightmap on universe with no tag!", 4, "Radiosity")
 		return
 	end
 
-	local bp1 = (bits_hnum + 1)
+	local obj_check = LK3D.CurrUniv["objects"][obj_idx]
+	if not obj_check then
+		LK3D.New_D_Print("Attempting to load lightmap for non-existing object \"" .. obj_idx .. "\"!", 4, "Radiosity")
+		return
+	end
 
-	local c_r = bit.rshift(col, bits * 2) % bp1
-	local c_g = bit.rshift(col, bits) % bp1
-	local c_b = (col % bp1)
 
-	return math.floor(c_r * step_size), math.floor(c_g * step_size), math.floor(c_b * step_size)
+	local fcontents = LK3D.ReadFileFromLKPack("lightmaps/" .. tag .. "/" .. obj_idx .. ".llm")
+	if not fcontents then
+		LK3D.New_D_Print("Attempting to load missing lightmap from LKPack! (" .. tag .. "): [" .. obj_idx .. "]", 4, "Radiosity")
+		return
+	end
+
+	loadLightmapObject(fcontents, tag, obj_idx)
+	LK3D.New_D_Print("Loaded lightmap for \"" .. obj_idx .. "\" from LKPack successfully!", 2, "Radiosity")
+end
+
+
+
+
+-- a more simplistic file format, less compressed than others
+local function exportLightmapObject(obj, obj_id) -- this exports it as custom file lightmap
+	local tag = LK3D.CurrUniv["tag"]
+	local targ_folder = "lk3d/lightmap_export/" .. engine.ActiveGamemode() .. "/" .. tag .. "/"
+
+	file.Write(targ_folder .. obj_id .. "_temp.txt", "temp")
+	local f_pointer_temp = file.Open(targ_folder .. obj_id .. "_temp.txt", "wb", "DATA")
+
+	local lm_t = obj.limap_tex
+
+	local tex_p = LK3D.Textures[lm_t]
+	local tw, th = tex_p.rt:Width(), tex_p.rt:Height()
+	local tex_arr = LK3D.GetTexturePixelArray(lm_t, true) -- we want it inlined
+
+	f_pointer_temp:Write("LKLM") -- lklm header LKLightMap
+	f_pointer_temp:WriteULong(tw)
+	f_pointer_temp:WriteULong(th)
+
+	-- now write pixel data, dont bother with rle, let lzma do the magic
+	local pxcount = tw * th
+	for i = 1, pxcount do
+		local pixel = tex_arr[i]
+
+		f_pointer_temp:WriteByte(pixel[1])
+		f_pointer_temp:WriteByte(pixel[2])
+		f_pointer_temp:WriteByte(pixel[3]) -- dont sotre alpha idiot
+	end
+	f_pointer_temp:Write("DNE") -- done
+
+
+	local object_uvs = {}
+	local tri_list = getTriTable(obj_id)
+
+	for k2, v2 in ipairs(tri_list) do
+		object_uvs[#object_uvs + 1] = {
+			copyUV(v2[1].lm_uv),
+			copyUV(v2[2].lm_uv),
+			copyUV(v2[3].lm_uv),
+		}
+	end
+
+	local tri_count = #object_uvs
+	f_pointer_temp:WriteULong(tri_count)
+	for i = 1, tri_count do
+		local uv_dat = object_uvs[i][1]
+		f_pointer_temp:WriteDouble(uv_dat[1])
+		f_pointer_temp:WriteDouble(uv_dat[2])
+		uv_dat = object_uvs[i][2]
+		f_pointer_temp:WriteDouble(uv_dat[1])
+		f_pointer_temp:WriteDouble(uv_dat[2])
+		uv_dat = object_uvs[i][3]
+		f_pointer_temp:WriteDouble(uv_dat[1])
+		f_pointer_temp:WriteDouble(uv_dat[2])
+	end
+	f_pointer_temp:Write("DNE") -- done
+
+	-- indices to lm uvs [idx 3 on model]
+	local mdlinfo = LK3D.Models[obj.mdl]
+	local indices = mdlinfo.indices
+
+	local index_count = #indices -- each index is a tri so each thing holds 3
+	f_pointer_temp:WriteULong(index_count)
+	for i = 1, index_count do
+		local index = indices[i]
+		f_pointer_temp:WriteULong(index[1][3])
+		f_pointer_temp:WriteULong(index[2][3])
+		f_pointer_temp:WriteULong(index[3][3])
+	end
+	f_pointer_temp:Write("DNE") -- done
+
+
+	f_pointer_temp:Write("LKLM") -- header end
+	f_pointer_temp:Close()
+
+	file.Write(targ_folder .. obj_id .. ".llm.txt", util.Compress(file.Read(targ_folder .. obj_id .. "_temp.txt", "DATA")))
+	file.Delete(targ_folder .. obj_id .. "_temp.txt", "DATA")
 end
 
 -- exports all of the lightmaps from the curr univ along with their object lightmap uvs
 file.CreateDir("lk3d/lightmap_export")
+file.CreateDir("lk3d/lightmap_export/" .. engine.ActiveGamemode())
 function LK3D.ExportLightmaps()
 	if not LK3D.CurrUniv["tag"] then
 		LK3D.New_D_Print("Attempting to export lightmaps for a universe without a tag!", 4, "Radiosity")
 		return
 	end
 
-
-	-- lm uvs need alot of detail
-	local lm_uvs = {}
-	local lightmaps = {}
-
 	local tag = LK3D.CurrUniv["tag"]
-	
-
-
+	local targ_folder = "lk3d/lightmap_export/" .. engine.ActiveGamemode() .. "/" .. tag .. "/"
+	file.CreateDir(targ_folder)
 
 	for k, v in pairs(LK3D.CurrUniv["objects"]) do
-		
+		local lm_tex = v.limap_tex
+		if not lm_tex then -- object not lightmapped
+			continue
+		end
+
+		exportLightmapObject(v, k)
 	end
 
-	local lm_tex = obj_ptr.limap_tex
-end
-
-function LK3D.CompressLMTest(obj_test)
-		LK3D.ApplyShaderEffect("lightmap_object_" .. obj_test .. "_res_" .. LK3D.LIGHTMAP_RES .. "_orig", function(xc, yc, img_arr)
-			local w_p, w_n = texturi_to_world(obj_test, xc, yc, LK3D.LIGHTMAP_RES, LK3D.LIGHTMAP_RES)
-			if not w_p then
-				return
-			end
-			-- localize to normal
-			local n_ang = w_n:Angle()
-
-			local xdir = n_ang:Right()
-			local xc_dth = (w_p * xdir):Length()
-
-			local ydir = n_ang:Up()
-			local yc_dth = (w_p * ydir):Length()
-
-
-			local curr_col = img_arr[xc][yc]
-
-			local tri_sz_h = LK3D.LIGHTMAP_TRISZ
-
-			local comp = write_lb_colour("asd", curr_col[1], curr_col[2], curr_col[3], math.floor(xc_dth * tri_sz_h), math.floor(yc_dth * tri_sz_h))
-			local dr, dg, db = read_lb_colour("asd", comp)
-
-			surface.SetDrawColor(dr, dg, db)
-			surface.DrawRect(xc, yc, 1, 1)
-		end)
-	--LK3D.PopUniverse()
+	LK3D.New_D_Print("Exported lightmaps for universe \"" .. tag .. "\"!", 2, "Radiosity")
 end

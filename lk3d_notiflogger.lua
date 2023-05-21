@@ -172,9 +172,11 @@ LK3D.DeclareModuleColour("TraceSystem", Color(128, 255, 64))
 LK3D.DeclareModuleColour("Utils", Color(64, 128, 196))
 LK3D.DeclareModuleColour("Physics", Color(64, 196, 128))
 LK3D.DeclareModuleColour("Radiosity", Color(196, 64, 128))
+LK3D.DeclareModuleColour("LKPack", Color(64, 196, 64))
 
 LK3D.LogSeverity = 3
 LK3D.DebugOnlySev = 3
+LK3D.DebugSev = 1
 function LK3D.New_D_Print(text, severity, lk_module)
 	severity = severity or 1
 	lk_module = lk_module or "Base"
@@ -189,6 +191,10 @@ function LK3D.New_D_Print(text, severity, lk_module)
 	end
 
 	if not LK3D.Debug and (severity < LK3D.DebugOnlySev) then
+		return
+	end
+
+	if LK3D.Debug and (severity < LK3D.DebugSev) then
 		return
 	end
 
