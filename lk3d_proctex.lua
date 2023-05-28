@@ -2,7 +2,7 @@ LK3D = LK3D or {}
 LK3D.ProcTex = LK3D.ProcTex or {}
 LK3D.New_D_Print("Loading!", 2, "ProcTex")
 
--- https:--github.com/WardBenjamin/SimplexNoise/blob/master/SimplexNoise/Noise.cs
+-- https://github.com/WardBenjamin/SimplexNoise/blob/master/SimplexNoise/Noise.cs
 LK3D.ProcTex.Simplex = LK3D.ProcTex.Simplex or {}
 
 local spx_permutations = {
@@ -127,7 +127,7 @@ function LK3D.ProcTex.Simplex.simplex2D(x, y, seed)
 end
 LK3D.New_D_Print("Loaded Simplex (can cause crashes!)!", 2, "ProcTex")
 
--- https:--en.wikipedia.org/wiki/LK3D.ProcTex.Perlin_noise
+-- https://en.wikipedia.org/wiki/LK3D.ProcTex.Perlin_noise
 LK3D.ProcTex.Perlin = LK3D.ProcTex.Perlin or {}
 LK3D.ProcTex.Perlin.permutations = {
 	151, 160, 137, 91, 90, 15, 131, 13, 201, 95, 96, 53, 194, 233, 7, 225, 140, 36,
@@ -183,8 +183,8 @@ end
 LK3D.New_D_Print("Loaded perlin!", 2, "ProcTex")
 
 
--- https:--en.wikipedia.org/wiki/Worley_noise
--- https:--thebookofshaders.com/12/
+-- https://en.wikipedia.org/wiki/Worley_noise
+-- https://thebookofshaders.com/12/
 LK3D.ProcTex.Worley = LK3D.ProcTex.Worley or {}
 local function v_f2(v)
 	return Vector(math.floor(v[1]), math.floor(v[2]))
@@ -569,16 +569,16 @@ function LK3D.ProcTex.TextureGenThink()
 end
 
 
--- TODO: Value noise (https:--en.wikipedia.org/wiki/Value_noise)
--- TODO: Simplex noise (https:--en.wikipedia.org/wiki/Simplex_noise)
+-- TODO: Value noise (https://en.wikipedia.org/wiki/Value_noise)
+-- TODO: Simplex noise (https://en.wikipedia.org/wiki/Simplex_noise)
 -- TODO: Distortions (rotate, scale, persp, fractal distort)
 -- TODO: Localized copying
 -- TODO: algorithms for regular textures (bricks, tiles, sewers, etc)
--- TODO: edge det. algorithm (https:--en.wikipedia.org/wiki/Edge_detection)
+-- TODO: edge det. algorithm (https://en.wikipedia.org/wiki/Edge_detection)
 
 
 
--- LK3D.ProcTex.Perlin uses: https:--redirect.cs.umbc.edu/~olano/s2002c36/ch02.pdf
+-- LK3D.ProcTex.Perlin uses: https://redirect.cs.umbc.edu/~olano/s2002c36/ch02.pdf
 
 
 LK3D.ProcTex.New("TerrainTest2", 64, 64)

@@ -611,6 +611,24 @@ function LK3D.SetupBaseMaterials()
 
 	end)
 
+	LK3D.DeclareTextureFromFunc("lokaface2_noz", 512, 512, function()
+		surface.SetDrawColor(38, 65, 38)
+		surface.DrawRect(0, 0, ScrW(), ScrH())
+
+		local bl_mat = LK3D.GetTextureByIndex("lokaface2_blur4").mat
+		surface.SetDrawColor(255, 255, 255)
+		surface.SetMaterial(bl_mat)
+		surface.DrawTexturedRect(0, 0, ScrW(), ScrH())
+
+
+		surface.SetDrawColor(39, 255, 39)
+		surface.DrawRect(reScale(72, 40, 25, 118))
+		surface.DrawRect(reScale(158, 40, 25, 118))
+		surface.DrawRect(reScale(77, 194, 101, 8))
+
+	end, false, true)
+
+
 	LK3D.DeclareTextureFromFunc("lokaface3_sad", 512, 512, function()
 		surface.SetDrawColor(38, 65, 38)
 		surface.DrawRect(0, 0, ScrW(), ScrH())
@@ -685,6 +703,23 @@ function LK3D.SetupBaseMaterials()
 
 	LK3D.DeclareTextureFromFunc("process_loka1", 196, 196, function()
 		render.Clear(250 * .5, 240 * .5, 174 * .5, 255)
+	end)
+
+	LK3D.DeclareTextureFromFunc("loka_full", 512, 512, function()
+		render.Clear(194, 183, 115, 255)
+
+		local mat_face = LK3D.Textures["lokaface2_noz"].mat
+		surface.SetDrawColor(255, 255, 255)
+		surface.SetMaterial(mat_face)
+
+
+		local w5 = ScrW() * .5
+		local mat_rot = Matrix()
+		mat_rot:SetAngles(Angle(0, -90, 0))
+		mat_rot:SetTranslation(Vector(w5, w5 * 2))
+		cam.PushModelMatrix(mat_rot)
+			surface.DrawTexturedRect(0, 0, w5, w5, mat_face)
+		cam.PopModelMatrix()
 	end)
 
 	--[[
@@ -800,10 +835,10 @@ local LKTCOMP_ENCODERS = {
 		f_pointer:Close()
 
 		-- do lzma
+		local act_name = fname .. ".txt"
 		if actual_fname then
 			file.Write(actual_fname .. ".txt", util.Compress(file.Read(act_name, "DATA"))) -- this is dumb why are you like this loka
 		else
-			local act_name = fname .. ".txt"
 			file.Write(act_name, util.Base64Encode(util.Compress(file.Read(act_name, "DATA")), true))
 			file.Write(fname .. "_nob64" .. ".txt", util.Compress(file.Read(act_name, "DATA")))
 		end

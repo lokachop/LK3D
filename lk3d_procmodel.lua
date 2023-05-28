@@ -376,7 +376,7 @@ end
 -- (iso_val_march - valv1) * (ev2 - ev1) / (valv2 - valv1)
 
 
--- https:--polycoding.net/marching-cubes/part-1/
+-- https://polycoding.net/marching-cubes/part-1/
 function LK3D.DeclareCubeMarchModel(name, detail, sz, func)
 	local marchcube_lut = LK3D.GetMarchingCubeLUT()
 	local edge_connection_lut = LK3D.GetMarchingCubeEdgeLUT()

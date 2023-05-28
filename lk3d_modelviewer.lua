@@ -164,6 +164,16 @@ local function openMV()
 		LK3D.PopUniverse()
 	end)
 
+	addParametri(pnl_sidebar, "Normal Invert", function(self, state)
+		LK3D.PushUniverse(univ_lk3dmv)
+			LK3D.SetModelFlag("the_model", "NORM_INVERT", state)
+			LK3D.SetModelFlag("floor_plane", "NORM_INVERT", state)
+
+			LK3D.SetModelFlag("floor_plane", "NEEDS_CACHE_UPDATE", true)
+			LK3D.SetModelFlag("the_model", "NEEDS_CACHE_UPDATE", true)
+		LK3D.PopUniverse()
+	end)
+
 	addParametri(pnl_sidebar, "ShadowVolume", function(self, state)
 		LK3D.PushUniverse(univ_lk3dmv)
 			LK3D.SetModelFlag("the_model", "SHADOW_VOLUME", state)

@@ -391,6 +391,37 @@ function LK3D.Utils.RTToMaterial(rt, transp, ignorez)
 	return LK3D.Utils.MatCache[rt:GetName()], LK3D.Utils.MatCache_LM[rt:GetName()]
 end
 
+
+function LK3D.Utils.RTToMaterialEx(rt, parametri)
+	if not LK3D.Utils.MatCache[rt:GetName()] then
+		LK3D.New_D_Print(rt:GetName() .. " isnt cached, caching!", 1, "Utils")
+
+		LK3D.Utils.MatCache[rt:GetName()] = CreateMaterial(rt:GetName() .. "_materialized_lk3d", "UnlitGeneric", {
+			["$basetexture"] = rt:GetName(),
+			["$nocull"] = parametri["nocull"] and 1 or 0,
+			["$ignorez"] = parametri["ignorez"] and 1 or 0,
+			["$vertexcolor"] = parametri["vertexcolor"] and 1 or 0,
+			["$vertexalpha"] = parametri["vertexalpha"] and 1 or 0,
+			["$alphatest"] = parametri["alphatest"] and 1 or 0,
+		})
+
+
+		if parametri["lightmapped"] then
+			LK3D.Utils.MatCache_LM[rt:GetName()] = CreateMaterial("lm_" .. rt:GetName() .. "_materialized_lk3d", "LightmappedGeneric", {
+				["$basetexture"] = rt:GetName(),
+				["$nocull"] = parametri["nocull"] and 1 or 0,
+				["$ignorez"] = parametri["ignorez"] and 1 or 0,
+				["$vertexcolor"] = parametri["vertexcolor"] and 1 or 0,
+				["$vertexalpha"] = parametri["alphatest"] and 1 or 0,
+				["$alphatest"] = parametri["alphatest"] and 1 or 0,
+			})
+		end
+	end
+
+	return LK3D.Utils.MatCache[rt:GetName()], LK3D.Utils.MatCache_LM[rt:GetName()]
+end
+
+
 function LK3D.Utils.RTToMaterialTL(rt)
 	if not LK3D.Utils.MatCacheTR[rt:GetName()] then
 		LK3D.New_D_Print(rt:GetName() .. " isnt cached, caching!", 1, "Utils")
