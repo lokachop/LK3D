@@ -529,16 +529,6 @@ function LK3D.RenderProcessingMessage(message, prog, xtrarender)
 end
 
 
-include("lk3d_modelutils.lua")
-include("lk3d_models.lua")
-
-LK3D.ModelInitExtra = LK3D.ModelInitExtra or {}
-for k, v in pairs(LK3D.ModelInitExtra) do
-	pcall(v) -- fix extern model init load issues
-end
-
-include("lk3d_textures.lua")
-
 
 
 -- adds a model to the current universe
@@ -680,13 +670,24 @@ function LK3D.SetModelAnim(index, an_index)
 end
 
 
+include("lk3d_modelutils.lua")
+include("lk3d_procmodel.lua")
+include("lk3d_models.lua")
+
+LK3D.ModelInitExtra = LK3D.ModelInitExtra or {}
+for k, v in pairs(LK3D.ModelInitExtra) do
+	pcall(v) -- fix extern model init load issues
+end
+
+include("lk3d_textures.lua")
+
+
 include("lk3d_particles.lua")
 include("lk3d_debugutils.lua")
 include("lk3d_trace.lua")
 include("lk3d_bmark.lua")
 include("lk3d_rt.lua")
 include("lk3d_proctex.lua")
-include("lk3d_procmodel.lua")
 include("lk3d_physics.lua")
 include("lk3d_sceneexport.lua")
 include("lk3d_musisynth.lua")

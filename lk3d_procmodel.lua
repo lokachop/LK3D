@@ -125,7 +125,7 @@ function LK3D.DeclareProcCylinder(nm, cyl_itr)
 
 	local caps = {}
 
-	for i = 0, cyl_itr do
+	for i = 0, (cyl_itr - 1) do
 		local mv_indx = #m_verts
 
 
@@ -192,6 +192,14 @@ function LK3D.DeclareProcCylinder(nm, cyl_itr)
 			{mv_indx + 3, mv_indx + 3},
 		}
 
+
+
+
+
+
+
+
+		-- CAPS
 		local vert_top = Vector(0, 0, 1) -- 0
 		m_verts[mv_indx + 5] = vert_top
 		m_uvs[mv_indx + 5] = {.5, .5}
@@ -201,27 +209,68 @@ function LK3D.DeclareProcCylinder(nm, cyl_itr)
 		m_uvs[mv_indx + 6] = {.5, .5}
 
 
+
+		mod_var = idelta_1 * pi2
+		xc = math.sin(mod_var)
+		yc = math.cos(mod_var)
+		local vert_p7 = (Vector(xc, yc, 1))
+		m_verts[mv_indx + 7] = vert_p7
+		m_uvs[mv_indx + 7] = {0, 0}
+
+
+		--o--o
+		--|  |
+		--o--x
+		mod_var = idelta_1 * pi2
+		xc = math.sin(mod_var)
+		yc = math.cos(mod_var)
+		local vert_p8 = (Vector(xc, yc, -1))
+		m_verts[mv_indx + 8] = vert_p8
+		m_uvs[mv_indx + 8] = {0, 1}
+
+
+
+		--0--x
+		--|  |
+		--o--o
+		mod_var = idelta_2 * pi2
+		xc = math.sin(mod_var)
+		yc = math.cos(mod_var)
+		local vert_p9 = (Vector(xc, yc, -1))
+		m_verts[mv_indx + 9] = vert_p9
+		m_uvs[mv_indx + 9] = {1, 1}
+
+		--x--o
+		--|  |
+		--o--o
+		mod_var = idelta_2 * pi2
+		xc = math.sin(mod_var)
+		yc = math.cos(mod_var)
+		local vert_p10 = (Vector(xc, yc, 1))
+		m_verts[mv_indx + 10] = vert_p10
+		m_uvs[mv_indx + 10] = {1, 0}
+
 		caps[#m_indc + 1] = true
 		m_indc[#m_indc + 1] = {
-			{mv_indx + 2, mv_indx + 2},
-			{mv_indx + 3, mv_indx + 3},
+			{mv_indx + 8, mv_indx + 8},
+			{mv_indx + 9, mv_indx + 9},
 			{mv_indx + 6, mv_indx + 6},
 		}
 
 
 		caps[#m_indc + 1] = true
 		m_indc[#m_indc + 1] = {
-			{mv_indx + 4, mv_indx + 4},
-			{mv_indx + 1, mv_indx + 1},
+			{mv_indx + 7, mv_indx + 7},
 			{mv_indx + 5, mv_indx + 5},
+			{mv_indx + 10, mv_indx + 10},
 		}
 	end
 
 
-	local opti_mdat = LK3D.GetOptimizedModelTable(mdat)
+	--local opti_mdat = LK3D.GetOptimizedModelTable(mdat)
 
 
-	LK3D.Models[nm] = opti_mdat
+	LK3D.Models[nm] = mdat
 	LK3D.GenerateNormals(nm)
 
 
@@ -240,11 +289,9 @@ function LK3D.DeclareProcCylinder(nm, cyl_itr)
 		local nc2 = caps[i] and normal_calc_cyl_cap(v2) or normal_calc_cyl(v2)
 		local nc3 = caps[i] and normal_calc_cyl_cap(v3) or normal_calc_cyl(v3)
 
-
-
-		mdldat.s_normals[index[1][1]] = nc1
-		mdldat.s_normals[index[2][1]] = nc2
-		mdldat.s_normals[index[3][1]] = nc3
+		mdldat.s_normals[index[1][1]] = Vector(nc1)
+		mdldat.s_normals[index[2][1]] = Vector(nc2)
+		mdldat.s_normals[index[3][1]] = Vector(nc3)
 	end
 end
 
