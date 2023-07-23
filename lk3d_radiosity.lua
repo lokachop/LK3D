@@ -1,6 +1,6 @@
 LK3D = LK3D or {}
-LK3D.LIGHTMAP_RES = (256 + 64 + 16) * 1.5
-LK3D.LIGHTMAP_TRISZ = 10 * 1
+LK3D.LIGHTMAP_RES = (256 + 64 + 16) * 2.5
+LK3D.LIGHTMAP_TRISZ = 10 * 1.75
 LK3D.LIGHTMAP_TRIPAD = 5
 
 -- additive preset; buggy...
@@ -13,9 +13,11 @@ LK3D.RADIOSITY_MUL_CGATHER = 4
 LK3D.RADIOSITY_POW_CGATHER = .95
 LK3D.RADIOSITY_ADDITIVE_CALC = true
 LK3D.RADIOSITY_LIGHTSCL_DIV = 12
+LK3D.RADIOSITY_SCLMUL = 1
 ]]--
 
 -- legacy
+LK3D.RADIOSITY_DO_RT = false
 LK3D.RADIOSITY_STEPS = 3
 LK3D.RADIOSITY_BUFFER_SZ = 128
 LK3D.RADIOSITY_AVGCALC_DIV = 4
@@ -24,7 +26,12 @@ LK3D.RADIOSITY_MUL_CGATHER = 196
 LK3D.RADIOSITY_POW_CGATHER = .45
 LK3D.RADIOSITY_ADDITIVE_CALC = false
 LK3D.RADIOSITY_LIGHTSCL_DIV = 4
+LK3D.RADIOSITY_SCLMUL = 1
 
+
+
+--LK3D.RADIOSITY_DO_RT = true
+--LK3D.RADIOSITY_SCLMUL = 1
 
 
 local math = math
@@ -631,7 +638,7 @@ local function texturi_to_world(obj, x, y, w, h)
 end
 
 local function calcLighting(pos, norm)
-	local tr_hp = pos + (norm * .0085)
+	local tr_hp = pos + (norm * .008)
 	local tr_hp_nonorm = pos
 
 	local ac_r, ac_g, ac_b = 0, 0, 0
@@ -702,8 +709,8 @@ local function cloneUnivToRadioUniv()
 
 
 			LK3D.AddModelToUniverse(k, v.mdl)
-			LK3D.SetModelPosAng(k, v.pos, v.ang)
-			LK3D.SetModelScale(k, v.scl)
+			LK3D.SetModelPosAng(k, v.pos * LK3D.RADIOSITY_SCLMUL, v.ang)
+			LK3D.SetModelScale(k, v.scl * LK3D.RADIOSITY_SCLMUL)
 			LK3D.SetModelMat(k, v.mat)
 			LK3D.SetModelFlag(k, "NO_SHADING", true)
 			LK3D.SetModelFlag(k, "NO_LIGHTING", true)
@@ -722,18 +729,19 @@ local function cloneUnivToRadioUniv()
 				LK3D.SetModelMat(k, "white")
 			end
 
-			local idx_inv = k .. "_lm_inv"
-			LK3D.AddModelToUniverse(idx_inv, v.mdl)
-			LK3D.SetModelPosAng(idx_inv, v.pos, v.ang)
-			LK3D.SetModelScale(idx_inv, v.scl)
-			LK3D.SetModelMat(idx_inv, "white")
-			LK3D.SetModelFlag(idx_inv, "NO_SHADING", true)
-			LK3D.SetModelFlag(idx_inv, "NO_LIGHTING", true)
-			LK3D.SetModelCol(idx_inv, Color(0, 0, 0))
-			LK3D.SetModelFlag(idx_inv, "CONSTANT", true)
-			LK3D.SetModelFlag(idx_inv, "NORM_INVERT", true)
-			LK3D.SetModelFlag(idx_inv, "ORIG_UNIV", last_univ["tag"])
-
+			if not LK3D.RADIOSITY_DO_RT then
+				local idx_inv = k .. "_lm_inv"
+				LK3D.AddModelToUniverse(idx_inv, v.mdl)
+				LK3D.SetModelPosAng(idx_inv, v.pos * LK3D.RADIOSITY_SCLMUL, v.ang)
+				LK3D.SetModelScale(idx_inv, v.scl * LK3D.RADIOSITY_SCLMUL)
+				LK3D.SetModelMat(idx_inv, "white")
+				LK3D.SetModelFlag(idx_inv, "NO_SHADING", true)
+				LK3D.SetModelFlag(idx_inv, "NO_LIGHTING", true)
+				LK3D.SetModelCol(idx_inv, Color(0, 0, 0))
+				LK3D.SetModelFlag(idx_inv, "CONSTANT", true)
+				LK3D.SetModelFlag(idx_inv, "NORM_INVERT", true)
+				LK3D.SetModelFlag(idx_inv, "ORIG_UNIV", last_univ["tag"])
+			end
 
 			local lm_idx = "lightmap_object_" .. k .. "_res_" .. LK3D.LIGHTMAP_RES .. "_copy"
 			if LK3D.Textures[lm_idx] ~= nil then
@@ -744,106 +752,113 @@ local function cloneUnivToRadioUniv()
 		local l_mul = 1
 
 
-		for k, v in pairs(last_univ["lights"]) do
-			local inten_h = v[2] / LK3D.RADIOSITY_LIGHTSCL_DIV
+		if not LK3D.RADIOSITY_DO_RT then
+			for k, v in pairs(last_univ["lights"]) do
+				local inten_h = v[2] / LK3D.RADIOSITY_LIGHTSCL_DIV
 
 
-			local lr_c, lg_c, lb_c = math.Clamp(v[3][1] * 255 * l_mul, 0, 255), math.Clamp(v[3][2] * 255 * l_mul, 0, 255), math.Clamp(v[3][3] * 255 * l_mul, 0, 255)
-			local l_c = Color(lr_c, lg_c, lb_c)
+				local lr_c, lg_c, lb_c = math.Clamp(v[3][1] * 255 * l_mul, 0, 255), math.Clamp(v[3][2] * 255 * l_mul, 0, 255), math.Clamp(v[3][3] * 255 * l_mul, 0, 255)
+				local l_c = Color(lr_c, lg_c, lb_c)
 
-			local idx = k .. "_in"
-			LK3D.AddModelToUniverse(idx, "sphere_simple")
-			LK3D.SetModelPosAng(idx, v[1], Angle(0, 45, 45))
-			LK3D.SetModelScale(idx, Vector(inten_h, inten_h, inten_h))
-			LK3D.SetModelFlag(idx, "NO_SHADING", true)
-			LK3D.SetModelFlag(idx, "NO_LIGHTING", true)
-			LK3D.SetModelFlag(idx, "NO_TRACE", true)
-			LK3D.SetModelFlag(idx, "CONSTANT", true)
-			LK3D.SetModelFlag(idx, "NORM_INVERT", true)
-			LK3D.SetModelCol(idx, Color(255, 0, 0))
-			LK3D.SetModelFlag(idx, "RENDER_PARAMETRI_AFTER", true)
-			LK3D.SetModelFlag(idx, "RENDER_PARAMETRI_PRE", function()
-				render.SetStencilEnable(true)
-				render.SetStencilWriteMask(0xFF)
-				render.SetStencilTestMask(0xFF)
-				render.SetStencilReferenceValue(0)
-				render.SetStencilCompareFunction(STENCIL_ALWAYS)
-				render.SetStencilPassOperation(STENCIL_KEEP)
-				render.SetStencilFailOperation(STENCIL_KEEP)
-				render.SetStencilZFailOperation(STENCIL_KEEP)
-				render.ClearStencil()
+				local idx = k .. "_in"
+				LK3D.AddModelToUniverse(idx, "sphere_simple")
+				LK3D.SetModelPosAng(idx, v[1] * LK3D.RADIOSITY_SCLMUL, Angle(0, 45, 45))
+				LK3D.SetModelScale(idx, Vector(inten_h, inten_h, inten_h) * LK3D.RADIOSITY_SCLMUL)
+				LK3D.SetModelFlag(idx, "NO_SHADING", true)
+				LK3D.SetModelFlag(idx, "NO_LIGHTING", true)
+				LK3D.SetModelFlag(idx, "NO_TRACE", true)
+				LK3D.SetModelFlag(idx, "CONSTANT", true)
+				LK3D.SetModelFlag(idx, "NORM_INVERT", true)
+				LK3D.SetModelCol(idx, Color(255, 0, 0))
+				LK3D.SetModelFlag(idx, "RENDER_PARAMETRI_AFTER", true)
+				LK3D.SetModelFlag(idx, "RENDER_PARAMETRI_PRE", function()
+					render.SetStencilEnable(true)
+					render.SetStencilWriteMask(0xFF)
+					render.SetStencilTestMask(0xFF)
+					render.SetStencilReferenceValue(0)
+					render.SetStencilCompareFunction(STENCIL_ALWAYS)
+					render.SetStencilPassOperation(STENCIL_KEEP)
+					render.SetStencilFailOperation(STENCIL_KEEP)
+					render.SetStencilZFailOperation(STENCIL_KEEP)
+					render.ClearStencil()
 
-				render.SetStencilReferenceValue(1)
-				render.SetStencilPassOperation(STENCIL_KEEP)
-				render.SetStencilFailOperation(STENCIL_KEEP)
-				render.SetStencilZFailOperation(STENCIL_INCR)
-				render.OverrideDepthEnable(true, false)
-				render.OverrideColorWriteEnable(true, false)
-			end)
-			LK3D.SetModelFlag(idx, "RENDER_PARAMETRI_POST", function()
-				render.OverrideDepthEnable(false, false)
-				render.OverrideColorWriteEnable(false, false)
-			end)
-			LK3D.SetModelHide(idx, true)
-
-
-
-			idx = k .. "_out"
-			LK3D.AddModelToUniverse(idx, "sphere_simple")
-			LK3D.SetModelPosAng(idx, v[1], Angle(0, 45, 45))
-			LK3D.SetModelScale(idx, Vector(inten_h, inten_h, inten_h))
-			LK3D.SetModelFlag(idx, "NO_SHADING", true)
-			LK3D.SetModelFlag(idx, "NO_LIGHTING", true)
-			LK3D.SetModelFlag(idx, "NO_TRACE", true)
-			LK3D.SetModelFlag(idx, "CONSTANT", true)
-			LK3D.SetModelCol(idx, Color(0, 255, 0))
-
-			LK3D.SetModelFlag(idx, "RENDER_PARAMETRI_AFTER", true)
-			LK3D.SetModelFlag(idx, "RENDER_PARAMETRI_PRE", function()
-				render.SetStencilReferenceValue(1)
-				render.SetStencilPassOperation(STENCIL_KEEP)
-				render.SetStencilFailOperation(STENCIL_KEEP)
-				render.SetStencilZFailOperation(STENCIL_DECRSAT)
-				render.OverrideDepthEnable(true, false)
-				render.OverrideColorWriteEnable(true, false)
-			end)
-			LK3D.SetModelFlag(idx, "RENDER_PARAMETRI_POST", function()
-				render.OverrideColorWriteEnable(false, false)
-
-				render.SetStencilReferenceValue(1)
-				render.SetStencilCompareFunction(STENCIL_EQUAL)
-				render.ClearBuffersObeyStencil(lr_c, lg_c, lb_c, 255)
+					render.SetStencilReferenceValue(1)
+					render.SetStencilPassOperation(STENCIL_KEEP)
+					render.SetStencilFailOperation(STENCIL_KEEP)
+					render.SetStencilZFailOperation(STENCIL_INCR)
+					render.OverrideDepthEnable(true, false)
+					render.OverrideColorWriteEnable(true, false)
+				end)
+				LK3D.SetModelFlag(idx, "RENDER_PARAMETRI_POST", function()
+					render.OverrideDepthEnable(false, false)
+					render.OverrideColorWriteEnable(false, false)
+				end)
+				LK3D.SetModelHide(idx, true)
 
 
-				render.SetStencilEnable(false)
-				render.OverrideDepthEnable(false, false)
-			end)
-			LK3D.SetModelHide(idx, true)
+
+				idx = k .. "_out"
+				LK3D.AddModelToUniverse(idx, "sphere_simple")
+				LK3D.SetModelPosAng(idx, v[1] * LK3D.RADIOSITY_SCLMUL, Angle(0, 45, 45))
+				LK3D.SetModelScale(idx, Vector(inten_h, inten_h, inten_h) * LK3D.RADIOSITY_SCLMUL)
+				LK3D.SetModelFlag(idx, "NO_SHADING", true)
+				LK3D.SetModelFlag(idx, "NO_LIGHTING", true)
+				LK3D.SetModelFlag(idx, "NO_TRACE", true)
+				LK3D.SetModelFlag(idx, "CONSTANT", true)
+				LK3D.SetModelCol(idx, Color(0, 255, 0))
+
+				LK3D.SetModelFlag(idx, "RENDER_PARAMETRI_AFTER", true)
+				LK3D.SetModelFlag(idx, "RENDER_PARAMETRI_PRE", function()
+					render.SetStencilReferenceValue(1)
+					render.SetStencilPassOperation(STENCIL_KEEP)
+					render.SetStencilFailOperation(STENCIL_KEEP)
+					render.SetStencilZFailOperation(STENCIL_DECRSAT)
+					render.OverrideDepthEnable(true, false)
+					render.OverrideColorWriteEnable(true, false)
+				end)
+				LK3D.SetModelFlag(idx, "RENDER_PARAMETRI_POST", function()
+					render.OverrideColorWriteEnable(false, false)
+
+					render.SetStencilReferenceValue(1)
+					render.SetStencilCompareFunction(STENCIL_EQUAL)
+					render.ClearBuffersObeyStencil(lr_c, lg_c, lb_c, 255)
 
 
-			idx = k .. "_also"
-			LK3D.AddModelToUniverse(idx, "sphere_simple")
-			LK3D.SetModelPosAng(idx, v[1], Angle(0, 45, 45))
-			LK3D.SetModelScale(idx, Vector(inten_h, inten_h, inten_h))
-			LK3D.SetModelFlag(idx, "NO_SHADING", true)
-			LK3D.SetModelFlag(idx, "NO_LIGHTING", true)
-			LK3D.SetModelFlag(idx, "NO_TRACE", true)
-			LK3D.SetModelFlag(idx, "CONSTANT", true)
-			LK3D.SetModelCol(idx, l_c)
+					render.SetStencilEnable(false)
+					render.OverrideDepthEnable(false, false)
+				end)
+				LK3D.SetModelHide(idx, true)
 
 
-			idx = k .. "_invr_also"
-			LK3D.AddModelToUniverse(idx, "sphere_simple")
-			LK3D.SetModelPosAng(idx, v[1], Angle(0, 45, 45))
-			LK3D.SetModelScale(idx, Vector(inten_h, inten_h, inten_h))
-			LK3D.SetModelFlag(idx, "NO_SHADING", true)
-			LK3D.SetModelFlag(idx, "NO_LIGHTING", true)
-			LK3D.SetModelFlag(idx, "NO_TRACE", true)
-			LK3D.SetModelFlag(idx, "CONSTANT", true)
-			LK3D.SetModelFlag(idx, "NORM_INVERT", true)
-			LK3D.SetModelCol(idx, l_c)
+				idx = k .. "_also"
+				LK3D.AddModelToUniverse(idx, "sphere_simple")
+				LK3D.SetModelPosAng(idx, v[1] * LK3D.RADIOSITY_SCLMUL, Angle(0, 45, 45))
+				LK3D.SetModelScale(idx, Vector(inten_h, inten_h, inten_h) * LK3D.RADIOSITY_SCLMUL)
+				LK3D.SetModelFlag(idx, "NO_SHADING", true)
+				LK3D.SetModelFlag(idx, "NO_LIGHTING", true)
+				LK3D.SetModelFlag(idx, "NO_TRACE", true)
+				LK3D.SetModelFlag(idx, "CONSTANT", true)
+				LK3D.SetModelCol(idx, l_c)
 
-			sorted_objects_render[#sorted_objects_render + 1] = {k .. "_in", k .. "_out"}
+
+				idx = k .. "_invr_also"
+				LK3D.AddModelToUniverse(idx, "sphere_simple")
+				LK3D.SetModelPosAng(idx, v[1] * LK3D.RADIOSITY_SCLMUL, Angle(0, 45, 45))
+				LK3D.SetModelScale(idx, Vector(inten_h, inten_h, inten_h) * LK3D.RADIOSITY_SCLMUL)
+				LK3D.SetModelFlag(idx, "NO_SHADING", true)
+				LK3D.SetModelFlag(idx, "NO_LIGHTING", true)
+				LK3D.SetModelFlag(idx, "NO_TRACE", true)
+				LK3D.SetModelFlag(idx, "CONSTANT", true)
+				LK3D.SetModelFlag(idx, "NORM_INVERT", true)
+				LK3D.SetModelCol(idx, l_c)
+
+				sorted_objects_render[#sorted_objects_render + 1] = {k .. "_in", k .. "_out"}
+			end
+		else
+			for k, v in pairs(last_univ["lights"]) do
+				--{pos or Vector(0, 0, 0), intensity or 2, col and {col.r / 255, col.g / 255, col.b / 255} or {1, 1, 1}, (smooth == true) and true or false}
+				LK3D.AddLight(k, v[1] * LK3D.RADIOSITY_SCLMUL, v[2] * LK3D.RADIOSITY_SCLMUL, Color(v[3][1] * 255, v[3][2] * 255, v[3][3] * 255), v[4])
+			end
 		end
 
 
@@ -1072,12 +1087,16 @@ local function lightmapCalcObject(object)
 				bad_pixels[i] = true
 				lr, lg, lb = o_lr, o_lg, o_lb
 			else
-				--local c = HSVToColor(tri_c, ((tri_c % 2) == 0) and 1 or .5, 1)
-				--lr, lg, lb = c.r / 255, c.g / 255, c.b / 255
-				--lr, lg, lb = LK3D.GetLightIntensity(pos_c)
-				lr, lg, lb = get_lighting_via_cam(pos_c, norm_c)
-				--lr, lg, lb = calcLighting(pos_c, norm_c)
-				--lr, lg, lb = o_lr, o_lg, o_lb
+
+				if LK3D.RADIOSITY_DO_RT then
+					--local c = HSVToColor(tri_c, ((tri_c % 2) == 0) and 1 or .5, 1)
+					--lr, lg, lb = c.r / 255, c.g / 255, c.b / 255
+					--lr, lg, lb = LK3D.GetLightIntensity(pos_c)
+					lr, lg, lb = calcLighting(pos_c, norm_c)
+					--lr, lg, lb = o_lr, o_lg, o_lb
+				else
+					lr, lg, lb = get_lighting_via_cam(pos_c, norm_c)
+				end
 			end
 
 
@@ -1136,7 +1155,9 @@ end
 
 
 local function lightmapStep()
-	setRadiosaTexturesPost()
+	if not LK3D.RADIOSITY_DO_RT then
+		setRadiosaTexturesPost()
+	end
 
 	-- calc lightmapping
 	for k, v in pairs(objects_to_lightmap) do
@@ -1180,16 +1201,22 @@ end
 
 -- lightmaps all of the objects with radiosity
 function LK3D.CommitLightmapping()
-	lightmapInit()
-
-	local last_dbg = LK3D.Debug
-	LK3D.Debug = false
-	for i = 1, LK3D.RADIOSITY_STEPS do
+	if LK3D.RADIOSITY_DO_RT then
+		lightmapInit()
 		lightmapStep()
-	end
-	LK3D.Debug = last_dbg
+		lightmapFinalize()
+	else
+		lightmapInit()
 
-	lightmapFinalize()
+		local last_dbg = LK3D.Debug
+		LK3D.Debug = false
+		for i = 1, LK3D.RADIOSITY_STEPS do
+			lightmapStep()
+		end
+		LK3D.Debug = last_dbg
+
+		lightmapFinalize()
+	end
 end
 
 
@@ -1242,29 +1269,8 @@ end
 file.CreateDir("lk3d/lightmap_temp")
 file.CreateDir("lk3d/lightmap_temp/" .. engine.ActiveGamemode())
 local targ_temp = "lk3d/lightmap_temp/" .. engine.ActiveGamemode() .. "/"
-local function loadLightmapObject(data, tag, obj_idx)
-	if not data then
-		LK3D.New_D_Print("Attempting to load lightmap with no data!", 4, "Radiosity")
-		return
-	end
-
-	file.Write(targ_temp .. "temp1.txt", util.Decompress(data))
-
-
-	local f_pointer_temp = file.Open(targ_temp .. "temp1.txt", "rb", "DATA")
-	local header = f_pointer_temp:Read(4)
-	if header ~= "LKLM" then
-		LK3D.New_D_Print("Failure decoding LKLM file! (start header no match)", 4, "Radiosity")
-		f_pointer_temp:Close()
-		return
-	end
-
-	local tw = f_pointer_temp:ReadULong()
-	local th = f_pointer_temp:ReadULong()
-
-
+local function makeLightmapTexLegacy(f_pointer_temp, tw, th, tag, obj_idx)
 	local lm_tex_idx = "lightmap_" .. tag .. "_" .. obj_idx
-
 	LK3D.DeclareTextureFromFunc(lm_tex_idx, tw, th, function()
 		render.Clear(64, 255, 64, 255)
 		for i = 0, (tw * th) - 1 do
@@ -1286,6 +1292,71 @@ local function loadLightmapObject(data, tag, obj_idx)
 		end
 		render.SetViewPort(0, 0, tw, th)
 	end)
+end
+
+
+
+local lastAccumChange = CurTime()
+local lightmapAccum = 0
+local matDontDeleteArchive = {}
+local function loadLightmapObject(data, tag, obj_idx)
+	if CurTime() > lastAccumChange then
+		lightmapAccum = 0
+	end
+	lastAccumChange = CurTime() + 2
+	lightmapAccum = lightmapAccum + 1
+	if not data then
+		LK3D.New_D_Print("Attempting to load lightmap with no data!", 4, "Radiosity")
+		return
+	end
+
+	file.Write(targ_temp .. "temp1.txt", util.Decompress(data))
+
+
+	local f_pointer_temp = file.Open(targ_temp .. "temp1.txt", "rb", "DATA")
+	local header = f_pointer_temp:Read(4)
+	if header ~= "LKLM" then
+		LK3D.New_D_Print("Failure decoding LKLM file! (start header no match)", 4, "Radiosity")
+		f_pointer_temp:Close()
+		return
+	end
+
+	local tw = f_pointer_temp:ReadULong()
+	local th = f_pointer_temp:ReadULong()
+
+	local lm_tex_idx = "lightmap_" .. tag .. "_" .. obj_idx .. "_" .. tw .. "_" .. th
+	LK3D.DeclareTextureFromFunc(lm_tex_idx, tw, th, function()
+		render.Clear(255, 0, 0, 255)
+	end)
+
+	local png_data_length = f_pointer_temp:ReadULong()
+	local png_data = f_pointer_temp:Read(png_data_length)
+
+	local thing_path = targ_temp .. tag .. "_" .. obj_idx .. "_" .. tw .. "_" .. th .. ".png"
+	file.Write(thing_path, png_data)
+
+
+	if not matDontDeleteArchive[tag] then
+		matDontDeleteArchive[tag] = {}
+	end
+
+	timer.Simple(0, function()
+		matDontDeleteArchive[tag][obj_idx] = Material("../data/" .. thing_path, "ignorez nocull")
+
+
+		local ow, oh = ScrW(), ScrH()
+		LK3D.DeclareTextureFromFunc(lm_tex_idx, tw, th, function()
+			render.Clear(255, 0, 255, 255)
+			surface.SetMaterial(matDontDeleteArchive[tag][obj_idx])
+			surface.SetDrawColor(255, 255, 255, 255)
+			surface.DrawTexturedRect(0, 0, tw, th)
+		end)
+		file.Delete(thing_path, "DATA")
+	end)
+
+	--makeLightmapTexLegacy(f_pointer_temp, tw, th, tag, obj_idx)
+
+
 	local read_post_verif = f_pointer_temp:Read(3)
 	if read_post_verif ~= "DNE" then
 		LK3D.New_D_Print("Failure decoding LKLM file! (colour DNE fail)", 4, "Radiosity")
@@ -1389,12 +1460,33 @@ local function exportLightmapObject(obj, obj_id) -- this exports it as custom fi
 
 	local tex_p = LK3D.Textures[lm_t]
 	local tw, th = tex_p.rt:Width(), tex_p.rt:Height()
-	local tex_arr = LK3D.GetTexturePixelArray(lm_t, true) -- we want it inlined
 
 	f_pointer_temp:Write("LKLM") -- lklm header LKLightMap
 	f_pointer_temp:WriteULong(tw)
 	f_pointer_temp:WriteULong(th)
 
+
+	-- lets capture with png instead
+	local ow, oh = ScrW(), ScrH()
+	render.SetViewPort(0, 0, tw, th)
+	render.PushRenderTarget(tex_p.rt)
+		local png_data = render.Capture({
+			format = "png",
+			x = 0,
+			y = 0,
+			w = tw,
+			h = th,
+			alpha = false, -- dont need alpha
+		})
+	render.PopRenderTarget()
+	render.SetViewPort(0, 0, ow, oh)
+
+	local length_png_data = #png_data
+	f_pointer_temp:WriteULong(length_png_data)
+	f_pointer_temp:Write(png_data)
+
+	--[[
+	local tex_arr = LK3D.GetTexturePixelArray(lm_t, true) -- we want it inlined
 	-- now write pixel data, dont bother with rle, let lzma do the magic
 	local pxcount = tw * th
 	for i = 1, pxcount do
@@ -1404,6 +1496,7 @@ local function exportLightmapObject(obj, obj_id) -- this exports it as custom fi
 		f_pointer_temp:WriteByte(pixel[2])
 		f_pointer_temp:WriteByte(pixel[3]) -- dont sotre alpha idiot
 	end
+	]]--
 	f_pointer_temp:Write("DNE") -- done
 
 

@@ -1553,11 +1553,20 @@ local function colLitApply(object)
 		object.ogMat = mat
 	end
 
+
 	local matnfo = LK3D.GetTextureByIndex(mat)
-	local idx = matnfo.name .. "_col_" .. object.name
+	local idx = matnfo.name .. "_col_" .. object.name .. (object["COL_LIT_CUST_TAG"] or "")
+
+	if LK3D.Textures[idx] then
+		object.mat = idx
+		object.colLitMat = idx
+		object.lastMat = idx
+		return
+	end
+
+
 	LK3D.DeclareTextureFromFunc(idx, matnfo.mat:Width(), matnfo.mat:Height(), function()
 	end)
-
 	LK3D.CopyTexture(mat, idx)
 
 	object.mat = idx
@@ -1587,6 +1596,13 @@ local function renderModel(object)
 		if object.lastMat ~= object.mat then
 			colLitApply(object)
 		end
+
+		if object["COL_LIT_CUST_TAG"] and (object.lastCLCTag ~= object["COL_LIT_CUST_TAG"]) then
+			object.lastCLCTag = object["COL_LIT_CUST_TAG"]
+			colLitApply(object)
+		end
+
+
 		local cr, cg, cb = 0, 0, 0
 
 		if object["COL_LIT_CUSTOM"] ~= nil then
