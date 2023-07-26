@@ -176,7 +176,7 @@ LK3D.DeclareModuleColour("LKPack", Color(64, 196, 64))
 
 LK3D.LogSeverity = 3
 LK3D.DebugOnlySev = 3
-LK3D.DebugSev = 1
+LK3D.DebugSev = 3
 function LK3D.New_D_Print(text, severity, lk_module)
 	severity = severity or 1
 	lk_module = lk_module or "Base"

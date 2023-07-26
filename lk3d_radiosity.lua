@@ -1,7 +1,37 @@
 LK3D = LK3D or {}
-LK3D.LIGHTMAP_RES = (256 + 64 + 16) * 2.5
-LK3D.LIGHTMAP_TRISZ = 10 * 1.75
+LK3D.LIGHTMAP_RES = (256 + 64 + 16) * .75 --2.5
+LK3D.LIGHTMAP_TRISZ = 10 * .5 --1.75
 LK3D.LIGHTMAP_TRIPAD = 5
+
+
+-- idea for future:
+-- mostly from: https://www.jmeiners.com/Hugo-Elias-Radiosity/
+--
+-- make 3 different universes (lol)
+-- each univ can pack 16581375 diff values per pixel (255 * 255 * 255) [we can't use alpha sadly]
+-- objectID univ
+-- patchX univ
+-- patchY univ
+-- those universes are plenty to have 16581375 diff objects with a max lightmap resolution of 16581375x16581375 allowing table references for overbright
+-- AWESOME
+-- each object has a tbl for radiosity data
+-- STRUCT
+-- {
+--		emmision = 0,
+--		reflectance = 0,
+-- 		incident = {, -- (sum of all light that a patch can see)
+--				[1] = red,
+--				[2] = green,
+--				[3] = blue
+--		}
+--		excident = {
+--				(incident_light[1] * reflectance) + emmision,
+--				(incident_light[2] * reflectance) + emmision,
+--				(incident_light[3] * reflectance) + emmision
+--		}
+-- }
+-- also use hemicubes
+-- lit objects can be just 1 single ptr for cheap
 
 -- additive preset; buggy...
 --[[
@@ -17,6 +47,7 @@ LK3D.RADIOSITY_SCLMUL = 1
 ]]--
 
 -- legacy
+--[[
 LK3D.RADIOSITY_DO_RT = false
 LK3D.RADIOSITY_STEPS = 3
 LK3D.RADIOSITY_BUFFER_SZ = 128
@@ -27,6 +58,21 @@ LK3D.RADIOSITY_POW_CGATHER = .45
 LK3D.RADIOSITY_ADDITIVE_CALC = false
 LK3D.RADIOSITY_LIGHTSCL_DIV = 4
 LK3D.RADIOSITY_SCLMUL = 1
+LK3D.RADIOSITY_ROT_ITR = 3
+]]--
+
+-- test new
+LK3D.RADIOSITY_DO_RT = false
+LK3D.RADIOSITY_STEPS = 1
+LK3D.RADIOSITY_BUFFER_SZ = 128
+LK3D.RADIOSITY_AVGCALC_DIV = 4
+LK3D.RADIOSITY_FOV = 90
+LK3D.RADIOSITY_MUL_CGATHER = 196
+LK3D.RADIOSITY_POW_CGATHER = .45
+LK3D.RADIOSITY_ADDITIVE_CALC = false
+LK3D.RADIOSITY_LIGHTSCL_DIV = 4
+LK3D.RADIOSITY_SCLMUL = 1
+LK3D.RADIOSITY_ROT_ITR = 3
 
 
 
@@ -637,10 +683,7 @@ local function texturi_to_world(obj, x, y, w, h)
 	return vec, norm
 end
 
-local function calcLighting(pos, norm)
-	local tr_hp = pos + (norm * .008)
-	local tr_hp_nonorm = pos
-
+local function calcLighting(pos, norm, obj)
 	local ac_r, ac_g, ac_b = 0, 0, 0
 	for k, v in pairs(LK3D.CurrUniv["lights"]) do
 		local pos_l = Vector(v[1])
@@ -648,7 +691,7 @@ local function calcLighting(pos, norm)
 		local col_l = v[3]
 		local sm = v[4]
 
-		local pd = tr_hp_nonorm:Distance(pos_l)
+		local pd = pos:Distance(pos_l)
 		if pd > (sm and inten_l ^ 2 or inten_l) then
 			continue
 		end
@@ -657,12 +700,15 @@ local function calcLighting(pos, norm)
 			pd = pd ^ .5
 		end
 
+		local pos_start = (pos + norm * .001)
 		LK3D.SetTraceReturnTable(true)
-		local dirc = (pos_l - tr_hp_nonorm):GetNormalized()
-		local trCheck = LK3D.TraceRayScene(tr_hp, dirc, true, (sm and inten_l ^ 2 or inten_l) * 0.9999)
+		local dir_trace = (pos_start - pos_l):GetNormalized()
+		local dist_trace = sm and inten_l ^ 2 or inten_l
+		local tr_check = LK3D.TraceRayScene(pos_start, dir_trace, true, dist_trace)
 		LK3D.SetTraceReturnTable(false)
 
-		if trCheck.dist < (pd * 1) then
+		local tr_fract = tr_check.dist / dist_trace
+		if tr_fract < 1 then
 			continue
 		end
 
@@ -740,6 +786,7 @@ local function cloneUnivToRadioUniv()
 				LK3D.SetModelCol(idx_inv, Color(0, 0, 0))
 				LK3D.SetModelFlag(idx_inv, "CONSTANT", true)
 				LK3D.SetModelFlag(idx_inv, "NORM_INVERT", true)
+				LK3D.SetModelFlag(idx_inv, "NO_TRACE", true)
 				LK3D.SetModelFlag(idx_inv, "ORIG_UNIV", last_univ["tag"])
 			end
 
@@ -908,24 +955,40 @@ local function blur_the_rt()
 end
 
 local function get_lighting_via_cam(pos, norm)
-	LK3D.PushRenderTarget(radios_rt)
-		LK3D.RenderClear(0, 0, 0)
-		LK3D.SetCamPos(pos)
-		LK3D.SetCamAng(norm:Angle())
-		local last = LK3D.FOV
-		LK3D.SetFOV(LK3D.RADIOSITY_FOV)
-		LK3D.RenderActiveUniverse()
+	local buff_r, buff_g, buff_b = 0, 0, 0
+	for i = 1, LK3D.RADIOSITY_ROT_ITR do
+		LK3D.PushRenderTarget(radios_rt)
+			LK3D.RenderClear(0, 0, 0)
+			LK3D.SetCamPos(pos)
+			local angCam = norm:Angle()
 
-		for k, v in ipairs(sorted_objects_render) do
-			LK3D.RenderObject(v[1])
-			LK3D.RenderObject(v[2])
-		end
+			local delta = (i - 1) / (LK3D.RADIOSITY_ROT_ITR - 1)
+			angCam:RotateAroundAxis(norm, delta * 360)
 
-		LK3D.RenderQuick(blur_the_rt)
-	LK3D.PopRenderTarget()
-	LK3D.SetFOV(last)
+			LK3D.SetCamAng(angCam)
+			local last = LK3D.FOV
+			LK3D.SetFOV(LK3D.RADIOSITY_FOV)
+			LK3D.RenderActiveUniverse()
 
-	return capt_r / 255, capt_g / 255, capt_b / 255
+			for k, v in ipairs(sorted_objects_render) do
+				LK3D.RenderObject(v[1])
+				LK3D.RenderObject(v[2])
+			end
+
+			LK3D.RenderQuick(blur_the_rt)
+		LK3D.PopRenderTarget()
+		LK3D.SetFOV(last)
+
+		buff_r = buff_r + capt_r
+		buff_g = buff_g + capt_g
+		buff_b = buff_b + capt_b
+	end
+
+	buff_r = buff_r / LK3D.RADIOSITY_ROT_ITR
+	buff_g = buff_g / LK3D.RADIOSITY_ROT_ITR
+	buff_b = buff_b / LK3D.RADIOSITY_ROT_ITR
+
+	return buff_r / 255, buff_g / 255, buff_b / 255
 end
 
 local both_lut = {
@@ -1296,9 +1359,15 @@ end
 
 
 
+
 local lastAccumChange = CurTime()
 local lightmapAccum = 0
 local matDontDeleteArchive = {}
+
+function RecomputeTestWhyIsThisBroken()
+	matDontDeleteArchive["dd_uni_lobby"]["lobby_wait"]:Recompute()
+end
+
 local function loadLightmapObject(data, tag, obj_idx)
 	if CurTime() > lastAccumChange then
 		lightmapAccum = 0
@@ -1329,33 +1398,21 @@ local function loadLightmapObject(data, tag, obj_idx)
 		render.Clear(255, 0, 0, 255)
 	end)
 
-	local png_data_length = f_pointer_temp:ReadULong()
-	local png_data = f_pointer_temp:Read(png_data_length)
-
 	local thing_path = targ_temp .. tag .. "_" .. obj_idx .. "_" .. tw .. "_" .. th .. ".png"
-	file.Write(thing_path, png_data)
+	local png_data_writer = file.Open(thing_path, "wb", "DATA")
 
-
-	if not matDontDeleteArchive[tag] then
-		matDontDeleteArchive[tag] = {}
+	--print("---" .. obj_idx .. "---")
+	local chunkCount = f_pointer_temp:ReadULong()
+	--print("chunks: " .. chunkCount)
+	for i = 1, chunkCount do
+		local lengthRead = f_pointer_temp:ReadULong()
+		png_data_writer:Write(f_pointer_temp:Read(lengthRead))
 	end
+	png_data_writer:Close()
 
-	timer.Simple(0, function()
-		matDontDeleteArchive[tag][obj_idx] = Material("../data/" .. thing_path, "ignorez nocull")
-
-
-		local ow, oh = ScrW(), ScrH()
-		LK3D.DeclareTextureFromFunc(lm_tex_idx, tw, th, function()
-			render.Clear(255, 0, 255, 255)
-			surface.SetMaterial(matDontDeleteArchive[tag][obj_idx])
-			surface.SetDrawColor(255, 255, 255, 255)
-			surface.DrawTexturedRect(0, 0, tw, th)
-		end)
-		file.Delete(thing_path, "DATA")
-	end)
-
-	--makeLightmapTexLegacy(f_pointer_temp, tw, th, tag, obj_idx)
-
+	--local png_data_length = f_pointer_temp:ReadDouble()
+	--local png_data = f_pointer_temp:Read(png_data_length)
+	--file.Write(thing_path, png_data)
 
 	local read_post_verif = f_pointer_temp:Read(3)
 	if read_post_verif ~= "DNE" then
@@ -1363,6 +1420,21 @@ local function loadLightmapObject(data, tag, obj_idx)
 		f_pointer_temp:Close()
 		return
 	end
+
+	if not matDontDeleteArchive[tag] then
+		matDontDeleteArchive[tag] = {}
+	end
+
+	matDontDeleteArchive[tag][obj_idx] = Material("../data/" .. thing_path, "ignorez nocull")
+	timer.Simple(0, function()
+		LK3D.DeclareTextureFromFunc(lm_tex_idx, tw, th, function()
+			render.Clear(64, 0, 96, 255)
+			surface.SetMaterial(matDontDeleteArchive[tag][obj_idx])
+			surface.SetDrawColor(255, 255, 255, 255)
+			surface.DrawTexturedRect(0, 0, tw, th)
+		end)
+		-- file.Delete(thing_path, "DATA") -- this breaks lightmapping
+	end)
 
 	local lm_uvs = {}
 	local tri_count = f_pointer_temp:ReadULong()
@@ -1472,18 +1544,42 @@ local function exportLightmapObject(obj, obj_id) -- this exports it as custom fi
 	render.PushRenderTarget(tex_p.rt)
 		local png_data = render.Capture({
 			format = "png",
+			alpha = true,
 			x = 0,
 			y = 0,
 			w = tw,
 			h = th,
-			alpha = false, -- dont need alpha
 		})
 	render.PopRenderTarget()
 	render.SetViewPort(0, 0, ow, oh)
 
+	-- write data temporarily
+	file.Write("lk3d/lightmap_temp/export_png.png", png_data)
+
+	local f_pointer_pngDat = file.Open("lk3d/lightmap_temp/export_png.png", "rb", "DATA")
+
 	local length_png_data = #png_data
-	f_pointer_temp:WriteULong(length_png_data)
-	f_pointer_temp:Write(png_data)
+	print("---" .. obj_id .. "---")
+	print(length_png_data)
+
+	local chunkSz = 16384
+	local chunkCount = math.ceil(length_png_data / chunkSz)
+	chunkCount = math.max(chunkCount, 1)
+	print(chunkCount .. " chunks...")
+	-- split into chunks
+	f_pointer_temp:WriteULong(chunkCount)
+	local lengthAccum = length_png_data
+	for i = 1, chunkCount do
+		local lengthCurr = math.min(lengthAccum, chunkSz)
+		lengthAccum = lengthAccum - chunkSz
+		print("chunk º" .. i .. ": " .. lengthCurr)
+
+
+		f_pointer_temp:WriteULong(lengthCurr)
+		f_pointer_temp:Write(f_pointer_pngDat:Read(lengthCurr))
+	end
+
+	f_pointer_pngDat:Close()
 
 	--[[
 	local tex_arr = LK3D.GetTexturePixelArray(lm_t, true) -- we want it inlined

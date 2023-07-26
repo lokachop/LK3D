@@ -585,6 +585,72 @@ function LK3D.AddModelLKC(name, data)
 	f_pointer:Close()
 end
 
+function LK3D.AddModelOBJ(name, objData)
+	local data = {}
+
+	-- its obj so parse each line
+	for k, v in ipairs(string.Explode("\n", objData, false)) do
+		local ident = string.sub(v, 1, 2)
+		ident = string.TrimRight(ident)
+		local cont = string.sub(v, #ident + 2) -- shit code
+		if not cont then
+			continue
+		end
+
+		if ident == "#" then
+			LK3D.New_D_Print("[Comment]: " .. cont, 1, "ModelUtils")
+		elseif ident == "v" then
+			local x, y, z = string.match(cont, "^(-?[%d.]+) (-?[%d.]+) (-?[%d.]+)$")
+			local vec_build = Vector(tonumber(x), tonumber(y), tonumber(z))
+		elseif ident == "vt" then
+
+		end
+	end
+end
+
+
+LK3D.AddModelOBJ("cube_obj", [[
+# Blender v2.93.3 OBJ File: ''
+# www.blender.org
+o Cube
+v 1.000000 1.000000 -1.000000
+v 1.000000 -1.000000 -1.000000
+v 1.000000 1.000000 1.000000
+v 1.000000 -1.000000 1.000000
+v -1.000000 1.000000 -1.000000
+v -1.000000 -1.000000 -1.000000
+v -1.000000 1.000000 1.000000
+v -1.000000 -1.000000 1.000000
+vt 0.000000 1.000000
+vt 1.000000 0.000000
+vt 1.000000 1.000000
+vt 1.000000 1.000000
+vt 0.000000 0.000000
+vt 1.000000 0.000000
+vt 0.000000 1.000000
+vt 1.000000 0.000000
+vt 1.000000 1.000000
+vt 0.000000 1.000000
+vt 0.000000 0.000000
+vt 1.000000 0.000000
+vt 0.000000 0.000000
+vt 0.000000 0.000000
+vt 1.000000 1.000000
+vt 0.000000 1.000000
+s off
+f 5/1 3/2 1/3
+f 3/4 8/5 4/6
+f 7/7 6/8 8/5
+f 2/9 8/5 6/10
+f 1/3 4/11 2/12
+f 5/1 2/12 6/13
+f 5/1 7/14 3/2
+f 3/4 7/7 8/5
+f 7/7 5/15 6/8
+f 2/9 4/6 8/5
+f 1/3 3/16 4/11
+f 5/1 1/3 2/12
+]])
 
 LK3D.New_D_Print("LK3D modelutils fully loaded!", 2, "Base")
 
