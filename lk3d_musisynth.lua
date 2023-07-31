@@ -245,13 +245,13 @@ end
 
 
 LK3D.MusiSynth.ValidInstruments = {}
--- 0-255 with 1 decimal autogen
+-- 0-255 autogen
 function LK3D.MusiSynth.DeclareInstrument(data, name)
-	for i = 1, 255, .1 do
+	for i = 1, 255 do
 		LK3D.MusiSynth.GenerateSoundScript(data, name, i)
 	end
 
-	LK3D.New_D_Print("Declared instrument \"" .. name .. "\"", 2, "MusiSynth")
+	LK3D.New_D_Print("Declared instrument \"" .. name .. "\"", LK3D_SERVERITY_INFO, "MusiSynth")
 	LK3D.MusiSynth.ValidInstruments[name] = true
 end
 

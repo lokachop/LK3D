@@ -43,10 +43,10 @@ end
 function LK3D.MakeLKPack(dir)
     local exists = file.Exists("lk3d/lkpack/compile/" .. dir, "DATA")
     if not exists then
-        LK3D.New_D_Print("Dir doesnt exist!", 4, "LKPack")
+        LK3D.New_D_Print("Dir doesnt exist!", LK3D_SERVERITY_ERROR, "LKPack")
     end
 
-    LK3D.New_D_Print("Make LKPack", 2, "LKPack")
+    LK3D.New_D_Print("Make LKPack", LK3D_SERVERITY_INFO, "LKPack")
 
     local descriptors = {}
     recursive_build_file_table("lk3d/lkpack/compile/" .. dir, "/" , descriptors)
@@ -132,7 +132,7 @@ function LK3D.MakeLKPack(dir)
 
     local read_temp = file.Read("lk3d/lkpack/temp/" .. dir .. ".ain.txt")
     if not read_temp then
-        LK3D.New_D_Print("Failed while creating, tempfile (" .. dir .. ") doesnt exist", 4, "LKPack")
+        LK3D.New_D_Print("Failed while creating, tempfile (" .. dir .. ") doesnt exist", LK3D_SERVERITY_ERROR, "LKPack")
         return
     end
 
@@ -142,7 +142,7 @@ function LK3D.MakeLKPack(dir)
     real_f:Write(util.Compress(read_temp))
     real_f:Close()
 
-    LK3D.New_D_Print("LKPack generated for \"" .. dir .. "\"", 2, "LKPack")
+    LK3D.New_D_Print("LKPack generated for \"" .. dir .. "\"", LK3D_SERVERITY_INFO, "LKPack")
 end
 LK3D.MakeLKPack("test")
 
@@ -150,14 +150,14 @@ LK3D.MakeLKPack("test")
 function LK3D.LoadLKPack(name)
     local data = file.Read("maps/" .. name .. ".lkp.ain", "GAME")
     if not data then
-        LK3D.New_D_Print("LKPack doesnt exist! (" .. name .. ") [" .. "maps/" .. name .. ".ain]", 5, "LKPack")
+        LK3D.New_D_Print("LKPack doesnt exist! (" .. name .. ") [" .. "maps/" .. name .. ".ain]", LK3D_SERVERITY_FATAL, "LKPack")
         return
     end
 
 
     local data_dc = util.Decompress(data)
     if not data_dc then
-        LK3D.New_D_Print("Fail decompressing LKPack! (" .. name .. ")", 5, "LKPack")
+        LK3D.New_D_Print("Fail decompressing LKPack! (" .. name .. ")", LK3D_SERVERITY_FATAL, "LKPack")
         return
     end
 
@@ -165,13 +165,13 @@ function LK3D.LoadLKPack(name)
 
     local fp_decomp = file.Open("lk3d/lkpack/temp/" .. name .. ".txt", "rb", "DATA")
     if not fp_decomp then
-        LK3D.New_D_Print("Fail making temp read file! (" .. name .. ")", 5, "LKPack")
+        LK3D.New_D_Print("Fail making temp read file! (" .. name .. ")", LK3D_SERVERITY_FATAL, "LKPack")
         return
     end
 
     local header = fp_decomp:Read(4)
     if header ~= "LKPA" then
-        LK3D.New_D_Print("Header doesnt match! (possible corrupted file or unsupported revision, please update...) (" .. name .. ")", 5, "LKPack")
+        LK3D.New_D_Print("Header doesnt match! (possible corrupted file or unsupported revision, please update...) (" .. name .. ")", LK3D_SERVERITY_FATAL, "LKPack")
         fp_decomp:Close()
         return
     end
@@ -190,7 +190,7 @@ function LK3D.LoadLKPack(name)
 
     local read_check = fp_decomp:ReadByte()
     if read_check ~= 0xF0 then
-        LK3D.New_D_Print("Error while decoding! (name lut ~= 0xF0) (" .. name .. ")", 5, "LKPack")
+        LK3D.New_D_Print("Error while decoding! (name lut ~= 0xF0) (" .. name .. ")", LK3D_SERVERITY_FATAL, "LKPack")
         fp_decomp:Close()
         return
     end
@@ -204,7 +204,7 @@ function LK3D.LoadLKPack(name)
 
     read_check = fp_decomp:ReadByte()
     if read_check ~= 0xF0 then
-        LK3D.New_D_Print("Error while decoding! (parent lut ~= 0xF0) (" .. name .. ")", 5, "LKPack")
+        LK3D.New_D_Print("Error while decoding! (parent lut ~= 0xF0) (" .. name .. ")", LK3D_SERVERITY_FATAL, "LKPack")
         fp_decomp:Close()
         return
     end
@@ -220,7 +220,7 @@ function LK3D.LoadLKPack(name)
 
     read_check = fp_decomp:ReadByte()
     if read_check ~= 0xF0 then
-        LK3D.New_D_Print("Error while decoding! (descriptor lut ~= 0xF0) (" .. name .. ")", 5, "LKPack")
+        LK3D.New_D_Print("Error while decoding! (descriptor lut ~= 0xF0) (" .. name .. ")", LK3D_SERVERITY_FATAL, "LKPack")
         fp_decomp:Close()
         return
     end
@@ -241,7 +241,7 @@ function LK3D.LoadLKPack(name)
 
     read_check = fp_decomp:ReadByte()
     if read_check ~= 0xF0 then
-        LK3D.New_D_Print("Error while decoding! (content lut ~= 0xF0) (" .. name .. ")", 5, "LKPack")
+        LK3D.New_D_Print("Error while decoding! (content lut ~= 0xF0) (" .. name .. ")", LK3D_SERVERITY_FATAL, "LKPack")
         fp_decomp:Close()
         return
     end
@@ -249,7 +249,7 @@ function LK3D.LoadLKPack(name)
     local header_end = fp_decomp:Read(4)
     fp_decomp:Close()
     if header_end ~= "LKPA" then
-        LK3D.New_D_Print("Error while decoding! (last header no match) (" .. name .. ")", 5, "LKPack")
+        LK3D.New_D_Print("Error while decoding! (last header no match) (" .. name .. ")", LK3D_SERVERITY_FATAL, "LKPack")
         return
     end
 
@@ -288,7 +288,7 @@ function LK3D.LoadLKPack(name)
     end
 
     LK3D.ActiveLKPack = name
-    LK3D.New_D_Print("Loaded LKPack \"" .. name .. "\" successfully!", 2, "LKPack")
+    LK3D.New_D_Print("Loaded LKPack \"" .. name .. "\" successfully!", LK3D_SERVERITY_INFO, "LKPack")
 end
 
 
@@ -296,10 +296,10 @@ end
 LK3D.FallbackLKPack = "generic_lkpack"
 function LK3D.ReadFileFromLKPack(path)
     if LK3D.ActiveLKPack == nil then
-        LK3D.New_D_Print("No LKPack loaded, falling back to DevMode (raw read from compile directory...)", 3, "LKPack")
+        LK3D.New_D_Print("No LKPack loaded, falling back to DevMode (raw read from compile directory...)", LK3D_SERVERITY_WARN, "LKPack")
         local read = file.Read("lk3d/lkpack/compile/" .. LK3D.FallbackLKPack .. "/" .. path)
         if not read then
-            LK3D.New_D_Print("Attempt to read missing file [\"" .. path .. "\"] (" .. LK3D.FallbackLKPack .. ")", 4, "LKPack")
+            LK3D.New_D_Print("Attempt to read missing file [\"" .. path .. "\"] (" .. LK3D.FallbackLKPack .. ")", LK3D_SERVERITY_ERROR, "LKPack")
             return
         end
 
@@ -310,7 +310,7 @@ function LK3D.ReadFileFromLKPack(path)
 
     local read = file.Read("lk3d/lkpack/decomp_active/" .. LK3D.ActiveLKPack .. "/" .. path .. ".txt")
     if not read then
-        LK3D.New_D_Print("Attempt to read missing file [\"" .. path .. "\"] (" .. LK3D.ActiveLKPack .. ")", 4, "LKPack")
+        LK3D.New_D_Print("Attempt to read missing file [\"" .. path .. "\"] (" .. LK3D.ActiveLKPack .. ")", LK3D_SERVERITY_ERROR, "LKPack")
         return
     end
 

@@ -15,13 +15,13 @@ function LK3D.SetModelPrefabShader(obj, shader)
 	end
 
 	if not LK3D.CurrUniv["objects"][obj] then
-		LK3D.New_D_Print("No object \"" .. obj .. "\"!", 4, "LK3D")
+		LK3D.New_D_Print("No object \"" .. obj .. "\"!", LK3D_SERVERITY_ERROR, "LK3D")
 		return
 	end
 
 
 	if not LK3D.Shaders[shader] then
-		LK3D.New_D_Print("No shader \"" .. shader .. "\"!", 4, "LK3D")
+		LK3D.New_D_Print("No shader \"" .. shader .. "\"!", LK3D_SERVERITY_ERROR, "LK3D")
 		return
 	end
 

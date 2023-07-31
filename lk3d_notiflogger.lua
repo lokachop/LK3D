@@ -135,6 +135,13 @@ function LK3D.AutoLogFlush()
 end
 
 
+-- new enums!
+LK3D_SERVERITY_DEBUG = 1
+LK3D_SERVERITY_INFO  = 2
+LK3D_SERVERITY_WARN  = 3
+LK3D_SERVERITY_ERROR = 4
+LK3D_SERVERITY_FATAL = 5
+
 local fancy_severities = {
 	[1] = "Debug",
 	[2] = " Info",
@@ -173,10 +180,13 @@ LK3D.DeclareModuleColour("Utils", Color(64, 128, 196))
 LK3D.DeclareModuleColour("Physics", Color(64, 196, 128))
 LK3D.DeclareModuleColour("Radiosity", Color(196, 64, 128))
 LK3D.DeclareModuleColour("LKPack", Color(64, 196, 64))
+LK3D.DeclareModuleColour("DPRINT", Color(16, 128, 96))
 
-LK3D.LogSeverity = 3
-LK3D.DebugOnlySev = 3
-LK3D.DebugSev = 3
+
+
+LK3D.LogSeverity = 1
+LK3D.DebugOnlySev = 2
+LK3D.DebugSev = 2
 function LK3D.New_D_Print(text, severity, lk_module)
 	severity = severity or 1
 	lk_module = lk_module or "Base"
@@ -216,4 +226,4 @@ end
 
 
 
-LK3D.New_D_Print("LogNotif system fully loaded!", 2, "Base")
+LK3D.New_D_Print("LogNotif system fully loaded!", LK3D_SERVERITY_INFO, "Base")

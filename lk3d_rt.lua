@@ -277,12 +277,12 @@ concommand.Add("LK3D_raytraceCurrent", function(ply, cmd, args, argstr)
 	end
 
 	if not args[1] then
-		LK3D.D_Print("LK3D_raytraceCurrent (universeName)", 3, "Base")
+		LK3D.New_D_Print("LK3D_raytraceCurrent (universeName)", LK3D_SERVERITY_WARN, "Base")
 		return
 	end
 
 	if LK3D.UniverseRegistry[args[1]] == nil then
-		LK3D.D_Print("TargetUniverse \"" .. args[1] .. "\" doesnt exist!", 3, "Base")
+		LK3D.New_D_Print("TargetUniverse \"" .. args[1] .. "\" doesnt exist!", LK3D_SERVERITY_WARN, "Base")
 		return
 	end
 
@@ -293,7 +293,7 @@ concommand.Add("LK3D_raytraceCurrent", function(ply, cmd, args, argstr)
 	currpx = 0
 	calculateForward()
 	LK3D.Raytracing = true
-	LK3D.New_D_Print("raytracing from curr pos!", 2, "Base")
+	LK3D.New_D_Print("raytracing from curr pos!", LK3D_SERVERITY_INFO, "Base")
 end)
 
 
@@ -312,7 +312,7 @@ concommand.Add("LK3D_ShowRTRender", function()
 
 	local tex = GetRenderTarget("rt_lk3d_raytracer_" .. g_div, wDiv, hDiv)
 
-	local mat = LK3D.Utils.RTToMaterial(tex)
+	local mat = LK3D.RTToMaterial(tex)
 	function pn:Paint(w, h)
 		surface.SetDrawColor(255, 255, 255)
 		surface.SetMaterial(mat)

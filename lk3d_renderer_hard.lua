@@ -184,11 +184,17 @@ local function cacheModel(name, tag, func, delta, m_ind)
 		return
 	end
 
+
+
 	local mdlinfo = LK3D.Models[object.mdl]
 	local verts = mdlinfo.verts
 	local uvs = mdlinfo.uvs
 	local lightmap_uvs = object.lightmap_uvs
 	local dolightmap = (lightmap_uvs ~= nil) and true or false
+	local doLmUvs = (object["UV_USE_LIGHTMAP"] ~= nil) and true or false
+	--if object["UV_USE_LIGHTMAP"] then
+	--	uvs = lightmap_uvs
+	--end
 
 
 	local ind = mdlinfo.indices
@@ -263,7 +269,7 @@ local function cacheModel(name, tag, func, delta, m_ind)
 		local lm_uv1
 		local lm_uv2
 		local lm_uv3
-		if dolightmap then
+		if dolightmap or (doLmUvs and dolightmap) then
 			lm_uv1 = lightmap_uvs[index[1][3] or 0]
 			lm_uv2 = lightmap_uvs[index[2][3] or 0]
 			lm_uv3 = lightmap_uvs[index[3][3] or 0]
@@ -476,7 +482,7 @@ local function cacheModel(name, tag, func, delta, m_ind)
 		if object["NORM_INVERT"] then
 			mesh_Color(rc1, gc1, bc1, 255)
 			mesh_Position(v1)
-			mesh_TexCoord(0, uv1[1], uv1[2])
+			mesh_TexCoord(0, doLmUvs and lm_uv1[1] or uv1[1], doLmUvs and lm_uv1[2] or uv1[2])
 			if dolightmap then
 				mesh_TexCoord(1, lm_uv1[1], lm_uv1[2])
 			end
@@ -484,7 +490,7 @@ local function cacheModel(name, tag, func, delta, m_ind)
 
 			mesh_Color(rc2, gc2, bc2, 255)
 			mesh_Position(v2)
-			mesh_TexCoord(0, uv2[1], uv2[2])
+			mesh_TexCoord(0, doLmUvs and lm_uv2[1] or uv2[1], doLmUvs and lm_uv2[2] or uv2[2])
 			if dolightmap then
 				mesh_TexCoord(1, lm_uv2[1], lm_uv2[2])
 			end
@@ -492,7 +498,7 @@ local function cacheModel(name, tag, func, delta, m_ind)
 
 			mesh_Color(rc3, gc3, bc3, 255)
 			mesh_Position(v3)
-			mesh_TexCoord(0, uv3[1], uv3[2])
+			mesh_TexCoord(0, doLmUvs and lm_uv3[1] or uv3[1], doLmUvs and lm_uv3[2] or uv3[2])
 			if dolightmap then
 				mesh_TexCoord(1, lm_uv3[1], lm_uv3[2])
 			end
@@ -500,7 +506,7 @@ local function cacheModel(name, tag, func, delta, m_ind)
 		else
 			mesh_Color(rc3, gc3, bc3, 255)
 			mesh_Position(v3)
-			mesh_TexCoord(0, uv3[1], uv3[2])
+			mesh_TexCoord(0, doLmUvs and lm_uv3[1] or uv3[1], doLmUvs and lm_uv3[2] or uv3[2])
 			if dolightmap then
 				mesh_TexCoord(1, lm_uv3[1], lm_uv3[2])
 			end
@@ -508,7 +514,7 @@ local function cacheModel(name, tag, func, delta, m_ind)
 
 			mesh_Color(rc2, gc2, bc2, 255)
 			mesh_Position(v2)
-			mesh_TexCoord(0, uv2[1], uv2[2])
+			mesh_TexCoord(0, doLmUvs and lm_uv2[1] or uv2[1], doLmUvs and lm_uv2[2] or uv2[2])
 			if dolightmap then
 				mesh_TexCoord(1, lm_uv2[1], lm_uv2[2])
 			end
@@ -516,7 +522,7 @@ local function cacheModel(name, tag, func, delta, m_ind)
 
 			mesh_Color(rc1, gc1, bc1, 255)
 			mesh_Position(v1)
-			mesh_TexCoord(0, uv1[1], uv1[2])
+			mesh_TexCoord(0, doLmUvs and lm_uv1[1] or uv1[1], doLmUvs and lm_uv1[2] or uv1[2])
 			if dolightmap then
 				mesh_TexCoord(1, lm_uv1[1], lm_uv1[2])
 			end
@@ -1655,6 +1661,9 @@ local function renderModel(object)
 	local uvs = mdlinfo.uvs
 	local lightmap_uvs = object.lightmap_uvs
 	local dolightmap = (lightmap_uvs ~= nil) and true or false
+	--if object["UV_USE_LIGHTMAP"] then
+	--	uvs = lightmap_uvs
+	--end
 
 	local ind = mdlinfo.indices
 	local normals = mdlinfo.normals
@@ -2104,7 +2113,7 @@ local function renderInfo()
 	end
 
 	surface.SetDrawColor(255, 255, 255, 255)
-	draw.SimpleText("LK3D v. " .. (LK3D.Version or "none..."), "BudgetLabel", 4, 0, col_G)
+	draw.SimpleText("LK3D " .. (LK3D.Version or "none..."), "BudgetLabel", 4, 0, col_G)
 	draw.SimpleText(Renderer.PrettyName .. " renderer", "BudgetLabel", 4, 12, col_G)
 	draw.SimpleText("SIZE   ; " .. ScrW() .. "x" .. ScrH(), "BudgetLabel", 4, 24, col_G)
 	draw.SimpleText("CPOS   ; " .. friendly_vstr(LK3D.CamPos), "BudgetLabel", 4, 36, col_G)

@@ -147,7 +147,7 @@ local function updateLK3DRenders()
     LK3D.SetRenderer(LK3D.Const.RENDER_SOFT)
 
     LK3D.UpdateTexture("ScreenCopy", function()
-        local rtmat = LK3D.Utils.RTToMaterial(rtCamera)
+        local rtmat = LK3D.RTToMaterial(rtCamera)
         render.PushFilterMag(LK3D.FilterMode)
         render.PushFilterMin(LK3D.FilterMode)
             render.DrawTextureToScreen(rtmat:GetTexture("$basetexture"))
@@ -182,13 +182,13 @@ hook.Add("HUDPaint", "lk3d_test", function()
 
 
     -- this is cached so its fast
-    local mat1 = LK3D.Utils.RTToMaterial(LK3D.Const.DEF_RT) -- default RT constant
+    local mat1 = LK3D.RTToMaterial(LK3D.Const.DEF_RT) -- default RT constant
     surface.SetMaterial(mat1)
 
     surface.DrawTexturedRect(0, 0, 800, 600) -- default RT is 800 x 600
 
 
-    local mat2 = LK3D.Utils.RTToMaterial(rtRender) -- our own RT
+    local mat2 = LK3D.RTToMaterial(rtRender) -- our own RT
     surface.SetMaterial(mat2)
     --                        10px margin
     surface.DrawTexturedRect(810, 0, 800, 600) -- we know our RT is 800 x 600 cuz we made it

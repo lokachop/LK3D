@@ -12,7 +12,7 @@ function LK3D.DeclareParticle(name, proptbl)
 		islkmat = proptbl.islkmat or true
 	}
 
-	LK3D.New_D_Print("Declared particle \"" .. name .. "\"", 2, "Particles")
+	LK3D.New_D_Print("Declared particle \"" .. name .. "\"", LK3D_SERVERITY_INFO, "Particles")
 end
 
 

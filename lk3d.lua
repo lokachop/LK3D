@@ -3,13 +3,10 @@
 
 	lokachop's 3D library
 	coded by lokachop!
-	"The shittest lib ever made!"
+	"The worst lib ever made!"
 
-	please contact at Lokachop#5862 or lokachop@gmail.com
-
-
-	ill probably do something else with this lib before im gone
-	current idea is a heist game or a ksp clone
+	please contact at lokachop (formerly Lokachop#5862) or lokachop@gmail.com
+	repo is available at https://github.com/lokachop/LK3D
 ]]--
 
 LK3D = LK3D or {}
@@ -18,7 +15,7 @@ concommand.Add("lk3d_toggledebug", function()
 	LK3D.Debug = not LK3D.Debug
 	print("Debug is now: " .. (LK3D.Debug and "on" or "off"))
 end)
-LK3D.Version = "1.25"
+LK3D.Version = "1.3 \'Green Square\'"
 
 function LK3D.D_Print(...)
 	if not LK3D.Debug then
@@ -26,7 +23,9 @@ function LK3D.D_Print(...)
 	end
 
 	if LK3D.New_D_Print then
-		LK3D.New_D_Print("Using deprecated function \"LK3D.D_Print()\", use \"LK3D.New_D_Print\" instead...", 3, "LK3D")
+		LK3D.New_D_Print("Using deprecated function \"LK3D.D_Print()\", use \"LK3D.New_D_Print\" instead...", LK3D_SERVERITY_WARN, "LK3D")
+		LK3D.New_D_Print(..., LK3D_SERVERITY_INFO, "DPRINT")
+		return
 	end
 
 	MsgC(Color(100, 255, 100), "[LK3D]: ", Color(200, 255, 200), ..., "\n")
@@ -85,7 +84,7 @@ include("lk3d_renderer_hard.lua")
 
 function LK3D.SetRenderer(rid)
 	if not LK3D.Renderers[rid] then
-		LK3D.New_D_Print("No renderer with id " .. rid .. "!", 4, "LK3D")
+		LK3D.New_D_Print("No renderer with id " .. rid .. "!", LK3D_SERVERITY_ERROR, "LK3D")
 		return
 	end
 
@@ -144,10 +143,10 @@ end
 LK3D.UniverseRegistry = LK3D.UniverseRegistry or {}
 function LK3D.NewUniverse(tag)
 	if not tag then
-		LK3D.New_D_Print("Calling LK3D.NewUniverse without a tag, universe will not work with baked radiosity...", 3, "LK3D")
+		LK3D.New_D_Print("Calling LK3D.NewUniverse without a tag, universe will not work with baked radiosity...", LK3D_SERVERITY_WARN, "LK3D")
 		return {["lk3d"] = true, ["objects"] = {}, ["lights"] = {}, ["lightcount"] = 0, ["particles"] = {}, ["physics"] = {}}
 	else
-		LK3D.New_D_Print("Created universe with tag \"" .. tostring(tag) .. "\"", 2, "LK3D")
+		LK3D.New_D_Print("Created universe with tag \"" .. tostring(tag) .. "\"", LK3D_SERVERITY_INFO, "LK3D")
 		local tabl = {["lk3d"] = true, ["objects"] = {}, ["lights"] = {}, ["lightcount"] = 0, ["particles"] = {}, ["physics"] = {}, ["tag"] = tag}
 		LK3D.UniverseRegistry[tag] = tabl
 		return tabl
@@ -241,9 +240,6 @@ function LK3D.UpdateLight(index, pos, intensity, col)
 	LK3D.CurrUniv["lights"][index] = {pos and pos or pp, intensity and intensity or pi, col and col or pc}
 end
 
------------------------------
--- Rendertargets
------------------------------
 
 function LK3D.PushRenderTarget(rt)
 	LK3D.RenderTargetStack[#LK3D.RenderTargetStack + 1] = LK3D.CurrRenderTarget
@@ -255,10 +251,6 @@ function LK3D.PopRenderTarget()
 	LK3D.RenderTargetStack[#LK3D.RenderTargetStack] = nil
 end
 
-
------------------------------
--- Renderers
------------------------------
 
 -- renderer should draw the whole scene, z sorted
 function LK3D.RenderActiveUniverse()
@@ -353,25 +345,19 @@ function LK3D.SetCamPosAng(np, na)
 	LK3D.CamAng = na or LK3D.CamAng
 end
 
+LK3D.MatCache = LK3D.MatCache or {}
+LK3D.MatCacheTR = LK3D.MatCacheTR or {}
+LK3D.MatCacheNoZ = LK3D.MatCacheNoZ or {}
 
------------------------------
--- Utils
------------------------------
+LK3D.MatCache_LM = LK3D.MatCache_LM or {}
+LK3D.MatCacheTR_LM = LK3D.MatCacheTR_LM or {}
+LK3D.MatCacheNoZ_LM = LK3D.MatCacheNoZ_LM or {}
 
-LK3D.Utils = LK3D.Utils or {}
-LK3D.Utils.MatCache = LK3D.Utils.MatCache or {}
-LK3D.Utils.MatCacheTR = LK3D.Utils.MatCacheTR or {}
-LK3D.Utils.MatCacheNoZ = LK3D.Utils.MatCacheNoZ or {}
+function LK3D.RTToMaterial(rt, transp, ignorez)
+	if not LK3D.MatCache[rt:GetName()] then
+		LK3D.New_D_Print(rt:GetName() .. " isnt cached, caching!", LK3D_SERVERITY_DEBUG, "Utils")
 
-LK3D.Utils.MatCache_LM = LK3D.Utils.MatCache_LM or {}
-LK3D.Utils.MatCacheTR_LM = LK3D.Utils.MatCacheTR_LM or {}
-LK3D.Utils.MatCacheNoZ_LM = LK3D.Utils.MatCacheNoZ_LM or {}
-
-function LK3D.Utils.RTToMaterial(rt, transp, ignorez)
-	if not LK3D.Utils.MatCache[rt:GetName()] then
-		LK3D.New_D_Print(rt:GetName() .. " isnt cached, caching!", 1, "Utils")
-
-		LK3D.Utils.MatCache[rt:GetName()] = CreateMaterial(rt:GetName() .. "_materialized_lk3d", "UnlitGeneric", {
+		LK3D.MatCache[rt:GetName()] = CreateMaterial(rt:GetName() .. "_materialized_lk3d", "UnlitGeneric", {
 			["$basetexture"] = rt:GetName(),
 			["$nocull"] = ignorez and 1 or 0,
 			["$ignorez"] = ignorez and 1 or 0,
@@ -379,7 +365,7 @@ function LK3D.Utils.RTToMaterial(rt, transp, ignorez)
 			["$alphatest"] = transp and 1 or 0,
 		})
 
-		LK3D.Utils.MatCache_LM[rt:GetName()] = CreateMaterial("lm_" .. rt:GetName() .. "_materialized_lk3d", "LightmappedGeneric", {
+		LK3D.MatCache_LM[rt:GetName()] = CreateMaterial("lm_" .. rt:GetName() .. "_materialized_lk3d", "LightmappedGeneric", {
 			["$basetexture"] = rt:GetName(),
 			["$nocull"] = ignorez and 1 or 0,
 			["$ignorez"] = ignorez and 1 or 0,
@@ -388,15 +374,15 @@ function LK3D.Utils.RTToMaterial(rt, transp, ignorez)
 		})
 	end
 
-	return LK3D.Utils.MatCache[rt:GetName()], LK3D.Utils.MatCache_LM[rt:GetName()]
+	return LK3D.MatCache[rt:GetName()], LK3D.MatCache_LM[rt:GetName()]
 end
 
 
-function LK3D.Utils.RTToMaterialEx(rt, parametri)
-	if not LK3D.Utils.MatCache[rt:GetName()] then
-		LK3D.New_D_Print(rt:GetName() .. " isnt cached, caching!", 1, "Utils")
+function LK3D.RTToMaterialEx(rt, parametri)
+	if not LK3D.MatCache[rt:GetName()] then
+		LK3D.New_D_Print(rt:GetName() .. " isnt cached, caching!", LK3D_SERVERITY_DEBUG, "Utils")
 
-		LK3D.Utils.MatCache[rt:GetName()] = CreateMaterial(rt:GetName() .. "_materialized_lk3d", "UnlitGeneric", {
+		LK3D.MatCache[rt:GetName()] = CreateMaterial(rt:GetName() .. "_materialized_lk3d", "UnlitGeneric", {
 			["$basetexture"] = rt:GetName(),
 			["$nocull"] = parametri["nocull"] and 1 or 0,
 			["$ignorez"] = parametri["ignorez"] and 1 or 0,
@@ -407,7 +393,7 @@ function LK3D.Utils.RTToMaterialEx(rt, parametri)
 
 
 		if parametri["lightmapped"] then
-			LK3D.Utils.MatCache_LM[rt:GetName()] = CreateMaterial("lm_" .. rt:GetName() .. "_materialized_lk3d", "LightmappedGeneric", {
+			LK3D.MatCache_LM[rt:GetName()] = CreateMaterial("lm_" .. rt:GetName() .. "_materialized_lk3d", "LightmappedGeneric", {
 				["$basetexture"] = rt:GetName(),
 				["$nocull"] = parametri["nocull"] and 1 or 0,
 				["$ignorez"] = parametri["ignorez"] and 1 or 0,
@@ -418,22 +404,22 @@ function LK3D.Utils.RTToMaterialEx(rt, parametri)
 		end
 	end
 
-	return LK3D.Utils.MatCache[rt:GetName()], LK3D.Utils.MatCache_LM[rt:GetName()]
+	return LK3D.MatCache[rt:GetName()], LK3D.MatCache_LM[rt:GetName()]
 end
 
 
-function LK3D.Utils.RTToMaterialTL(rt)
-	if not LK3D.Utils.MatCacheTR[rt:GetName()] then
-		LK3D.New_D_Print(rt:GetName() .. " isnt cached, caching!", 1, "Utils")
+function LK3D.RTToMaterialTL(rt)
+	if not LK3D.MatCacheTR[rt:GetName()] then
+		LK3D.New_D_Print(rt:GetName() .. " isnt cached, caching!", LK3D_SERVERITY_DEBUG, "Utils")
 
-		LK3D.Utils.MatCacheTR[rt:GetName()] = CreateMaterial(rt:GetName() .. "_materialized_lk3d_transparent", "UnlitGeneric", {
+		LK3D.MatCacheTR[rt:GetName()] = CreateMaterial(rt:GetName() .. "_materialized_lk3d_transparent", "UnlitGeneric", {
 			["$basetexture"] = rt:GetName(),
 			--["$nocull"] = 1,
 			["$vertexcolor"] = 1,
 			["$vertexalpha"] = 1,
 		})
 
-		LK3D.Utils.MatCacheTR_LM[rt:GetName()] = CreateMaterial(rt:GetName() .. "_materialized_lk3d_transparent_lm", "LightmappedGeneric", {
+		LK3D.MatCacheTR_LM[rt:GetName()] = CreateMaterial(rt:GetName() .. "_materialized_lk3d_transparent_lm", "LightmappedGeneric", {
 			["$basetexture"] = rt:GetName(),
 			--["$nocull"] = 1,
 			["$vertexcolor"] = 1,
@@ -441,15 +427,15 @@ function LK3D.Utils.RTToMaterialTL(rt)
 		})
 	end
 
-	return LK3D.Utils.MatCacheTR[rt:GetName()], LK3D.Utils.MatCacheTR_LM[rt:GetName()]
+	return LK3D.MatCacheTR[rt:GetName()], LK3D.MatCacheTR_LM[rt:GetName()]
 end
 
 
-function LK3D.Utils.RTToMaterialNoZ(rt, transp)
-	if not LK3D.Utils.MatCacheNoZ[rt:GetName()] then
-		LK3D.New_D_Print(rt:GetName() .. " isnt cached, caching!", 1, "Utils")
+function LK3D.RTToMaterialNoZ(rt, transp)
+	if not LK3D.MatCacheNoZ[rt:GetName()] then
+		LK3D.New_D_Print(rt:GetName() .. " isnt cached, caching!", LK3D_SERVERITY_DEBUG, "Utils")
 
-		LK3D.Utils.MatCacheNoZ[rt:GetName()] = CreateMaterial("noz_" .. rt:GetName() .. "_materialized_lk3d", "UnlitGeneric", {
+		LK3D.MatCacheNoZ[rt:GetName()] = CreateMaterial("noz_" .. rt:GetName() .. "_materialized_lk3d", "UnlitGeneric", {
 			["$basetexture"] = rt:GetName(),
 			["$nocull"] = 1,
 			["$ignorez"] = 1,
@@ -457,7 +443,7 @@ function LK3D.Utils.RTToMaterialNoZ(rt, transp)
 			--["$alphatest"] = transp and 1 or 0,
 		})
 
-		LK3D.Utils.MatCacheNoZ_LM[rt:GetName()] = CreateMaterial("noz_" .. rt:GetName() .. "_materialized_lk3d_lm", "LightmappedGeneric", {
+		LK3D.MatCacheNoZ_LM[rt:GetName()] = CreateMaterial("noz_" .. rt:GetName() .. "_materialized_lk3d_lm", "LightmappedGeneric", {
 			["$basetexture"] = rt:GetName(),
 			["$nocull"] = 1,
 			["$ignorez"] = 1,
@@ -466,7 +452,7 @@ function LK3D.Utils.RTToMaterialNoZ(rt, transp)
 		})
 	end
 
-	return LK3D.Utils.MatCacheNoZ[rt:GetName()], LK3D.Utils.MatCacheNoZ_LM[rt:GetName()]
+	return LK3D.MatCacheNoZ[rt:GetName()], LK3D.MatCacheNoZ_LM[rt:GetName()]
 end
 
 -- this uses render.Spin() to render a helpful message over how we're processing sutff
@@ -533,9 +519,9 @@ end
 
 -- adds a model to the current universe
 function LK3D.AddModelToUniverse(index, mdl, pos, ang)
-	LK3D.New_D_Print("Adding \"" .. index .. "\" to universe with model \"" .. (mdl or "cube") .. "\"", 2, "LK3D")
+	LK3D.New_D_Print("Adding \"" .. index .. "\" to universe with model \"" .. (mdl or "cube") .. "\"", LK3D_SERVERITY_DEBUG, "LK3D")
 	if not LK3D.Models[mdl] then
-		LK3D.New_D_Print("Model \"" .. mdl .. "\" doesnt exist!", 3, "LK3D")
+		LK3D.New_D_Print("Model \"" .. mdl .. "\" doesnt exist!", LK3D_SERVERITY_WARN, "LK3D")
 		mdl = "fail"
 	end
 
@@ -698,7 +684,9 @@ include("lk3d_radiosity.lua")
 include("lk3d_skeleton.lua")
 include("lk3d_lkpack.lua")
 include("lk3d_intro.lua")
+include("lk3d_changelog.lua")
+include("lk3d_about.lua")
 -- todo surface2d (3d mesh. based 2d lib for lk3d)
 
 LK3D.InitProcessTexture()
-LK3D.New_D_Print("LK3D fully loaded!", 2, "LK3D")
+LK3D.New_D_Print("LK3D fully loaded!", LK3D_SERVERITY_INFO, "LK3D")
