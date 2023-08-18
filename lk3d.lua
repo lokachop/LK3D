@@ -256,7 +256,7 @@ end
 function LK3D.RenderActiveUniverse()
 	local fine, err = pcall(LK3D.Renderers[LK3D.ActiveRenderer].Render)
 	if not fine then
-		LK3D.New_D_Print("Error while rendering the whole scene using the \"" .. LK3D.Renderers[LK3D.ActiveRenderer].PrettyName .. "\" renderer; " .. err, 4, "LK3D")
+		LK3D.New_D_Print("Error while rendering the whole scene using the \"" .. LK3D.Renderers[LK3D.ActiveRenderer].PrettyName .. "\" renderer; " .. err, LK3D_SERVERITY_ERROR, "LK3D")
 	end
 end
 
@@ -264,7 +264,7 @@ end
 function LK3D.RenderActiveDepthArray()
 	local fine, arr = pcall(LK3D.Renderers[LK3D.ActiveRenderer].RenderDepth)
 	if not fine then
-		LK3D.New_D_Print("Error while rendering depth using the \"" .. LK3D.Renderers[LK3D.ActiveRenderer].PrettyName .. "\" renderer; " .. arr, 4, "LK3D")
+		LK3D.New_D_Print("Error while rendering depth using the \"" .. LK3D.Renderers[LK3D.ActiveRenderer].PrettyName .. "\" renderer; " .. arr, LK3D_SERVERITY_ERROR, "LK3D")
 		return
 	end
 
@@ -276,7 +276,7 @@ end
 function LK3D.RenderObject(obj)
 	local fine, err = pcall(LK3D.Renderers[LK3D.ActiveRenderer].RenderObjectAlone, obj)
 	if not fine then
-		LK3D.New_D_Print("Error while rendering an object using the \"" .. LK3D.Renderers[LK3D.ActiveRenderer].PrettyName .. "\" renderer; " .. err, 4, "LK3D")
+		LK3D.New_D_Print("Error while rendering an object using the \"" .. LK3D.Renderers[LK3D.ActiveRenderer].PrettyName .. "\" renderer; " .. err, LK3D_SERVERITY_ERROR, "LK3D")
 	end
 end
 
@@ -284,7 +284,7 @@ end
 function LK3D.GetLightIntensity(pos, norm)
 	local fine, ret, rg, rb = pcall(LK3D.Renderers[LK3D.ActiveRenderer].GetLightIntensity, pos, norm)
 	if not fine then
-		LK3D.New_D_Print("Error while getting light intensity using the \"" .. LK3D.Renderers[LK3D.ActiveRenderer].PrettyName .. "\" renderer; " .. ret, 4, "LK3D")
+		LK3D.New_D_Print("Error while getting light intensity using the \"" .. LK3D.Renderers[LK3D.ActiveRenderer].PrettyName .. "\" renderer; " .. ret, LK3D_SERVERITY_ERROR, "LK3D")
 		return
 	end
 	return ret, rg, rb
@@ -320,7 +320,7 @@ function LK3D.RenderQuick(call)
 	render.PushFilterMin(LK3D.FilterMode)
 		local fine, err = pcall(call)
 		if not fine then
-			LK3D.New_D_Print("RenderQuick fail; " .. err, 4, "LK3D")
+			LK3D.New_D_Print("RenderQuick fail; " .. err, LK3D_SERVERITY_ERROR, "LK3D")
 		end
 	render.PopFilterMag()
 	render.PopFilterMin()

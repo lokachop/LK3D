@@ -794,26 +794,14 @@ local function unpackRGB(r, g, b)
 	return math.floor(var / HP_DMULT)
 end
 
-local LP_DMULT = 16
-
 local function intSnap(int, base)
 	local bh = (base * .5)
 	return math.floor((int + bh) - ((int + bh) % base))
 end
 
-
 local LP_ST_SZ = 16
 local LP_SZ_INV = 256 / LP_ST_SZ
 local function packRGB_LP(int)
-	--[[
-	int = int * LP_DMULT
-	local r = bit.band(bit.rshift(int, 16), 255)
-	local g = bit.band(bit.rshift(int,  8), 255)
-	local b = bit.band(bit.rshift(int,  0), 255)
-
-	return r, g, b
-	]]--
-
 	local b = (int % LP_ST_SZ) * LP_SZ_INV
 	local g = math.floor(int / LP_ST_SZ) * LP_SZ_INV
 	local r = math.floor(math.floor(int / LP_ST_SZ) / LP_ST_SZ) * LP_SZ_INV
@@ -821,12 +809,6 @@ local function packRGB_LP(int)
 end
 
 local function unpackRGB_LP(r, g, b)
-	--[[
-	local var = (bit.lshift(r, 16) + bit.lshift(g, 8) + b)
-
-	return math.floor(var / LP_DMULT)
-	]]--
-
 	local bs1 = intSnap(b, LP_SZ_INV) / LP_SZ_INV
 	local bs2 = (intSnap(g, LP_SZ_INV) / LP_SZ_INV) * LP_ST_SZ
 	local bs3 = (intSnap(r, LP_SZ_INV) / LP_SZ_INV) * LP_ST_SZ * LP_ST_SZ

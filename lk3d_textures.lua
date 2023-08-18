@@ -94,7 +94,7 @@ function LK3D.DeclareTextureFromFunc(index, w, h, func, transp, ignorez)
 		end
 		local fine, err = pcall(func)
 		if not fine then
-			LK3D.New_D_Print("Error while making texture \"" .. index .. "\" [" .. w .. "x" .. h .. "]; " .. err, 4, "Textures")
+			LK3D.New_D_Print("Error while making texture \"" .. index .. "\" [" .. w .. "x" .. h .. "]; " .. err, LK3D_SERVERITY_ERROR, "Textures")
 		end
 		if transp then
 			render.OverrideAlphaWriteEnable(false)
@@ -236,7 +236,7 @@ function LK3D.UpdateTexture(index, func)
 		draw.NoTexture()
 		local fine, err = pcall(func)
 		if not fine then
-			LK3D.New_D_Print("Error while updating texture \"" .. index .. "\" [" .. w .. "x" .. h .. "]; " .. err, 4, "Textures")
+			LK3D.New_D_Print("Error while updating texture \"" .. index .. "\" [" .. w .. "x" .. h .. "]; " .. err, LK3D_SERVERITY_ERROR, "Textures")
 		end
 	render.PopRenderTarget()
 	cam.End2D()
@@ -453,8 +453,8 @@ local LKTCOMP_ENCODERS = {
 		-- do run length encoding
 		aux_file = file.Open("lk3d/lktcomp_aux.txt", "rb", "DATA")
 		aux_file:Seek(0)
-		LK3D.New_D_Print("ByteSize: " .. aux_file:Size(), 1, "LKTComp")
-		LK3D.New_D_Print("PxSize: " .. px_count * 4, 1, "LKTComp")
+		LK3D.New_D_Print("ByteSize: " .. aux_file:Size(), LK3D_SERVERITY_DEBUG, "LKTComp")
+		LK3D.New_D_Print("PxSize: " .. px_count * 4, LK3D_SERVERITY_DEBUG, "LKTComp")
 
 		local con_bytes = 0
 		for i = 0, px_count - 1 do
@@ -594,7 +594,7 @@ function LK3D.DecompressTexture(name, trasp, ignorez, data)
 	local head = f_pointer:ReadULong()
 	if head ~= 1129597772 then
 		LK3D.New_D_Print("Header LKTC no match!", LK3D_SERVERITY_DEBUG, "LKTComp")
-		LK3D.New_D_Print(": " .. head, 1, "LKTComp")
+		LK3D.New_D_Print(": " .. head, LK3D_SERVERITY_DEBUG, "LKTComp")
 		f_pointer:Close()
 		return
 	end

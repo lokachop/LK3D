@@ -554,7 +554,7 @@ function LK3D.ProcTex.TextureGenThink()
 		local fine, ret = coroutine.resume(v)
 		if not fine then
 			toRem[#toRem + 1] = k
-			LK3D.New_D_Print("ERROR: " .. ret, 4, "ProcTex")
+			LK3D.New_D_Print("ERROR: " .. ret, LK3D_SERVERITY_ERROR, "ProcTex")
 		end
 
 		if ret == 2 then

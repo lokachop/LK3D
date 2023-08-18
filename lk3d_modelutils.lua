@@ -7,7 +7,7 @@ LK3D = LK3D or {}
 LK3D.Models = LK3D.Models or {}
 file.CreateDir("lk3d")
 
-function LK3D.GenerateNormals(name, invert)
+function LK3D.GenerateNormals(name, invert, smoothOnly)
 	LK3D.New_D_Print("Generating normals for model \"" .. name .. "\"", LK3D_SERVERITY_DEBUG, "ModelUtils")
 	local data = LK3D.Models[name]
 
@@ -587,6 +587,21 @@ end
 
 function LK3D.AddModelOBJ(name, objData)
 	local data = {}
+	data["verts"] = {}
+	data["uvs"] = {}
+	data["indices"] = {}
+	data["normals"] = {}
+	data["s_normals"] = {}
+
+	local verts = data["verts"]
+	local uvs = data["uvs"]
+	local indices = data["indices"]
+	local normals = data["normals"]
+	local s_normals = data["s_normals"]
+
+	local _fileNormBuff = {}
+
+	local hadNormal = true
 
 	-- its obj so parse each line
 	for k, v in ipairs(string.Explode("\n", objData, false)) do
@@ -598,19 +613,92 @@ function LK3D.AddModelOBJ(name, objData)
 		end
 
 		if ident == "#" then
-			LK3D.New_D_Print("[Comment]: " .. cont, 1, "ModelUtils")
+			LK3D.New_D_Print("[Comment]: " .. cont, LK3D_SERVERITY_DEBUG, "ModelUtils")
 		elseif ident == "v" then
-			local x, y, z = string.match(cont, "^(-?[%d.]+) (-?[%d.]+) (-?[%d.]+)$")
-			local vec_build = Vector(tonumber(x), tonumber(y), tonumber(z))
-		elseif ident == "vt" then
+			local expVars = string.Explode(" ", cont, false)
 
+			local x = tonumber(string.Trim(expVars[1]))
+			local y = tonumber(string.Trim(expVars[2]))
+			local z = tonumber(string.Trim(expVars[3]))
+
+			local vecBuild = Vector(x, y, z)
+			verts[#verts + 1] = vecBuild
+		elseif ident == "vt" then
+			local expVars = string.Explode(" ", cont, false)
+
+			local uR = tonumber(string.Trim(expVars[1]))
+			local vR = tonumber(string.Trim(expVars[2]))
+
+			uvs[#uvs + 1] = {uR, vR}
+		elseif ident == "vn" then
+			hadNormal = true
+
+			local expVars = string.Explode(" ", cont, false)
+			local x = tonumber(string.Trim(expVars[1]))
+			local y = tonumber(string.Trim(expVars[2]))
+			local z = tonumber(string.Trim(expVars[3]))
+
+			local vecBuild = Vector(x, y, z)
+			_fileNormBuff[#_fileNormBuff + 1] = vecBuild
+		elseif ident == "f" then
+			local expVars = string.Explode(" ", cont, false)
+
+			local bInd = {}
+
+			local applyNormFromIdx = false
+
+			for i = 1, 3 do
+				local datExp2 = string.Explode("/", expVars[i], false)
+				local i1, i2, i3 = tonumber(datExp2[1]), tonumber(datExp2[2]), tonumber(datExp2[3])
+
+				if i1 and (not i2) and (not i3) then -- pos only
+					bInd[#bInd + 1] = {i1, 1}
+					LK3D.New_D_Print("OBJ Load fail!, no texcoord! (posOnly)", LK3D_SERVERITY_FATAL, "ModelUtils")
+				end
+
+				if i1 and i2 and (not i3) then -- pos / tex
+					bInd[#bInd + 1] = {i1, i2}
+				end
+
+				if i1 and i2 and i3 then -- pos / norm / tex
+					applyNormFromIdx = true
+					bInd[#bInd + 1] = {i1, i2}
+
+					s_normals[i1] = _fileNormBuff[i3] * 1
+				end
+
+				if i1 and (not i2) and i3 then -- pos // norm
+					applyNormFromIdx = true
+					bInd[#bInd + 1] = {i1, 1}
+
+					s_normals[i1] = _fileNormBuff[i3] * 1
+
+					LK3D.New_D_Print("OBJ Load fail!, no texcoord! (pos // norm)", LK3D_SERVERITY_FATAL, "ModelUtils")
+				end
+			end
+
+			if hadNormal and applyNormFromIdx then -- we still need to make a sharp normal
+				local v1 = Vector(verts[bInd[1][1]])
+				local v2 = Vector(verts[bInd[2][1]])
+				local v3 = Vector(verts[bInd[3][1]])
+
+				local norm = (v2 - v1):Cross(v3 - v1)
+				norm:Normalize()
+
+				normals[#normals + 1] = norm * 1
+			end
+
+			indices[#indices + 1] = bInd
 		end
 	end
+
+	LK3D.Models[name] = data
+	LK3D.New_D_Print("Declared model \"" .. name .. "\" with " .. #data.verts .. " verts! [OBJ]", LK3D_SERVERITY_DEBUG, "ModelUtils")
 end
 
 
 LK3D.AddModelOBJ("cube_obj", [[
-# Blender v2.93.3 OBJ File: ''
+# Blender 3.5.1
 # www.blender.org
 o Cube
 v 1.000000 1.000000 -1.000000
@@ -621,36 +709,49 @@ v -1.000000 1.000000 -1.000000
 v -1.000000 -1.000000 -1.000000
 v -1.000000 1.000000 1.000000
 v -1.000000 -1.000000 1.000000
-vt 0.000000 1.000000
-vt 1.000000 0.000000
-vt 1.000000 1.000000
-vt 1.000000 1.000000
-vt 0.000000 0.000000
-vt 1.000000 0.000000
-vt 0.000000 1.000000
-vt 1.000000 0.000000
-vt 1.000000 1.000000
-vt 0.000000 1.000000
-vt 0.000000 0.000000
-vt 1.000000 0.000000
-vt 0.000000 0.000000
-vt 0.000000 0.000000
-vt 1.000000 1.000000
-vt 0.000000 1.000000
-s off
-f 5/1 3/2 1/3
-f 3/4 8/5 4/6
-f 7/7 6/8 8/5
-f 2/9 8/5 6/10
-f 1/3 4/11 2/12
-f 5/1 2/12 6/13
-f 5/1 7/14 3/2
-f 3/4 7/7 8/5
-f 7/7 5/15 6/8
-f 2/9 4/6 8/5
-f 1/3 3/16 4/11
-f 5/1 1/3 2/12
+vn -0.0000 1.0000 -0.0000
+vn -0.0000 -0.0000 1.0000
+vn -1.0000 -0.0000 -0.0000
+vn -0.0000 -1.0000 -0.0000
+vn 1.0000 -0.0000 -0.0000
+vn -0.0000 -0.0000 -1.0000
+vt 0.625000 0.500000
+vt 0.375000 0.500000
+vt 0.625000 0.750000
+vt 0.375000 0.750000
+vt 0.875000 0.500000
+vt 0.625000 0.250000
+vt 0.125000 0.500000
+vt 0.375000 0.250000
+vt 0.875000 0.750000
+vt 0.625000 1.000000
+vt 0.625000 0.000000
+vt 0.375000 0.000000
+vt 0.375000 1.000000
+vt 0.125000 0.750000
+s 0
+f 5/5/1 3/3/1 1/1/1
+f 3/3/2 8/13/2 4/4/2
+f 7/11/3 6/8/3 8/12/3
+f 2/2/4 8/14/4 6/7/4
+f 1/1/5 4/4/5 2/2/5
+f 5/6/6 2/2/6 6/8/6
+f 5/5/1 7/9/1 3/3/1
+f 3/3/2 7/10/2 8/13/2
+f 7/11/3 5/6/3 6/8/3
+f 2/2/4 4/4/4 8/14/4
+f 1/1/5 3/3/5 4/4/5
+f 5/6/6 1/1/6 2/2/6	
 ]])
+
+function LK3D.DeclareModelFromFile(name, fpath)
+	local fcontents = LK3D.ReadFileFromLKPack("models/" .. fpath .. ".obj")
+
+	LK3D.AddModelOBJ(name, fcontents)
+end
+
+
+LK3D.DeclareModelFromFile("table_test", "table")
 
 LK3D.New_D_Print("LK3D modelutils fully loaded!", LK3D_SERVERITY_INFO, "Base")
 
