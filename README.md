@@ -4,4 +4,4 @@
 there is no documentation or tutorials currently, i strongly advice against using this until proper tutorials are written
  
  
-This library is licensed under the [GPL3](LICENSE) license
+This library is licensed under the [MIT](LICENSE) license
