@@ -136,11 +136,11 @@ end
 
 
 -- new enums!
-LK3D_SERVERITY_DEBUG = 1
-LK3D_SERVERITY_INFO  = 2
-LK3D_SERVERITY_WARN  = 3
-LK3D_SERVERITY_ERROR = 4
-LK3D_SERVERITY_FATAL = 5
+LK3D_SEVERITY_DEBUG = 1
+LK3D_SEVERITY_INFO  = 2
+LK3D_SEVERITY_WARN  = 3
+LK3D_SEVERITY_ERROR = 4
+LK3D_SEVERITY_FATAL = 5
 
 local fancy_severities = {
 	[1] = "Debug",
@@ -226,4 +226,4 @@ end
 
 
 
-LK3D.New_D_Print("LogNotif system fully loaded!", LK3D_SERVERITY_INFO, "Base")
+LK3D.New_D_Print("LogNotif system fully loaded!", LK3D_SEVERITY_INFO, "Base")

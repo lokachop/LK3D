@@ -31,4 +31,3 @@ LK3D.DeclareProcCylinder("cyl_t8", 8)
 LK3D.DeclareProcCylinder("cyl_t12", 12)
 
 LK3D.DeclareModelFromSource("player", "models/player.mdl")
-LK3D.DeclareModelFromSource("soldier", "models/player/ct_sas.mdl")

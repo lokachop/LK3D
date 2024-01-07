@@ -315,7 +315,7 @@ local function makeLightMapUV(obj, w, h)
 		return
 	end
 
-	LK3D.New_D_Print("Generating lightmap UVs for object \"" .. obj .. "\"", LK3D_SERVERITY_DEBUG, "Radiosity")
+	LK3D.New_D_Print("Generating lightmap UVs for object \"" .. obj .. "\"", LK3D_SEVERITY_DEBUG, "Radiosity")
 
 	local mdlpointer = LK3D.Models[mdl]
 	local indices = mdlpointer.indices
@@ -481,7 +481,7 @@ local function initializePatch(idx, obj, isLight, x, y)
 	local matW, matH = 0, 0
 	if obj.mat ~= nil then
 		if not objectMatTexArrays[obj.mat] then
-			LK3D.New_D_Print("Making tex array for radiosity material \"" .. obj.mat .. "\"", LK3D_SERVERITY_DEBUG, "Radiosity")
+			LK3D.New_D_Print("Making tex array for radiosity material \"" .. obj.mat .. "\"", LK3D_SEVERITY_DEBUG, "Radiosity")
 			-- we can grab texture now
 			local matData = LK3D.Textures[obj.mat]
 			matW = matData.rt:Width()
@@ -580,7 +580,7 @@ local function initializePatch(idx, obj, isLight, x, y)
 end
 
 local function initializePatchFull(idx, obj, isLight)
-	LK3D.New_D_Print("Initializing full patch info for \"" .. idx .. "\"", LK3D_SERVERITY_DEBUG, "Radiosity")
+	LK3D.New_D_Print("Initializing full patch info for \"" .. idx .. "\"", LK3D_SEVERITY_DEBUG, "Radiosity")
 	if not objectPatchInfo[idx] then
 		objectPatchInfo[idx] = {}
 	end
@@ -644,7 +644,7 @@ local function buildTriLUTAndPatches(obj, sx, sy)
 
 	local tri_list_genned = getTriTable(obj)
 
-	LK3D.New_D_Print("Calculating tri LUT and patches for object \"" .. obj .. "\"", LK3D_SERVERITY_DEBUG, "Radiosity")
+	LK3D.New_D_Print("Calculating tri LUT and patches for object \"" .. obj .. "\"", LK3D_SEVERITY_DEBUG, "Radiosity")
 	local uv_sz_c = (1 / LK3D.LIGHTMAP_RES)
 	local tbl_ret = {}
 	for i = 0, (sx * sy) - 1 do
@@ -839,7 +839,7 @@ end
 -- provide material to set all objects to that material
 -- or provide inverse lut (["ObjectName"] = 1) to do colouring
 local function cloneUniverseRadiosity(univ, cont)
-	LK3D.New_D_Print("Cloning universe \"" .. univ["tag"] .. "\" for radiosity...", LK3D_SERVERITY_DEBUG, "Radiosity")
+	LK3D.New_D_Print("Cloning universe \"" .. univ["tag"] .. "\" for radiosity...", LK3D_SEVERITY_DEBUG, "Radiosity")
 	local prevUniv = LK3D.CurrUniv
 
 	local mat = type(cont) == "string" and cont or "white"
@@ -938,7 +938,7 @@ local objectIndexTable = {}
 local inverseObjectIndexTable = {}
 local objectIsLightTable = {}
 local function generateObjectIndexTable()
-	LK3D.New_D_Print("Generating object index table...", LK3D_SERVERITY_DEBUG, "Radiosity")
+	LK3D.New_D_Print("Generating object index table...", LK3D_SEVERITY_DEBUG, "Radiosity")
 	local last = 4 -- fix col select issue
 
 	for k, v in pairs(objects_to_lightmap) do
@@ -1700,7 +1700,7 @@ local function lightmapStep()
 			return
 		end
 
-		LK3D.New_D_Print("Calculating lightmaps for object \"" .. k .. "\"", LK3D_SERVERITY_DEBUG, "Radiosity")
+		LK3D.New_D_Print("Calculating lightmaps for object \"" .. k .. "\"", LK3D_SEVERITY_DEBUG, "Radiosity")
 		lightmapCalcObject(k)
 	end
 
@@ -1736,24 +1736,24 @@ function LK3D.CommitLightmapping()
 		lightmapStep()
 		lightmapFinalize()
 	else
-		LK3D.New_D_Print("Lightmap commit..", LK3D_SERVERITY_INFO, "Radiosity")
-		LK3D.New_D_Print(LK3D.RADIOSITY_STEPS .. " steps..", LK3D_SERVERITY_INFO, "Radiosity")
+		LK3D.New_D_Print("Lightmap commit..", LK3D_SEVERITY_INFO, "Radiosity")
+		LK3D.New_D_Print(LK3D.RADIOSITY_STEPS .. " steps..", LK3D_SEVERITY_INFO, "Radiosity")
 
 		lightmapInit()
 
 		local last_dbg = LK3D.Debug
 		LK3D.Debug = false
 		for i = 1, LK3D.RADIOSITY_STEPS do
-			LK3D.New_D_Print("Lightmap step " .. i .. "/" .. LK3D.RADIOSITY_STEPS, LK3D_SERVERITY_INFO, "Radiosity")
+			LK3D.New_D_Print("Lightmap step " .. i .. "/" .. LK3D.RADIOSITY_STEPS, LK3D_SEVERITY_INFO, "Radiosity")
 			lightmapStep()
 		end
 		LK3D.Debug = last_dbg
 
 		lightmapFinalize()
 		if not LK3D.LIGHTMAP_AUTO_EXPORT then
-			LK3D.New_D_Print("Lightmap done! Please export with \"lk3d_exportlightmaps " .. LK3D.CurrUniv["tag"] .. "\"", LK3D_SERVERITY_INFO, "Radiosity")
+			LK3D.New_D_Print("Lightmap done! Please export with \"lk3d_exportlightmaps " .. LK3D.CurrUniv["tag"] .. "\"", LK3D_SEVERITY_INFO, "Radiosity")
 		else
-			LK3D.New_D_Print("Lightmap done! Automatically exporting...", LK3D_SERVERITY_INFO, "Radiosity")
+			LK3D.New_D_Print("Lightmap done! Automatically exporting...", LK3D_SEVERITY_INFO, "Radiosity")
 			LK3D.ExportLightmaps()
 		end
 	end
@@ -1774,7 +1774,7 @@ local function loadLightmapObject(data, tag, obj_idx)
 	lastAccumChange = CurTime() + 2
 	lightmapAccum = lightmapAccum + 1
 	if not data then
-		LK3D.New_D_Print("Attempting to load lightmap with no data!", LK3D_SERVERITY_ERROR, "Radiosity")
+		LK3D.New_D_Print("Attempting to load lightmap with no data!", LK3D_SEVERITY_ERROR, "Radiosity")
 		return
 	end
 
@@ -1784,7 +1784,7 @@ local function loadLightmapObject(data, tag, obj_idx)
 	local f_pointer_temp = file.Open(targ_temp .. "temp1.txt", "rb", "DATA")
 	local header = f_pointer_temp:Read(4)
 	if header ~= "LKLM" then
-		LK3D.New_D_Print("Failure decoding LKLM file! (start header no match)", LK3D_SERVERITY_ERROR, "Radiosity")
+		LK3D.New_D_Print("Failure decoding LKLM file! (start header no match)", LK3D_SEVERITY_ERROR, "Radiosity")
 		f_pointer_temp:Close()
 		return
 	end
@@ -1809,7 +1809,7 @@ local function loadLightmapObject(data, tag, obj_idx)
 
 	local read_post_verif = f_pointer_temp:Read(3)
 	if read_post_verif ~= "DNE" then
-		LK3D.New_D_Print("Failure decoding LKLM file! (colour DNE fail)", LK3D_SERVERITY_ERROR, "Radiosity")
+		LK3D.New_D_Print("Failure decoding LKLM file! (colour DNE fail)", LK3D_SEVERITY_ERROR, "Radiosity")
 		f_pointer_temp:Close()
 		return
 	end
@@ -1848,13 +1848,18 @@ local function loadLightmapObject(data, tag, obj_idx)
 
 	read_post_verif = f_pointer_temp:Read(3)
 	if read_post_verif ~= "DNE" then
-		LK3D.New_D_Print("Failure decoding LKLM file! (lm_uv DNE fail)", LK3D_SERVERITY_ERROR, "Radiosity")
+		LK3D.New_D_Print("Failure decoding LKLM file! (lm_uv DNE fail)", LK3D_SEVERITY_ERROR, "Radiosity")
 		f_pointer_temp:Close()
 		return
 	end
 
 	local obj_ptr = LK3D.CurrUniv["objects"][obj_idx]
 	local mdlinfo = LK3D.Models[obj_ptr.mdl]
+	if not mdlinfo then
+		LK3D.New_D_Print("Model \"" .. obj_ptr.mdl .. "\" doesnt exist!", LK3D_SEVERITY_ERROR, "Radiosity")
+		return
+	end
+
 	local indices = mdlinfo.indices
 
 	local index_count = f_pointer_temp:ReadULong()
@@ -1866,7 +1871,7 @@ local function loadLightmapObject(data, tag, obj_idx)
 
 	read_post_verif = f_pointer_temp:Read(3)
 	if read_post_verif ~= "DNE" then
-		LK3D.New_D_Print("Failure decoding LKLM file! (index_lm DNE fail)", LK3D_SERVERITY_ERROR, "Radiosity")
+		LK3D.New_D_Print("Failure decoding LKLM file! (index_lm DNE fail)", LK3D_SEVERITY_ERROR, "Radiosity")
 		f_pointer_temp:Close()
 		return
 	end
@@ -1874,7 +1879,7 @@ local function loadLightmapObject(data, tag, obj_idx)
 	local read_header_end = f_pointer_temp:Read(4)
 	f_pointer_temp:Close()
 	if read_header_end ~= "LKLM" then
-		LK3D.New_D_Print("Failure decoding LKLM file! (end header fail)", LK3D_SERVERITY_ERROR, "Radiosity")
+		LK3D.New_D_Print("Failure decoding LKLM file! (end header fail)", LK3D_SEVERITY_ERROR, "Radiosity")
 		return
 	end
 
@@ -1893,7 +1898,7 @@ local function recursiveClearCache(base)
 		-- now delete
 		local fPath = base .. "/" .. v
 		file.Delete(fPath)
-		LK3D.New_D_Print("Deleted PNG cache file \"" .. fPath .. "\"", LK3D_SERVERITY_DEBUG, "Radiosity")
+		LK3D.New_D_Print("Deleted PNG cache file \"" .. fPath .. "\"", LK3D_SEVERITY_DEBUG, "Radiosity")
 	end
 
 	for k, v in ipairs(dirs) do
@@ -1908,11 +1913,11 @@ function LK3D.ClearLightmapCache()
 	end
 	LK3D_LIGHTMAP_HAVE_WE_CLEARED_GLOBAL = true
 
-	LK3D.New_D_Print("Clearing lightmap PNG cache!", LK3D_SERVERITY_DEBUG, "Radiosity")
+	LK3D.New_D_Print("Clearing lightmap PNG cache!", LK3D_SEVERITY_DEBUG, "Radiosity")
 	local root = "lk3d/lightmap_temp/"
 	recursiveClearCache(root)
 
-	LK3D.New_D_Print("Cleared lightmap PNG cache successfully!", LK3D_SERVERITY_DEBUG, "Radiosity")
+	LK3D.New_D_Print("Cleared lightmap PNG cache successfully!", LK3D_SEVERITY_DEBUG, "Radiosity")
 end
 
 function LK3D.LoadLightmapFromFile(obj_idx)
@@ -1920,25 +1925,25 @@ function LK3D.LoadLightmapFromFile(obj_idx)
 
 	local tag = LK3D.CurrUniv["tag"]
 	if not tag then
-		LK3D.New_D_Print("Attempting to load lightmap on universe with no tag!", LK3D_SERVERITY_ERROR, "Radiosity")
+		LK3D.New_D_Print("Attempting to load lightmap on universe with no tag!", LK3D_SEVERITY_ERROR, "Radiosity")
 		return
 	end
 
 	local obj_check = LK3D.CurrUniv["objects"][obj_idx]
 	if not obj_check then
-		LK3D.New_D_Print("Attempting to load lightmap for non-existing object \"" .. obj_idx .. "\"!", LK3D_SERVERITY_ERROR, "Radiosity")
+		LK3D.New_D_Print("Attempting to load lightmap for non-existing object \"" .. obj_idx .. "\"!", LK3D_SEVERITY_ERROR, "Radiosity")
 		return
 	end
 
 
 	local fcontents = LK3D.ReadFileFromLKPack("lightmaps/" .. tag .. "/" .. obj_idx .. ".llm")
 	if not fcontents then
-		LK3D.New_D_Print("Attempting to load missing lightmap from LKPack! (" .. tag .. "): [" .. obj_idx .. "]", LK3D_SERVERITY_ERROR, "Radiosity")
+		LK3D.New_D_Print("Attempting to load missing lightmap from LKPack! (" .. tag .. "): [" .. obj_idx .. "]", LK3D_SEVERITY_ERROR, "Radiosity")
 		return
 	end
 
 	loadLightmapObject(fcontents, tag, obj_idx)
-	LK3D.New_D_Print("Loaded lightmap for \"" .. obj_idx .. "\" from LKPack successfully!", LK3D_SERVERITY_INFO, "Radiosity")
+	LK3D.New_D_Print("Loaded lightmap for \"" .. obj_idx .. "\" from LKPack successfully!", LK3D_SEVERITY_INFO, "Radiosity")
 end
 
 
@@ -1946,7 +1951,7 @@ end
 
 -- a more simplistic file format, less compressed than others
 local function exportLightmapObject(obj, obj_id) -- this exports it as custom file lightmap
-	LK3D.New_D_Print("Exporting lightmap for object \"" .. obj_id .. "\"", LK3D_SERVERITY_DEBUG, "Radiosity")
+	LK3D.New_D_Print("Exporting lightmap for object \"" .. obj_id .. "\"", LK3D_SEVERITY_DEBUG, "Radiosity")
 
 	local tag = LK3D.CurrUniv["tag"]
 	local targ_folder = "lk3d/lightmap_export/" .. engine.ActiveGamemode() .. "/" .. tag .. "/"
@@ -1958,7 +1963,7 @@ local function exportLightmapObject(obj, obj_id) -- this exports it as custom fi
 
 	local tex_p = LK3D.Textures[lm_t]
 	local tw, th = tex_p.rt:Width(), tex_p.rt:Height()
-	LK3D.New_D_Print("Lightmap resolution is " .. tw .. "x" .. th, LK3D_SERVERITY_DEBUG, "Radiosity")
+	LK3D.New_D_Print("Lightmap resolution is " .. tw .. "x" .. th, LK3D_SEVERITY_DEBUG, "Radiosity")
 
 	f_pointer_temp:Write("LKLM") -- lklm header LKLightMap
 	f_pointer_temp:WriteULong(tw)
@@ -1988,7 +1993,7 @@ local function exportLightmapObject(obj, obj_id) -- this exports it as custom fi
 	local chunkSz = 16384
 	local chunkCount = math.ceil(length_png_data / chunkSz)
 	chunkCount = math.max(chunkCount, 1)
-	LK3D.New_D_Print("File will have " .. chunkCount .. " PNGChunks...", LK3D_SERVERITY_DEBUG, "Radiosity")
+	LK3D.New_D_Print("File will have " .. chunkCount .. " PNGChunks...", LK3D_SEVERITY_DEBUG, "Radiosity")
 
 	-- split into chunks
 	f_pointer_temp:WriteULong(chunkCount)
@@ -1996,7 +2001,7 @@ local function exportLightmapObject(obj, obj_id) -- this exports it as custom fi
 	for i = 1, chunkCount do
 		local lengthCurr = math.min(lengthAccum, chunkSz)
 		lengthAccum = lengthAccum - chunkSz
-		LK3D.New_D_Print("Chunk º" .. i .. "; Length " .. lengthCurr, LK3D_SERVERITY_DEBUG, "Radiosity")
+		LK3D.New_D_Print("Chunk º" .. i .. "; Length " .. lengthCurr, LK3D_SEVERITY_DEBUG, "Radiosity")
 
 
 		f_pointer_temp:WriteULong(lengthCurr)
@@ -2058,7 +2063,7 @@ file.CreateDir("lk3d/lightmap_export")
 file.CreateDir("lk3d/lightmap_export/" .. engine.ActiveGamemode())
 function LK3D.ExportLightmaps()
 	if not LK3D.CurrUniv["tag"] then
-		LK3D.New_D_Print("Attempting to export lightmaps for a universe without a tag!", LK3D_SERVERITY_ERROR, "Radiosity")
+		LK3D.New_D_Print("Attempting to export lightmaps for a universe without a tag!", LK3D_SEVERITY_ERROR, "Radiosity")
 		return
 	end
 
@@ -2075,19 +2080,19 @@ function LK3D.ExportLightmaps()
 		exportLightmapObject(v, k)
 	end
 
-	LK3D.New_D_Print("Exported lightmaps for universe \"" .. tag .. "\"!", LK3D_SERVERITY_INFO, "Radiosity")
-	LK3D.New_D_Print("Lightmaps are located at \"data/" .. targ_folder .. "\"", LK3D_SERVERITY_INFO, "Radiosity")
+	LK3D.New_D_Print("Exported lightmaps for universe \"" .. tag .. "\"!", LK3D_SEVERITY_INFO, "Radiosity")
+	LK3D.New_D_Print("Lightmaps are located at \"data/" .. targ_folder .. "\"", LK3D_SEVERITY_INFO, "Radiosity")
 end
 
 concommand.Add("lk3d_exportlightmaps", function(ply, cmd, args)
 	if not args[1] then
-		LK3D.New_D_Print("Usage: lk3d_exportlightmaps <universeName>", LK3D_SERVERITY_WARN, "Radiosity")
+		LK3D.New_D_Print("Usage: lk3d_exportlightmaps <universeName>", LK3D_SEVERITY_WARN, "Radiosity")
 		return
 	end
 
 	local univ = LK3D.UniverseRegistry[args[1]]
 	if univ == nil then
-		LK3D.New_D_Print("Target Universe \"" .. args[1] .. "\" doesnt exist!", LK3D_SERVERITY_WARN, "Radiosity")
+		LK3D.New_D_Print("Target Universe \"" .. args[1] .. "\" doesnt exist!", LK3D_SEVERITY_WARN, "Radiosity")
 		return
 	end
 

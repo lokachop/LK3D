@@ -1,6 +1,6 @@
 LK3D = LK3D or {}
 LK3D.ProcTex = LK3D.ProcTex or {}
-LK3D.New_D_Print("Loading!", LK3D_SERVERITY_INFO, "ProcTex")
+LK3D.New_D_Print("Loading!", LK3D_SEVERITY_INFO, "ProcTex")
 
 -- https://github.com/WardBenjamin/SimplexNoise/blob/master/SimplexNoise/Noise.cs
 LK3D.ProcTex.Simplex = LK3D.ProcTex.Simplex or {}
@@ -125,7 +125,7 @@ function LK3D.ProcTex.Simplex.simplex2D(x, y, seed)
 	-- The result is scaled to return values in the interval [-1,1].
 	return 40 * (n0 + n1 + n2) -- TODO: The scale factor is preliminary!
 end
-LK3D.New_D_Print("Loaded Simplex (can cause crashes!)!", LK3D_SERVERITY_INFO, "ProcTex")
+LK3D.New_D_Print("Loaded Simplex (can cause crashes!)!", LK3D_SEVERITY_INFO, "ProcTex")
 
 -- https://en.wikipedia.org/wiki/LK3D.ProcTex.Perlin_noise
 LK3D.ProcTex.Perlin = LK3D.ProcTex.Perlin or {}
@@ -180,7 +180,7 @@ function LK3D.ProcTex.Perlin.perlin(x, y, seed)
 
 	return Lerp(sy, ix0, ix1)
 end
-LK3D.New_D_Print("Loaded perlin!", LK3D_SERVERITY_INFO, "ProcTex")
+LK3D.New_D_Print("Loaded perlin!", LK3D_SEVERITY_INFO, "ProcTex")
 
 
 -- https://en.wikipedia.org/wiki/Worley_noise
@@ -226,7 +226,7 @@ function LK3D.ProcTex.Worley.worley(x, y, seed)
 	end
 	return m_dist
 end
-LK3D.New_D_Print("Loaded Worley!", LK3D_SERVERITY_INFO, "ProcTex")
+LK3D.New_D_Print("Loaded Worley!", LK3D_SEVERITY_INFO, "ProcTex")
 
 
 local valuens = {}
@@ -260,7 +260,7 @@ function valuens.noise(x, y, seed)
 	return final
 
 end
-LK3D.New_D_Print("Loaded valueNoise!", LK3D_SERVERITY_INFO, "ProcTex")
+LK3D.New_D_Print("Loaded valueNoise!", LK3D_SEVERITY_INFO, "ProcTex")
 
 LK3D.ProcTex.Coros = {}
 LK3D.ProcTex.PixelItr = 64
@@ -554,7 +554,7 @@ function LK3D.ProcTex.TextureGenThink()
 		local fine, ret = coroutine.resume(v)
 		if not fine then
 			toRem[#toRem + 1] = k
-			LK3D.New_D_Print("ERROR: " .. ret, LK3D_SERVERITY_ERROR, "ProcTex")
+			LK3D.New_D_Print("ERROR: " .. ret, LK3D_SEVERITY_ERROR, "ProcTex")
 		end
 
 		if ret == 2 then

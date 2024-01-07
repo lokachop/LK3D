@@ -8,11 +8,11 @@ LK3D.Models = LK3D.Models or {}
 file.CreateDir("lk3d")
 
 function LK3D.GenerateNormals(name, invert, smoothOnly)
-	LK3D.New_D_Print("Generating normals for model \"" .. name .. "\"", LK3D_SERVERITY_DEBUG, "ModelUtils")
+	LK3D.New_D_Print("Generating normals for model \"" .. name .. "\"", LK3D_SEVERITY_DEBUG, "ModelUtils")
 	local data = LK3D.Models[name]
 
 	if not data then
-		LK3D.New_D_Print("Model \"" .. name .. "\" doesnt exist!", LK3D_SERVERITY_WARN, "ModelUtils")
+		LK3D.New_D_Print("Model \"" .. name .. "\" doesnt exist!", LK3D_SEVERITY_WARN, "ModelUtils")
 		return
 	end
 
@@ -58,7 +58,7 @@ function LK3D.GenerateNormals(name, invert, smoothOnly)
 			data["s_normals"][i] = Vector(0, 1, 0)
 		end
 	end
-	LK3D.New_D_Print("Generated normals for model \"" .. name .. "\"", LK3D_SERVERITY_DEBUG, "ModelUtils")
+	LK3D.New_D_Print("Generated normals for model \"" .. name .. "\"", LK3D_SEVERITY_DEBUG, "ModelUtils")
 end
 
 -- returns a table that merges matching verts for perf
@@ -181,7 +181,7 @@ end
 function LK3D.DeclareModel(name, data)
 	LK3D.Models[name] = data
 	LK3D.GenerateNormals(name)
-	LK3D.New_D_Print("Declared model \"" .. name .. "\" with " .. #data.verts .. " verts [TBL]", LK3D_SERVERITY_INFO, "ModelUtils")
+	LK3D.New_D_Print("Declared model \"" .. name .. "\" with " .. #data.verts .. " verts [TBL]", LK3D_SEVERITY_DEBUG, "ModelUtils")
 end
 
 local function t_copy(tbl)
@@ -205,7 +205,7 @@ function LK3D.CopyModel(from, to)
 	LK3D.Models[to] = t_copy(LK3D.Models[from])
 	LK3D.GenerateNormals(to)
 	LK3D.GenTrList(to)
-	LK3D.New_D_Print("Copied model \"" .. from .. "\": to \"" .. to .. "\"", LK3D_SERVERITY_DEBUG, "ModelUtils")
+	LK3D.New_D_Print("Copied model \"" .. from .. "\": to \"" .. to .. "\"", LK3D_SEVERITY_DEBUG, "ModelUtils")
 end
 
 -- todo fix bonetransforms
@@ -274,16 +274,17 @@ function LK3D.DeclareModelFromSource(name, mdl)
 	local data_c = LK3D.GetOptimizedModelTable(data)
 	LK3D.Models[name] = data_c
 	LK3D.GenerateNormals(name)
-	LK3D.New_D_Print("Declared model \"" .. name .. "\" with " .. #data_c.verts .. " verts [SRC]", LK3D_SERVERITY_INFO, "ModelUtils")
+	LK3D.New_D_Print("Declared model \"" .. name .. "\" with " .. #data_c.verts .. " verts [SRC]", LK3D_SEVERITY_INFO, "ModelUtils")
 end
 
 -- makes a compressed ver. of model with x name in ur data folder under "lk3d"
 function LK3D.CompressModel(name)
+	LK3D.New_D_Print("This ModelFormat is deprecated, use LK3D.CompressModelLKC(name) instead...", LK3D_SEVERITY_WARN, "LKComp_Legacy")
 	file.CreateDir("lk3d/compmodels")
 	local mdl = LK3D.Models[name]
 
 	if not mdl then
-		LK3D.New_D_Print("No model \"" .. name .. "\" to compress!", LK3D_SERVERITY_WARN, "LKComp_Legacy")
+		LK3D.New_D_Print("No model \"" .. name .. "\" to compress!", LK3D_SEVERITY_WARN, "LKComp_Legacy")
 		return
 	end
 
@@ -324,7 +325,7 @@ local tn = tonumber
 function LK3D.AddModelCompStr(name, str)
 	local dstr = util.Decompress(util.Base64Decode(str))
 	if not dstr then
-		LK3D.New_D_Print("Failed adding model \"" .. name .. "\" while uncompressing!", LK3D_SERVERITY_WARN, "LKComp_Legacy")
+		LK3D.New_D_Print("Failed adding model \"" .. name .. "\" while uncompressing!", LK3D_SEVERITY_WARN, "LKComp_Legacy")
 		return
 	end
 
@@ -358,7 +359,7 @@ function LK3D.AddModelCompStr(name, str)
 	LK3D.Models[name] = mdldat
 	LK3D.GenerateNormals(name)
 
-	LK3D.New_D_Print("Declared model \"" .. name .. "\" with " .. #mdldat.verts .. " verts [COMP]", LK3D_SERVERITY_INFO, "LKComp_Legacy")
+	LK3D.New_D_Print("Declared model \"" .. name .. "\" with " .. #mdldat.verts .. " verts [COMP]", LK3D_SEVERITY_INFO, "LKComp_Legacy")
 end
 
 
@@ -407,7 +408,7 @@ local LKCOMP_ENCODERS = {
 		f_pointer:WriteByte(LKCOMP_VER) -- revision
 		f_pointer:WriteULong(#mdldata.verts) -- byte length of vert data
 
-		LK3D.New_D_Print(#mdldata.verts .. " verts...", LK3D_SERVERITY_DEBUG, "LKCOMP")
+		LK3D.New_D_Print(#mdldata.verts .. " verts...", LK3D_SEVERITY_DEBUG, "LKCOMP")
 
 		-- write vert data
 		for k, v in ipairs(mdldata.verts) do
@@ -422,20 +423,20 @@ local LKCOMP_ENCODERS = {
 			calcvar = vec_dat[3]
 			f_pointer:WriteLong(math.floor(calcvar * 10000))
 		end
-		LK3D.New_D_Print("Done vertWriting!", LK3D_SERVERITY_DEBUG, "LKCOMP")
+		LK3D.New_D_Print("Done vertWriting!", LK3D_SEVERITY_DEBUG, "LKCOMP")
 
 		f_pointer:WriteULong(#mdldata.uvs) -- byte length of uv data
-		LK3D.New_D_Print(#mdldata.uvs .. " uvs...", LK3D_SERVERITY_DEBUG, "LKCOMP")
+		LK3D.New_D_Print(#mdldata.uvs .. " uvs...", LK3D_SEVERITY_DEBUG, "LKCOMP")
 
 		for k, v in ipairs(mdldata.uvs) do
 			local uv_dat = v
 			f_pointer:WriteUShort(math.floor(uv_dat[1] * 65534) % 65535)
 			f_pointer:WriteUShort(math.floor(uv_dat[2] * 65534) % 65535)
 		end
-		LK3D.New_D_Print("Done uvWriting!", LK3D_SERVERITY_DEBUG, "LKCOMP")
+		LK3D.New_D_Print("Done uvWriting!", LK3D_SEVERITY_DEBUG, "LKCOMP")
 
 		f_pointer:WriteULong(#mdldata.indices) -- byte length of index data
-		LK3D.New_D_Print(#mdldata.indices .. " indices...", LK3D_SERVERITY_DEBUG, "LKCOMP")
+		LK3D.New_D_Print(#mdldata.indices .. " indices...", LK3D_SEVERITY_DEBUG, "LKCOMP")
 
 		for k, v in ipairs(mdldata.indices) do
 			local idx_dat = v
@@ -450,14 +451,14 @@ local LKCOMP_ENCODERS = {
 			f_pointer:WriteUShort(math.floor(idx_dat[3][1]))
 			f_pointer:WriteUShort(math.floor(idx_dat[3][2]))
 		end
-		LK3D.New_D_Print("Done indexWriting!", LK3D_SERVERITY_DEBUG, "LKCOMP")
+		LK3D.New_D_Print("Done indexWriting!", LK3D_SEVERITY_DEBUG, "LKCOMP")
 
 		-- e to mark end
 		f_pointer:WriteByte(string.byte("E")) -- E
 		f_pointer:Close()
 
 
-		local act_name = fname .. ".txt"
+		local act_name = fname .. ".lkc.txt"
 		--file.Write(fname .. "_raw" .. ".txt", file.Read(act_name, "DATA"))
 		--file.Write(fname .. "_nolzma" .. ".txt", util.Base64Encode(file.Read(act_name, "DATA"), true))
 
@@ -469,17 +470,17 @@ local LKCOMP_ENCODERS = {
 
 
 function LK3D.CompressModelLKC(name)
-	LK3D.New_D_Print("Compressing \"" .. name .. "\" with LKC revision " .. LKCOMP_VER .. "....", LK3D_SERVERITY_INFO, "LKCOMP")
+	LK3D.New_D_Print("Compressing \"" .. name .. "\" with LKC revision " .. LKCOMP_VER .. "....", LK3D_SEVERITY_INFO, "LKCOMP")
 	file.CreateDir("lk3d/lkcomp_models")
 
 	local fnm = "lk3d/lkcomp_models/" .. name
 	file.Write(fnm, "")
 
-	local f_pointer = file.Open(fnm .. ".txt", "wb", "DATA")
+	local f_pointer = file.Open(fnm .. ".lkc.txt", "wb", "DATA")
 	if LKCOMP_ENCODERS[LKCOMP_VER] then
 		local fine, err = pcall(LKCOMP_ENCODERS[LKCOMP_VER], name, f_pointer, fnm)
 		if not fine then
-			LK3D.New_D_Print("Error compressing \"" .. name .. "\" with LKC revision " .. LKCOMP_VER .. ": \"" .. err .. "\"", LK3D_SERVERITY_FATAL, "LKCOMP")
+			LK3D.New_D_Print("Error compressing \"" .. name .. "\" with LKC revision " .. LKCOMP_VER .. ": \"" .. err .. "\"", LK3D_SEVERITY_FATAL, "LKCOMP")
 		end
 	end
 
@@ -493,7 +494,7 @@ local LKCOMP_DECODERS = {
 		local mdlDat = {}
 
 		local vertCount = f_pointer:ReadULong()
-		LK3D.New_D_Print(name .. " has " .. vertCount .. " verts...", LK3D_SERVERITY_DEBUG, "LKCOMP")
+		LK3D.New_D_Print(name .. " has " .. vertCount .. " verts...", LK3D_SEVERITY_DEBUG, "LKCOMP")
 
 		-- read verts..
 		mdlDat.verts = {}
@@ -506,7 +507,7 @@ local LKCOMP_DECODERS = {
 		end
 
 		local uvCount = f_pointer:ReadULong()
-		LK3D.New_D_Print(name .. " has " .. uvCount .. " uvs...", LK3D_SERVERITY_DEBUG, "LKCOMP")
+		LK3D.New_D_Print(name .. " has " .. uvCount .. " uvs...", LK3D_SEVERITY_DEBUG, "LKCOMP")
 
 		-- read uvs..
 		mdlDat.uvs = {}
@@ -519,7 +520,7 @@ local LKCOMP_DECODERS = {
 
 
 		local indexCount = f_pointer:ReadULong()
-		LK3D.New_D_Print(name .. " has " .. indexCount .. " indices...", LK3D_SERVERITY_DEBUG, "LKCOMP")
+		LK3D.New_D_Print(name .. " has " .. indexCount .. " indices...", LK3D_SEVERITY_DEBUG, "LKCOMP")
 
 		mdlDat.indices = {}
 		for i = 1, indexCount do
@@ -540,7 +541,7 @@ local LKCOMP_DECODERS = {
 		end
 
 		if string.char(f_pointer:ReadByte()) ~= "E" then
-			LK3D.New_D_Print("Failed to decode \"" .. name .. "\"!", LK3D_SERVERITY_FATAL, "LKCOMP")
+			LK3D.New_D_Print("Failed to decode \"" .. name .. "\"!", LK3D_SEVERITY_FATAL, "LKCOMP")
 			return
 		end
 
@@ -549,7 +550,7 @@ local LKCOMP_DECODERS = {
 }
 
 function LK3D.AddModelLKC(name, data)
-	LK3D.New_D_Print("Decompressing LKCOMP \"" .. name .. "\"...", LK3D_SERVERITY_INFO, "LKCOMP")
+	LK3D.New_D_Print("Decompressing LKCOMP \"" .. name .. "\"...", LK3D_SEVERITY_DEBUG, "LKCOMP")
 	if not data then
 		return
 	end
@@ -567,18 +568,18 @@ function LK3D.AddModelLKC(name, data)
 	-- read header
 	local head = f_pointer:ReadLong()
 	if head ~= 4410188 then
-		LK3D.New_D_Print("Header LKC no match!", LK3D_SERVERITY_DEBUG, "LKCOMP")
+		LK3D.New_D_Print("Header LKC no match!", LK3D_SEVERITY_DEBUG, "LKCOMP")
 		f_pointer:Close()
 		return
 	end
 
 	local rev = f_pointer:ReadByte()
-	LK3D.New_D_Print(name .. " is rev" .. rev .. "...", LK3D_SERVERITY_DEBUG, "LKCOMP")
+	LK3D.New_D_Print(name .. " is rev" .. rev .. "...", LK3D_SEVERITY_DEBUG, "LKCOMP")
 
 	if LKCOMP_DECODERS[rev] then
 		local fine, err = pcall(LKCOMP_DECODERS[rev], name, f_pointer)
 		if not fine then
-			LK3D.New_D_Print("Error decompressing \"" .. name .. "\" with LKC revision " .. rev .. ": \"" .. err .. "\"", LK3D_SERVERITY_FATAL, "LKComp")
+			LK3D.New_D_Print("Error decompressing \"" .. name .. "\" with LKC revision " .. rev .. ": \"" .. err .. "\"", LK3D_SEVERITY_FATAL, "LKComp")
 		end
 	end
 
@@ -613,7 +614,7 @@ function LK3D.AddModelOBJ(name, objData)
 		end
 
 		if ident == "#" then
-			LK3D.New_D_Print("[Comment]: " .. cont, LK3D_SERVERITY_DEBUG, "ModelUtils")
+			LK3D.New_D_Print("[Comment]: " .. cont, LK3D_SEVERITY_DEBUG, "ModelUtils")
 		elseif ident == "v" then
 			local expVars = string.Explode(" ", cont, false)
 
@@ -653,7 +654,7 @@ function LK3D.AddModelOBJ(name, objData)
 
 				if i1 and (not i2) and (not i3) then -- pos only
 					bInd[#bInd + 1] = {i1, 1}
-					LK3D.New_D_Print("OBJ Load fail!, no texcoord! (posOnly)", LK3D_SERVERITY_FATAL, "ModelUtils")
+					LK3D.New_D_Print("OBJ Load fail!, no texcoord! (posOnly)", LK3D_SEVERITY_FATAL, "ModelUtils")
 				end
 
 				if i1 and i2 and (not i3) then -- pos / tex
@@ -673,7 +674,7 @@ function LK3D.AddModelOBJ(name, objData)
 
 					s_normals[i1] = _fileNormBuff[i3] * 1
 
-					LK3D.New_D_Print("OBJ Load fail!, no texcoord! (pos // norm)", LK3D_SERVERITY_FATAL, "ModelUtils")
+					LK3D.New_D_Print("OBJ Load fail!, no texcoord! (pos // norm)", LK3D_SEVERITY_FATAL, "ModelUtils")
 				end
 			end
 
@@ -693,16 +694,25 @@ function LK3D.AddModelOBJ(name, objData)
 	end
 
 	LK3D.Models[name] = data
-	LK3D.New_D_Print("Declared model \"" .. name .. "\" with " .. #data.verts .. " verts! [OBJ]", LK3D_SERVERITY_DEBUG, "ModelUtils")
+	LK3D.New_D_Print("Declared model \"" .. name .. "\" with " .. #data.verts .. " verts! [OBJ]", LK3D_SEVERITY_DEBUG, "ModelUtils")
 end
 
-function LK3D.DeclareModelFromFile(name, fpath)
+function LK3D.DeclareModelFromOBJFile(name, fpath)
 	local fcontents = LK3D.ReadFileFromLKPack("models/" .. fpath .. ".obj")
+	LK3D.New_D_Print("Loading OBJ model \"" .. name .. "\" (" .. fpath .. ") from LKPack!", LK3D_SEVERITY_INFO, "ModelUtils")
 
 	LK3D.AddModelOBJ(name, fcontents)
 end
 
-LK3D.New_D_Print("LK3D modelutils fully loaded!", LK3D_SERVERITY_INFO, "Base")
+function LK3D.DeclareModelFromLKCFile(name, fpath)
+	local fcontents = LK3D.ReadFileFromLKPack("models/" .. fpath .. ".lkc")
+	LK3D.New_D_Print("Loading LKC model \"" .. name .. "\" (" .. fpath .. ") from LKPack!", LK3D_SEVERITY_INFO, "ModelUtils")
+
+	LK3D.AddModelLKC(name, fcontents)
+end
+
+
+LK3D.New_D_Print("LK3D modelutils fully loaded!", LK3D_SEVERITY_INFO, "Base")
 
 -- TODO: write models as ain files so i can load them if theyre massive
 -- that way i dont need to do base64 aswell

@@ -251,7 +251,7 @@ function LK3D.MusiSynth.DeclareInstrument(data, name)
 		LK3D.MusiSynth.GenerateSoundScript(data, name, i)
 	end
 
-	LK3D.New_D_Print("Declared instrument \"" .. name .. "\"", LK3D_SERVERITY_INFO, "MusiSynth")
+	LK3D.New_D_Print("Declared instrument \"" .. name .. "\"", LK3D_SEVERITY_INFO, "MusiSynth")
 	LK3D.MusiSynth.ValidInstruments[name] = true
 end
 

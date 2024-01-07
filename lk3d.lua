@@ -24,7 +24,7 @@ function LK3D.D_Print(...)
 
 	if LK3D.New_D_Print then
 		LK3D.New_D_Print("Using deprecated function \"LK3D.D_Print()\", use \"LK3D.New_D_Print\" instead...", LK3D_SERVERITY_WARN, "LK3D")
-		LK3D.New_D_Print(..., LK3D_SERVERITY_INFO, "DPRINT")
+		LK3D.New_D_Print(..., LK3D_SEVERITY_INFO, "DPRINT")
 		return
 	end
 
@@ -146,7 +146,7 @@ function LK3D.NewUniverse(tag)
 		LK3D.New_D_Print("Calling LK3D.NewUniverse without a tag, universe will not work with baked radiosity...", LK3D_SERVERITY_WARN, "LK3D")
 		return {["lk3d"] = true, ["objects"] = {}, ["lights"] = {}, ["lightcount"] = 0, ["particles"] = {}, ["physics"] = {}}
 	else
-		LK3D.New_D_Print("Created universe with tag \"" .. tostring(tag) .. "\"", LK3D_SERVERITY_INFO, "LK3D")
+		LK3D.New_D_Print("Created universe with tag \"" .. tostring(tag) .. "\"", LK3D_SEVERITY_INFO, "LK3D")
 		local tabl = {["lk3d"] = true, ["objects"] = {}, ["lights"] = {}, ["lightcount"] = 0, ["particles"] = {}, ["physics"] = {}, ["tag"] = tag}
 		LK3D.UniverseRegistry[tag] = tabl
 		return tabl
@@ -355,7 +355,7 @@ LK3D.MatCacheNoZ_LM = LK3D.MatCacheNoZ_LM or {}
 
 function LK3D.RTToMaterial(rt, transp, ignorez)
 	if not LK3D.MatCache[rt:GetName()] then
-		LK3D.New_D_Print(rt:GetName() .. " isnt cached, caching!", LK3D_SERVERITY_DEBUG, "Utils")
+		LK3D.New_D_Print(rt:GetName() .. " isnt cached, caching!", LK3D_SEVERITY_DEBUG, "Utils")
 
 		LK3D.MatCache[rt:GetName()] = CreateMaterial(rt:GetName() .. "_materialized_lk3d", "UnlitGeneric", {
 			["$basetexture"] = rt:GetName(),
@@ -378,28 +378,28 @@ function LK3D.RTToMaterial(rt, transp, ignorez)
 end
 
 
-function LK3D.RTToMaterialEx(rt, parametri)
+function LK3D.RTToMaterialEx(rt, params)
 	if not LK3D.MatCache[rt:GetName()] then
-		LK3D.New_D_Print(rt:GetName() .. " isnt cached, caching!", LK3D_SERVERITY_DEBUG, "Utils")
+		LK3D.New_D_Print(rt:GetName() .. " isnt cached, caching!", LK3D_SEVERITY_DEBUG, "Utils")
 
 		LK3D.MatCache[rt:GetName()] = CreateMaterial(rt:GetName() .. "_materialized_lk3d", "UnlitGeneric", {
 			["$basetexture"] = rt:GetName(),
-			["$nocull"] = parametri["nocull"] and 1 or 0,
-			["$ignorez"] = parametri["ignorez"] and 1 or 0,
-			["$vertexcolor"] = parametri["vertexcolor"] and 1 or 0,
-			["$vertexalpha"] = parametri["vertexalpha"] and 1 or 0,
-			["$alphatest"] = parametri["alphatest"] and 1 or 0,
+			["$nocull"] = params["nocull"] and 1 or 0,
+			["$ignorez"] = params["ignorez"] and 1 or 0,
+			["$vertexcolor"] = params["vertexcolor"] and 1 or 0,
+			["$vertexalpha"] = params["vertexalpha"] and 1 or 0,
+			["$alphatest"] = params["alphatest"] and 1 or 0,
 		})
 
 
-		if parametri["lightmapped"] then
+		if params["lightmapped"] then
 			LK3D.MatCache_LM[rt:GetName()] = CreateMaterial("lm_" .. rt:GetName() .. "_materialized_lk3d", "LightmappedGeneric", {
 				["$basetexture"] = rt:GetName(),
-				["$nocull"] = parametri["nocull"] and 1 or 0,
-				["$ignorez"] = parametri["ignorez"] and 1 or 0,
-				["$vertexcolor"] = parametri["vertexcolor"] and 1 or 0,
-				["$vertexalpha"] = parametri["alphatest"] and 1 or 0,
-				["$alphatest"] = parametri["alphatest"] and 1 or 0,
+				["$nocull"] = params["nocull"] and 1 or 0,
+				["$ignorez"] = params["ignorez"] and 1 or 0,
+				["$vertexcolor"] = params["vertexcolor"] and 1 or 0,
+				["$vertexalpha"] = params["alphatest"] and 1 or 0,
+				["$alphatest"] = params["alphatest"] and 1 or 0,
 			})
 		end
 	end
@@ -410,7 +410,7 @@ end
 
 function LK3D.RTToMaterialTL(rt)
 	if not LK3D.MatCacheTR[rt:GetName()] then
-		LK3D.New_D_Print(rt:GetName() .. " isnt cached, caching!", LK3D_SERVERITY_DEBUG, "Utils")
+		LK3D.New_D_Print(rt:GetName() .. " isnt cached, caching!", LK3D_SEVERITY_DEBUG, "Utils")
 
 		LK3D.MatCacheTR[rt:GetName()] = CreateMaterial(rt:GetName() .. "_materialized_lk3d_transparent", "UnlitGeneric", {
 			["$basetexture"] = rt:GetName(),
@@ -433,7 +433,7 @@ end
 
 function LK3D.RTToMaterialNoZ(rt, transp)
 	if not LK3D.MatCacheNoZ[rt:GetName()] then
-		LK3D.New_D_Print(rt:GetName() .. " isnt cached, caching!", LK3D_SERVERITY_DEBUG, "Utils")
+		LK3D.New_D_Print(rt:GetName() .. " isnt cached, caching!", LK3D_SEVERITY_DEBUG, "Utils")
 
 		LK3D.MatCacheNoZ[rt:GetName()] = CreateMaterial("noz_" .. rt:GetName() .. "_materialized_lk3d", "UnlitGeneric", {
 			["$basetexture"] = rt:GetName(),
@@ -519,7 +519,7 @@ end
 
 -- adds a model to the current universe
 function LK3D.AddModelToUniverse(index, mdl, pos, ang)
-	LK3D.New_D_Print("Adding \"" .. index .. "\" to universe with model \"" .. (mdl or "cube") .. "\"", LK3D_SERVERITY_DEBUG, "LK3D")
+	LK3D.New_D_Print("Adding \"" .. index .. "\" to universe with model \"" .. (mdl or "cube") .. "\"", LK3D_SEVERITY_DEBUG, "LK3D")
 	if not LK3D.Models[mdl] then
 		LK3D.New_D_Print("Model \"" .. mdl .. "\" doesnt exist!", LK3D_SERVERITY_WARN, "LK3D")
 		mdl = "fail"
@@ -656,13 +656,17 @@ function LK3D.SetModelAnim(index, an_index)
 end
 
 
+include("lk3d_lkpack.lua") -- lkpack first
 include("lk3d_modelutils.lua")
 include("lk3d_procmodel.lua")
 include("lk3d_models.lua")
 
 LK3D.ModelInitExtra = LK3D.ModelInitExtra or {}
 for k, v in pairs(LK3D.ModelInitExtra) do
-	pcall(v) -- fix extern model init load issues
+	local fine, err = pcall(v) -- fix extern model init load issues
+	if not fine then
+		LK3D.New_D_Print("LK3D ModelInitExtra error! [" .. k .. "]; " .. err, LK3D_SEVERITY_ERROR, "LK3D")
+	end
 end
 
 include("lk3d_textures.lua")
@@ -682,11 +686,10 @@ include("lk3d_univ_explorer.lua")
 include("lk3d_baseshaders.lua")
 include("lk3d_radiosity.lua")
 include("lk3d_skeleton.lua")
-include("lk3d_lkpack.lua")
 include("lk3d_intro.lua")
 include("lk3d_changelog.lua")
 include("lk3d_about.lua")
 -- todo surface2d (3d mesh. based 2d lib for lk3d)
 
 LK3D.InitProcessTexture()
-LK3D.New_D_Print("LK3D fully loaded!", LK3D_SERVERITY_INFO, "LK3D")
+LK3D.New_D_Print("LK3D fully loaded!", LK3D_SEVERITY_INFO, "LK3D")

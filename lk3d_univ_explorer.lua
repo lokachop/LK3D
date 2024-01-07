@@ -43,27 +43,27 @@ local function friendly_num(num)
 end
 
 
-local function addParametri(parent, text, key, default)
-	local frame_parametri = vgui.Create("DPanel", parent)
-	frame_parametri:SetTall(16)
-	frame_parametri:SetWide(parent:GetWide())
-	frame_parametri:Dock(TOP)
+local function addParams(parent, text, key, default)
+	local frame_params = vgui.Create("DPanel", parent)
+	frame_params:SetTall(16)
+	frame_params:SetWide(parent:GetWide())
+	frame_params:Dock(TOP)
 
-	local label_parametri = vgui.Create("DLabel", frame_parametri)
-	label_parametri:SetText(text)
-	label_parametri:SizeToContents()
-	label_parametri:SetColor(Color(0, 0, 0))
-	label_parametri:Dock(LEFT)
+	local label_params = vgui.Create("DLabel", frame_params)
+	label_params:SetText(text)
+	label_params:SizeToContents()
+	label_params:SetColor(Color(0, 0, 0))
+	label_params:Dock(LEFT)
 
 
-	local check_parametri = vgui.Create("DNumberWang", frame_parametri)
-	check_parametri:SetSize(96, 16)
-	check_parametri:SetPos(parent:GetWide() - 96 - 16)
-	check_parametri:SetMin(-math.huge)
-	check_parametri:SetMax(math.huge)
-	check_parametri:SetValue(default or 0)
+	local check_params = vgui.Create("DNumberWang", frame_params)
+	check_params:SetSize(96, 16)
+	check_params:SetPos(parent:GetWide() - 96 - 16)
+	check_params:SetMin(-math.huge)
+	check_params:SetMax(math.huge)
+	check_params:SetValue(default or 0)
 
-	function check_parametri:OnValueChanged(val)
+	function check_params:OnValueChanged(val)
 		LK3D.UE[key] = val
 	end
 end
@@ -111,9 +111,9 @@ local function openUE()
 	end
 
 
-	addParametri(pnl_sidebar, "ZFar", "ZFar", LK3D.FAR_Z)
-	addParametri(pnl_sidebar, "ZNear", "ZNear", LK3D.NEAR_Z)
-	addParametri(pnl_sidebar, "CamSpeed", "FlSpdMul", LK3D.UE.FlSpdMul)
+	addParams(pnl_sidebar, "ZFar", "ZFar", LK3D.FAR_Z)
+	addParams(pnl_sidebar, "ZNear", "ZNear", LK3D.NEAR_Z)
+	addParams(pnl_sidebar, "CamSpeed", "FlSpdMul", LK3D.UE.FlSpdMul)
 
 
 	-- actual render panel

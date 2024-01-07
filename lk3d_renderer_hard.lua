@@ -2426,19 +2426,19 @@ function Renderer.Render()
 
 
 		local hasSH = false
-		local hasParametri = false
+		local hasParams = false
 		for k, v in pairs(LK3D.CurrUniv["objects"]) do
 			if v["RENDER_NOGLOBAL"] then
 				continue
 			end
 
-			if v["RENDER_PARAMETRI_AFTER"] then
-				hasParametri = true
+			if v["RENDER_PARAMS_AFTER"] then
+				hasParams = true
 				continue
 			end
 
-			if v["RENDER_PARAMETRI_PRE"] then
-				pcall(v["RENDER_PARAMETRI_PRE"])
+			if v["RENDER_PARAMS_PRE"] then
+				pcall(v["RENDER_PARAMS_PRE"])
 			end
 
 			local fine, err = pcall(renderModel, v)
@@ -2446,8 +2446,8 @@ function Renderer.Render()
 				d_print("error while drawing model \"" .. v.mdl .. "\"; " .. err)
 			end
 
-			if v["RENDER_PARAMETRI_POST"] then
-				pcall(v["RENDER_PARAMETRI_POST"])
+			if v["RENDER_PARAMS_POST"] then
+				pcall(v["RENDER_PARAMS_POST"])
 			end
 
 			if v["SHADOW_VOLUME"] then
@@ -2455,18 +2455,18 @@ function Renderer.Render()
 			end
 		end
 
-		if hasParametri then
+		if hasParams then
 			for k, v in pairs(LK3D.CurrUniv["objects"]) do
 				if v["RENDER_NOGLOBAL"] then
 					continue
 				end
 
-				if not v["RENDER_PARAMETRI_AFTER"] then
+				if not v["RENDER_PARAMS_AFTER"] then
 					continue
 				end
 
-				if v["RENDER_PARAMETRI_PRE"] then
-					pcall(v["RENDER_PARAMETRI_PRE"])
+				if v["RENDER_PARAMS_PRE"] then
+					pcall(v["RENDER_PARAMS_PRE"])
 				end
 
 				local fine, err = pcall(renderModel, v)
@@ -2474,8 +2474,8 @@ function Renderer.Render()
 					d_print("error while drawing model \"" .. v.mdl .. "\"; " .. err)
 				end
 
-				if v["RENDER_PARAMETRI_POST"] then
-					pcall(v["RENDER_PARAMETRI_POST"])
+				if v["RENDER_PARAMS_POST"] then
+					pcall(v["RENDER_PARAMS_POST"])
 				end
 			end
 		end
@@ -2671,8 +2671,8 @@ function Renderer.RenderObjectAlone(name)
 		znear = LK3D.NEAR_Z,
 		ortho = LK3D.Ortho and LK3D.OrthoParameters or nil
 	})
-		if obj["RENDER_PARAMETRI_PRE"] then
-			pcall(obj["RENDER_PARAMETRI_PRE"])
+		if obj["RENDER_PARAMS_PRE"] then
+			pcall(obj["RENDER_PARAMS_PRE"])
 		end
 
 		local fine, err = pcall(renderModel, obj)
@@ -2680,8 +2680,8 @@ function Renderer.RenderObjectAlone(name)
 			d_print("error while drawing model \"" .. obj.mdl .. "\"; " .. err)
 		end
 
-		if obj["RENDER_PARAMETRI_POST"] then
-			pcall(obj["RENDER_PARAMETRI_POST"])
+		if obj["RENDER_PARAMS_POST"] then
+			pcall(obj["RENDER_PARAMS_POST"])
 		end
 
 	cam_End3D()

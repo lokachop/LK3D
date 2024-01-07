@@ -123,7 +123,7 @@ local function ray_aabb(pos, dir, aabb)
 	return pos + dir * tmin, tmin
 end
 
-LK3D.New_D_Print("Generating triangle list!", LK3D_SERVERITY_INFO, "TraceSystem")
+LK3D.New_D_Print("Generating triangle list!", LK3D_SEVERITY_INFO, "TraceSystem")
 -- make triangle list for each model
 LK3D.TraceTriangleList = {}
 LK3D.TraceTriangleUVs = {}
@@ -138,7 +138,7 @@ function LK3D.GenTrList(k)
 
 	local mdlinfo = LK3D.Models[k]
 	if not mdlinfo then
-		LK3D.New_D_Print("Model \"" .. k .. "\" doesnt exist, PANIC!", LK3D_SERVERITY_FATAL, "TraceSystem")
+		LK3D.New_D_Print("Model \"" .. k .. "\" doesnt exist, PANIC!", LK3D_SEVERITY_FATAL, "TraceSystem")
 		return
 	end
 
@@ -163,7 +163,7 @@ function LK3D.GenTrList(k)
 		uvIdx[#uvIdx + 1] = {uv1, uv2, uv3}
 		tblindex[#tblindex + 1] = {v1, v2, v3, norm}
 	end
-	LK3D.New_D_Print("Generated tris for \"" .. k .. "\"!", LK3D_SERVERITY_DEBUG, "TraceSystem")
+	LK3D.New_D_Print("Generated tris for \"" .. k .. "\"!", LK3D_SEVERITY_DEBUG, "TraceSystem")
 end
 
 for k, v in pairs(LK3D.Models) do
@@ -192,7 +192,7 @@ function LK3D.GenAABB(k)
 		tbl_idx[1].z = (ve.z < tbl_idx[1].z) and ve.z or tbl_idx[1].z -- mins
 		tbl_idx[2].z = (ve.z > tbl_idx[2].z) and ve.z or tbl_idx[2].z -- maxs
 	end
-	LK3D.New_D_Print("Generated AABBs for \"" .. k .. "\"!", LK3D_SERVERITY_DEBUG, "TraceSystem")
+	LK3D.New_D_Print("Generated AABBs for \"" .. k .. "\"!", LK3D_SEVERITY_DEBUG, "TraceSystem")
 end
 
 
@@ -305,7 +305,7 @@ local function traceRayObj(pos, dir, obj, bfcull)
 	local triList = LK3D.TraceTriangleList[obj.mdl]
 	local uref = LK3D.TraceTriangleUVs[obj.mdl]
 	if not triList then
-		LK3D.New_D_Print("Triangle list doesnt exist for \"" .. obj.mdl .. "\"!", LK3D_SERVERITY_ERROR, "TraceSystem")
+		LK3D.New_D_Print("Triangle list doesnt exist for \"" .. obj.mdl .. "\"!", LK3D_SEVERITY_ERROR, "TraceSystem")
 		return
 	end
 
@@ -337,7 +337,7 @@ end
 function LK3D.TraceRayModel(pos, dir, name, bfcull)
 	local obj = LK3D.CurrUniv["objects"][name]
 	if not obj then
-		LK3D.New_D_Print(name .. " does not exist!", LK3D_SERVERITY_ERROR, "TraceSystem")
+		LK3D.New_D_Print(name .. " does not exist!", LK3D_SEVERITY_ERROR, "TraceSystem")
 		return
 	end
 

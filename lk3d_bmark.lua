@@ -87,7 +87,7 @@ local stages = {
 		name = "Generic Scene Shaded",
 		len = g_len,
 		func_init = function()
-			LK3D.AddModelToUniverse("cube_bm", "deep_dive_plyvis")
+			LK3D.AddModelToUniverse("cube_bm", "submarine_vis")
 			LK3D.SetModelPos("cube_bm", Vector(0, 0, 0))
 			LK3D.SetModelScale("cube_bm", Vector(1, 1, 1))
 			LK3D.SetModelFlag("cube_bm", "NO_VW_CULLING", true)
@@ -115,7 +115,7 @@ local stages = {
 		name = "Generic Scene Lit Shaded",
 		len = g_len,
 		func_init = function()
-			LK3D.AddModelToUniverse("cube_bm", "deep_dive_plyvis")
+			LK3D.AddModelToUniverse("cube_bm", "submarine_vis")
 			LK3D.SetModelPos("cube_bm", Vector(0, 0, 0))
 			LK3D.SetModelScale("cube_bm", Vector(1, 1, 1))
 			LK3D.SetModelFlag("cube_bm", "NO_VW_CULLING", true)
@@ -183,7 +183,7 @@ local stages = {
 		name = "TraceSystem Generic Scene",
 		len = g_len,
 		func_init = function()
-			LK3D.AddModelToUniverse("cube_bm", "deep_dive_plyvis")
+			LK3D.AddModelToUniverse("cube_bm", "submarine_vis")
 			LK3D.SetModelPos("cube_bm", Vector(0, 0, 0))
 			LK3D.SetModelScale("cube_bm", Vector(1, 1, 1))
 			LK3D.SetModelFlag("cube_bm", "NO_VW_CULLING", true)

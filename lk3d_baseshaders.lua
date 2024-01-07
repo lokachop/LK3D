@@ -15,17 +15,17 @@ function LK3D.SetModelPrefabShader(obj, shader)
 	end
 
 	if not LK3D.CurrUniv["objects"][obj] then
-		LK3D.New_D_Print("No object \"" .. obj .. "\"!", LK3D_SERVERITY_ERROR, "LK3D")
+		LK3D.New_D_Print("No object \"" .. obj .. "\"!", LK3D_SEVERITY_ERROR, "LK3D")
 		return
 	end
 
 
 	if not LK3D.Shaders[shader] then
-		LK3D.New_D_Print("No shader \"" .. shader .. "\"!", LK3D_SERVERITY_ERROR, "LK3D")
+		LK3D.New_D_Print("No shader \"" .. shader .. "\"!", LK3D_SEVERITY_ERROR, "LK3D")
 		return
 	end
 
-	LK3D.SetModelFlag(obj, "VERT_SH_PARAMS", LK3D.Shaders[shader].sh_parametri)
+	LK3D.SetModelFlag(obj, "VERT_SH_PARAMS", LK3D.Shaders[shader].sh_params)
 	LK3D.SetModelFlag(obj, "VERT_SHADER", LK3D.Shaders[shader].sh_func)
 end
 
@@ -36,7 +36,7 @@ end
 
 
 LK3D.Shaders["reflective"] = {
-	sh_parametri = {
+	sh_params = {
 		[1] = false, -- vpos
 		[2] = true, -- vuv
 		[3] = false, -- vrgb
@@ -69,7 +69,7 @@ LK3D.Shaders["reflective"] = {
 
 
 LK3D.Shaders["reflective_simple"] = {
-	sh_parametri = {
+	sh_params = {
 		[1] = false, -- vpos
 		[2] = true, -- vuv
 		[3] = false, -- vrgb
@@ -98,7 +98,7 @@ LK3D.Shaders["reflective_simple"] = {
 }
 
 LK3D.Shaders["specular"] = {
-	sh_parametri = {
+	sh_params = {
 		[1] = false, -- vpos
 		[2] = false, -- vuv
 		[3] = true, -- vrgb
@@ -150,7 +150,7 @@ LK3D.Shaders["specular"] = {
 
 
 LK3D.Shaders["norm_vis"] = {
-	sh_parametri = {
+	sh_params = {
 		[1] = false, -- vpos
 		[2] = false, -- vuv
 		[3] = true, -- vrgb
@@ -172,7 +172,7 @@ LK3D.Shaders["norm_vis"] = {
 
 
 LK3D.Shaders["norm_vis_rot"] = {
-	sh_parametri = {
+	sh_params = {
 		[1] = false, -- vpos
 		[2] = false, -- vuv
 		[3] = true, -- vrgb
@@ -191,7 +191,7 @@ LK3D.Shaders["norm_vis_rot"] = {
 
 
 LK3D.Shaders["norm_screenspace"] = {
-	sh_parametri = {
+	sh_params = {
 		[1] = false, -- vpos
 		[2] = false, -- vuv
 		[3] = true, -- vrgb
@@ -214,7 +214,7 @@ LK3D.Shaders["norm_screenspace"] = {
 }
 
 LK3D.Shaders["norm_screenspace_rot"] = {
-	sh_parametri = {
+	sh_params = {
 		[1] = false, -- vpos
 		[2] = false, -- vuv
 		[3] = true, -- vrgb
@@ -236,7 +236,7 @@ LK3D.Shaders["norm_screenspace_rot"] = {
 
 
 LK3D.Shaders["world_pos"] = {
-	sh_parametri = {
+	sh_params = {
 		[1] = true, -- vpos
 		[2] = false, -- vuv
 		[3] = true, -- vrgb
@@ -260,7 +260,7 @@ LK3D.Shaders["world_pos"] = {
 }
 
 LK3D.Shaders["world_pos_local"] = {
-	sh_parametri = {
+	sh_params = {
 		[1] = true, -- vpos
 		[2] = false, -- vuv
 		[3] = true, -- vrgb
@@ -289,7 +289,7 @@ LK3D.Shaders["world_pos_local"] = {
 
 
 LK3D.Shaders["vert_col"] = {
-	sh_parametri = {
+	sh_params = {
 		[1] = false, -- vpos
 		[2] = false, -- vuv
 		[3] = true, -- vrgb
@@ -311,7 +311,7 @@ LK3D.Shaders["vert_col"] = {
 local rnd = 0
 local rnd2 = 0
 LK3D.Shaders["ps1"] = {
-	sh_parametri = {
+	sh_params = {
 		[1] = true, -- vpos
 		[2] = true, -- vuv
 		[3] = false, -- vrgb
@@ -355,7 +355,7 @@ LK3D.Shaders["ps1"] = {
 
 
 LK3D.Shaders["reflective_screen_rot"] = {
-	sh_parametri = {
+	sh_params = {
 		[1] = false, -- vpos
 		[2] = true, -- vuv
 		[3] = false, -- vrgb

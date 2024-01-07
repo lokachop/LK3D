@@ -63,30 +63,30 @@ local function initUniv()
 	end
 
 
-local function addParametri(parent, text, key)
-	local frame_parametri = vgui.Create("DPanel", parent)
-	frame_parametri:SetTall(16)
-	frame_parametri:SetWide(parent:GetWide())
-	frame_parametri:Dock(TOP)
+local function addParam(parent, text, key)
+	local frame_params = vgui.Create("DPanel", parent)
+	frame_params:SetTall(16)
+	frame_params:SetWide(parent:GetWide())
+	frame_params:Dock(TOP)
 
-	local label_parametri = vgui.Create("DLabel", frame_parametri)
-	label_parametri:SetText(text)
-	label_parametri:SizeToContents()
-	label_parametri:SetColor(Color(0, 0, 0))
-	label_parametri:Dock(LEFT)
+	local label_params = vgui.Create("DLabel", frame_params)
+	label_params:SetText(text)
+	label_params:SizeToContents()
+	label_params:SetColor(Color(0, 0, 0))
+	label_params:Dock(LEFT)
 
 
-	local check_parametri = vgui.Create("DCheckBox", frame_parametri)
-	check_parametri:SetSize(16, 16)
-	check_parametri:SetPos(parent:GetWide() - 32)
+	local check_params = vgui.Create("DCheckBox", frame_params)
+	check_params:SetSize(16, 16)
+	check_params:SetPos(parent:GetWide() - 32)
 
 
 	if type(key) == "string" then
-		function check_parametri:OnChange(val)
+		function check_params:OnChange(val)
 			LK3D.MV[key] = val
 		end
 	elseif type(key) == "function" then
-		check_parametri.OnChange = key
+		check_params.OnChange = key
 	end
 end
 
@@ -115,16 +115,16 @@ local function openMV()
 	pnl_sidebar:SetWide(128 + 64)
 	pnl_sidebar:Dock(LEFT)
 
-	addParametri(pnl_sidebar, "Wireframe", "Wireframe")
-	addParametri(pnl_sidebar, "Draw AABB (Needs Debug)", "DrawAABB")
+	addParam(pnl_sidebar, "Wireframe", "Wireframe")
+	addParam(pnl_sidebar, "Draw AABB (Needs Debug)", "DrawAABB")
 
-	addParametri(pnl_sidebar, "Hide Floor", function(self, state)
+	addParam(pnl_sidebar, "Hide Floor", function(self, state)
 		LK3D.PushUniverse(univ_lk3dmv)
 			LK3D.SetModelHide("floor_plane", state)
 		LK3D.PopUniverse()
 	end)
 
-	addParametri(pnl_sidebar, "Shading", function(self, state)
+	addParam(pnl_sidebar, "Shading", function(self, state)
 		LK3D.PushUniverse(univ_lk3dmv)
 			LK3D.SetModelFlag("the_model", "NO_SHADING", not state)
 			LK3D.SetModelFlag("floor_plane", "NO_SHADING", not state)
@@ -134,7 +134,7 @@ local function openMV()
 		LK3D.PopUniverse()
 	end)
 
-	addParametri(pnl_sidebar, "Gouraud", function(self, state)
+	addParam(pnl_sidebar, "Gouraud", function(self, state)
 		LK3D.PushUniverse(univ_lk3dmv)
 			LK3D.SetModelFlag("the_model", "SHADING_SMOOTH", state)
 			LK3D.SetModelFlag("floor_plane", "SHADING_SMOOTH", state)
@@ -144,7 +144,7 @@ local function openMV()
 		LK3D.PopUniverse()
 	end)
 
-	addParametri(pnl_sidebar, "Lighting", function(self, state)
+	addParam(pnl_sidebar, "Lighting", function(self, state)
 		LK3D.PushUniverse(univ_lk3dmv)
 			LK3D.SetModelFlag("the_model", "NO_LIGHTING", not state)
 			LK3D.SetModelFlag("floor_plane", "NO_LIGHTING", not state)
@@ -154,7 +154,7 @@ local function openMV()
 		LK3D.PopUniverse()
 	end)
 
-	addParametri(pnl_sidebar, "Lighting Normal Affect", function(self, state)
+	addParam(pnl_sidebar, "Lighting Normal Affect", function(self, state)
 		LK3D.PushUniverse(univ_lk3dmv)
 			LK3D.SetModelFlag("the_model", "NORM_LIGHT_AFFECT", state)
 			LK3D.SetModelFlag("floor_plane", "NORM_LIGHT_AFFECT", state)
@@ -164,7 +164,7 @@ local function openMV()
 		LK3D.PopUniverse()
 	end)
 
-	addParametri(pnl_sidebar, "Normal Invert", function(self, state)
+	addParam(pnl_sidebar, "Normal Invert", function(self, state)
 		LK3D.PushUniverse(univ_lk3dmv)
 			LK3D.SetModelFlag("the_model", "NORM_INVERT", state)
 			LK3D.SetModelFlag("floor_plane", "NORM_INVERT", state)
@@ -174,7 +174,7 @@ local function openMV()
 		LK3D.PopUniverse()
 	end)
 
-	addParametri(pnl_sidebar, "ShadowVolume", function(self, state)
+	addParam(pnl_sidebar, "ShadowVolume", function(self, state)
 		LK3D.PushUniverse(univ_lk3dmv)
 			LK3D.SetModelFlag("the_model", "SHADOW_VOLUME", state)
 
@@ -182,7 +182,7 @@ local function openMV()
 		LK3D.PopUniverse()
 	end)
 
-	addParametri(pnl_sidebar, "Shadow ZPass", function(self, state)
+	addParam(pnl_sidebar, "Shadow ZPass", function(self, state)
 		LK3D.PushUniverse(univ_lk3dmv)
 			LK3D.SetModelFlag("the_model", "SHADOW_ZPASS", state)
 
@@ -190,7 +190,7 @@ local function openMV()
 		LK3D.PopUniverse()
 	end)
 
-	addParametri(pnl_sidebar, "Shadow Sun", function(self, state)
+	addParam(pnl_sidebar, "Shadow Sun", function(self, state)
 		LK3D.PushUniverse(univ_lk3dmv)
 			LK3D.SetModelFlag("the_model", "SHADOW_DOSUN", state)
 
@@ -198,7 +198,7 @@ local function openMV()
 		LK3D.PopUniverse()
 	end)
 
-	addParametri(pnl_sidebar, "Shadow Constant", function(self, state)
+	addParam(pnl_sidebar, "Shadow Constant", function(self, state)
 		LK3D.PushUniverse(univ_lk3dmv)
 			LK3D.SetModelFlag("the_model", "SHADOW_VOLUME_BAKE", state)
 
@@ -208,7 +208,7 @@ local function openMV()
 	end)
 
 
-	addParametri(pnl_sidebar, "No Constant", function(self, state)
+	addParam(pnl_sidebar, "No Constant", function(self, state)
 		LK3D.PushUniverse(univ_lk3dmv)
 			LK3D.SetModelFlag("the_model", "CONSTANT", not state)
 			LK3D.SetModelFlag("floor_plane", "CONSTANT", not state)
@@ -218,7 +218,7 @@ local function openMV()
 		LK3D.PopUniverse()
 	end)
 
-	addParametri(pnl_sidebar, "Shader No SmoothNormal", function(self, state)
+	addParam(pnl_sidebar, "Shader No SmoothNormal", function(self, state)
 		LK3D.PushUniverse(univ_lk3dmv)
 			LK3D.SetModelFlag("the_model", "SHADER_NO_SMOOTHNORM", state)
 			LK3D.SetModelFlag("floor_plane", "SHADER_NO_SMOOTHNORM", state)

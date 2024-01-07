@@ -277,12 +277,12 @@ concommand.Add("LK3D_raytraceCurrent", function(ply, cmd, args, argstr)
 	end
 
 	if not args[1] then
-		LK3D.New_D_Print("LK3D_raytraceCurrent (universeName)", LK3D_SERVERITY_WARN, "Base")
+		LK3D.New_D_Print("LK3D_raytraceCurrent (universeName)", LK3D_SEVERITY_WARN, "Base")
 		return
 	end
 
 	if LK3D.UniverseRegistry[args[1]] == nil then
-		LK3D.New_D_Print("TargetUniverse \"" .. args[1] .. "\" doesnt exist!", LK3D_SERVERITY_WARN, "Base")
+		LK3D.New_D_Print("TargetUniverse \"" .. args[1] .. "\" doesnt exist!", LK3D_SEVERITY_WARN, "Base")
 		return
 	end
 
@@ -293,7 +293,7 @@ concommand.Add("LK3D_raytraceCurrent", function(ply, cmd, args, argstr)
 	currpx = 0
 	calculateForward()
 	LK3D.Raytracing = true
-	LK3D.New_D_Print("raytracing from curr pos!", LK3D_SERVERITY_INFO, "Base")
+	LK3D.New_D_Print("raytracing from curr pos!", LK3D_SEVERITY_INFO, "Base")
 end)
 
 

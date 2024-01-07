@@ -55,7 +55,7 @@ function LK3D.AddPhysicsBodyToUniv(name)
 
 	LK3D.CurrUniv["physics"][name] = body
 
-	LK3D.New_D_Print("Added physics body \"" .. name .. "\"", LK3D_SERVERITY_INFO, "Physics")
+	LK3D.New_D_Print("Added physics body \"" .. name .. "\"", LK3D_SEVERITY_INFO, "Physics")
 end
 
 
