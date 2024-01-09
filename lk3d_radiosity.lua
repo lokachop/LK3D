@@ -34,8 +34,8 @@ LK3D.LIGHTMAP_AUTO_EXPORT = true -- auto export when done
 -- lit objects can be just 1 single ptr for cheap
 -- test new
 LK3D.RADIOSITY_DO_RT = false
-LK3D.RADIOSITY_STEPS = 3
-LK3D.RADIOSITY_BUFFER_SZ = 64
+LK3D.RADIOSITY_STEPS = 1
+LK3D.RADIOSITY_BUFFER_SZ = 96
 LK3D.RADIOSITY_FOV = 90
 LK3D.RADIOSITY_LIGHTSCL_DIV = 12
 LK3D.RADIOSITY_REFLECTANCE = .9
@@ -1322,13 +1322,13 @@ local function updatePatch(pos, norm, patch)
 		if not ptrXCont then
 			continue
 		end
-		local xc = unpackRGB(ptrXCont[1], ptrXCont[2], ptrXCont[3])
+		local xc = unpackRGB_LP(ptrXCont[1], ptrXCont[2], ptrXCont[3])
 
 		local ptrYCont = ptrYData[iMod]
 		if not ptrYCont then
 			continue
 		end
-		local yc = unpackRGB(ptrYCont[1], ptrYCont[2], ptrYCont[3])
+		local yc = unpackRGB_LP(ptrYCont[1], ptrYCont[2], ptrYCont[3])
 
 
 		local objPatches = objectPatchInfo[objName]
@@ -1515,7 +1515,7 @@ local function generateLightmapPtrTextures()
 			local xc = i % res
 			local yc = math.floor(i / res)
 
-			local cr, cg, cb = packRGB(xc)
+			local cr, cg, cb = packRGB_LP(xc)
 			render.SetViewPort(xc, yc, 1, 1)
 			render.Clear(cr, cg, cb, 255)
 		end
@@ -1529,7 +1529,7 @@ local function generateLightmapPtrTextures()
 			local xc = i % res
 			local yc = math.floor(i / res)
 
-			local cr, cg, cb = packRGB(yc)
+			local cr, cg, cb = packRGB_LP(yc)
 			render.SetViewPort(xc, yc, 1, 1)
 			render.Clear(cr, cg, cb, 255)
 		end

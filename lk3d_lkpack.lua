@@ -178,7 +178,7 @@ function LK3D.LoadLKPack(name)
 
 
     local descriptor_count = fp_decomp:ReadULong()
-    print(descriptor_count .. " descriptors...")
+    LK3D.New_D_Print(descriptor_count .. " descriptors...", LK3D_SEVERITY_DEBUG, "LKPack")
 
     -- name LUT
     local name_lut = {}
@@ -290,9 +290,7 @@ function LK3D.LoadLKPack(name)
     LK3D.New_D_Print("Loaded LKPack \"" .. name .. "\" successfully!", LK3D_SEVERITY_INFO, "LKPack")
 end
 
-
-
-LK3D.LKPackDevMode = false
+LK3D.LKPackDevMode = true
 LK3D.FallbackLKPack = "deepdive_content"
 function LK3D.ReadFileFromLKPack(path)
     if LK3D.ActiveLKPack == nil and not LK3D.LKPackDevMode then
@@ -326,4 +324,9 @@ function LK3D.ReadFileFromLKPack(path)
     end
 
     return read
+end
+
+
+if LK3D.AutoLoadLKPack then
+    LK3D.LoadLKPack(LK3D.AutoLoadLKPack)
 end

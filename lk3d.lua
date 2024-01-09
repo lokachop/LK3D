@@ -190,7 +190,7 @@ function LK3D.AddLight(index, pos, intensity, col, smooth)
 	LK3D.CurrUniv["lightcount"] = LK3D.CurrUniv["lightcount"] + 1
 end
 
-function LK3D.RemoveLight(index, pos, intensity)
+function LK3D.RemoveLight(index)
 	if not LK3D.CurrUniv["lights"][index] then
 		return
 	end
