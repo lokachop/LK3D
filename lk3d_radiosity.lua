@@ -1794,7 +1794,8 @@ local function loadLightmapObject(data, tag, obj_idx)
 
 	local lm_tex_idx = "lightmap_" .. tag .. "_" .. obj_idx .. "_" .. tw .. "_" .. th
 	LK3D.DeclareTextureFromFunc(lm_tex_idx, tw, th, function()
-		render.Clear(255, 0, 0, 255)
+		render.Clear(4, 32, 8, 255)
+		draw.SimpleText("Lightmap Load, Stage1", "BudgetLabel", 0, 0, Color(16, 255, 32))
 	end)
 
 	local thing_path = targ_temp .. tag .. "_" .. obj_idx .. "_" .. tw .. "_" .. th .. ".png"
@@ -1818,15 +1819,19 @@ local function loadLightmapObject(data, tag, obj_idx)
 		matDontDeleteArchive[tag] = {}
 	end
 
-	matDontDeleteArchive[tag][obj_idx] = Material("../data/" .. thing_path, "ignorez nocull")
-	timer.Simple(0, function()
+	--matDontDeleteArchive[tag][obj_idx] = Material("../data/" .. thing_path, "ignorez nocull") -- actually load it
+	timer.Simple(2, function() -- wait abit before loading
+		local _lmMat = Material("../data/" .. thing_path, "ignorez nocull")
+
 		LK3D.DeclareTextureFromFunc(lm_tex_idx, tw, th, function()
-			render.Clear(0, 255, 0, 255)
-			surface.SetMaterial(matDontDeleteArchive[tag][obj_idx])
+			render.Clear(4, 8, 32, 255)
+			draw.SimpleText("Lightmap Load, Stage2", "BudgetLabel", 0, 0, Color(16, 32, 255))
+
+			surface.SetMaterial(_lmMat)
 			surface.SetDrawColor(255, 255, 255, 255)
 			surface.DrawTexturedRect(0, 0, tw, th)
 		end)
-		-- file.Delete(thing_path, "DATA") -- this breaks lightmapping
+		--file.Delete(thing_path, "DATA") -- this breaks lightmapping
 	end)
 
 	local lm_uvs = {}

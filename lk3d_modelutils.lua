@@ -602,7 +602,7 @@ function LK3D.AddModelOBJ(name, objData)
 
 	local _fileNormBuff = {}
 
-	local hadNormal = true
+	local hadNormal = false
 
 	-- its obj so parse each line
 	for k, v in ipairs(string.Explode("\n", objData, false)) do
@@ -665,7 +665,7 @@ function LK3D.AddModelOBJ(name, objData)
 					applyNormFromIdx = true
 					bInd[#bInd + 1] = {i1, i2}
 
-					s_normals[i1] = _fileNormBuff[i3] * 1
+					s_normals[i1] = _fileNormBuff[i2] * 1
 				end
 
 				if i1 and (not i2) and i3 then -- pos // norm
@@ -694,6 +694,11 @@ function LK3D.AddModelOBJ(name, objData)
 	end
 
 	LK3D.Models[name] = data
+	if not hadNormal then
+		LK3D.GenerateNormals(name)
+	end
+
+
 	LK3D.New_D_Print("Declared model \"" .. name .. "\" with " .. #data.verts .. " verts! [OBJ]", LK3D_SEVERITY_DEBUG, "ModelUtils")
 end
 
