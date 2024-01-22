@@ -2140,11 +2140,13 @@ local function renderInfo()
 			draw.SimpleText("MDL_L  ; " .. tostring(LK3D.CurrUniv["objects"][tr_world.obj].mdl), "BudgetLabel", 4, 184, col_G)
 			draw.SimpleText("TRI_L  ; " .. tostring(tr_world.tri), "BudgetLabel", 4, 196, col_G)
 			draw.SimpleText("UV_L   ; {" .. friendly_num(tr_world.uv[1]) .. ", " .. friendly_num(tr_world.uv[2]) .. "}", "BudgetLabel", 4, 208, col_G)
+			draw.SimpleText("TEX_L  ; " .. tostring(LK3D.CurrUniv["objects"][tr_world.obj].mat), "BudgetLabel", 4, 220, col_G)
 		else
 			draw.SimpleText("OBJ_L  ; [none]", "BudgetLabel", 4, 170, col_G)
 			draw.SimpleText("MDL_L  ; [none]", "BudgetLabel", 4, 184, col_G)
 			draw.SimpleText("TRI_L  ; [none]", "BudgetLabel", 4, 196, col_G)
 			draw.SimpleText("UV_L   ; {?, ?}", "BudgetLabel", 4, 208, col_G)
+			draw.SimpleText("TEX_L  ; [none]", "BudgetLabel", 4, 220, col_G)
 		end
 		draw.SimpleText("POS_L  ; " .. friendly_vstr(tr_world.pos), "BudgetLabel", 4, 156, col_G)
 

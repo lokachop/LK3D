@@ -149,7 +149,7 @@ end
 function LK3D.LoadLKPack(name)
     local data = file.Read("maps/" .. name .. ".lkp.ain", "GAME")
     if not data then
-        LK3D.New_D_Print("LKPack doesnt exist! (" .. name .. ") [" .. "maps/" .. name .. ".ain]", LK3D_SEVERITY_FATAL, "LKPack")
+        LK3D.New_D_Print("LKPack doesnt exist! (" .. name .. ") [" .. "maps/" .. name .. ".lkp.ain]", LK3D_SEVERITY_FATAL, "LKPack")
         return
     end
 
