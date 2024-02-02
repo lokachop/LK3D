@@ -143,7 +143,7 @@ function LK3D.RenderIntro()
     LK3D.SetCamPos(LocalPlayer():EyePos() / 100)
     LK3D.SetCamAng(LocalPlayer():EyeAngles())
 
-    LK3D.SetRenderer(LK3D.Const.RENDER_HARD)
+    LK3D.SetRenderer(LK3D_RENDER_HARD)
     LK3D.PushRenderTarget(rtRender_intro)
     LK3D.PushUniverse(LK3D.IntroUniv)
         LK3D.RenderClear(12, 12, 16)

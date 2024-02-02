@@ -407,5 +407,6 @@ function Renderer.GetLightIntensity(pos, norm)
 	return lr, lg, lb
 end
 
-LK3D.Const.RENDER_SOFT = 1
-LK3D.Renderers[LK3D.Const.RENDER_SOFT] = Renderer
+
+local id = LK3D.DeclareRenderer(Renderer)
+LK3D_RENDER_SOFT = id

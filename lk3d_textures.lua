@@ -67,22 +67,35 @@ function LK3D.UpdateRtEz(rt, call)
 	render.SetViewPort(0, 0, ow, oh)
 end
 
-
-function LK3D.DeclareTextureFromFunc(index, w, h, func, transp, ignorez)
-	LK3D.New_D_Print("Declaring texture \"" .. index .. "\" [" .. w .. "x" .. h .. "]; FUNC", LK3D_SEVERITY_DEBUG, "Textures")
-	if not LK3D.Textures[index] then
-		local rtg = GetRenderTarget("lk3d_mat_" .. index .. "_rt", w, h)
-		local matg, matg_lm = LK3D.RTToMaterial(rtg, transp, ignorez)
-
-		LK3D.Textures[index] = {
-			rt = rtg,
-			mat = matg,
-			mat_lm = matg_lm,
-			name = index
-		}
+local function initTex(index, w, h, transp, ignorez)
+	if LK3D.Textures[index] then
+		return
 	end
 
-	local ow, oh = ScrW(), ScrH()
+	local rtg = GetRenderTarget("lk3d_mat_" .. index .. "_rt", w, h)
+	local matg, matg_lm = LK3D.RTToMaterial(rtg, transp, ignorez)
+
+	LK3D.Textures[index] = {
+		rt = rtg,
+		mat = matg,
+		mat_lm = matg_lm,
+		name = index
+	}
+end
+
+local ScreenSzStack = {}
+local function insScreenSz()
+	ScreenSzStack[#ScreenSzStack + 1] = {ScrW(), ScrH()}
+end
+
+local function popScreenSz()
+	local val = table.remove(ScreenSzStack, 1)
+	return val[1], val[2]
+end
+
+
+local function pushRT(index, w, h, transp)
+	insScreenSz()
 	render.SetViewPort(0, 0, w, h)
 	cam.Start2D()
 	render.PushRenderTarget(LK3D.Textures[index].rt)
@@ -92,18 +105,29 @@ function LK3D.DeclareTextureFromFunc(index, w, h, func, transp, ignorez)
 		if transp then
 			render.OverrideAlphaWriteEnable(true, true)
 		end
-		local fine, err = pcall(func)
-		if not fine then
-			LK3D.New_D_Print("Error while making texture \"" .. index .. "\" [" .. w .. "x" .. h .. "]; " .. err, LK3D_SEVERITY_ERROR, "Textures")
-		end
-		if transp then
-			render.OverrideAlphaWriteEnable(false)
-		end
+end
+
+local function popRT()
+	local ow, oh = popScreenSz()
+		render.OverrideAlphaWriteEnable(false)
 	render.PopFilterMag()
 	render.PopFilterMin()
 	render.PopRenderTarget()
 	cam.End2D()
 	render.SetViewPort(0, 0, ow, oh)
+end
+
+
+function LK3D.DeclareTextureFromFunc(index, w, h, func, transp, ignorez)
+	LK3D.New_D_Print("Declaring texture \"" .. index .. "\" [" .. w .. "x" .. h .. "]; FUNC", LK3D_SEVERITY_DEBUG, "Textures")
+	initTex(index, w, h, transp, ignorez)
+
+	pushRT(index, w, h, transp)
+		local fine, err = pcall(func)
+		if not fine then
+			LK3D.New_D_Print("Error while making texture \"" .. index .. "\" [" .. w .. "x" .. h .. "]; " .. err, LK3D_SEVERITY_ERROR, "Textures")
+		end
+	popRT()
 
 	-- returning for noobs i guess
 	return LK3D.Textures[index]
@@ -111,72 +135,37 @@ end
 
 function LK3D.DeclareTextureFromSourceMat(index, w, h, mat, transp)
 	LK3D.New_D_Print("Declaring texture \"" .. index .. "\" [" .. w .. "x" .. h .. "]; SMAT", LK3D_SEVERITY_DEBUG, "Textures")
-	if not LK3D.Textures[index] then
-		local rtg = GetRenderTarget("lk3d_mat_" .. index .. "_rt", w, h)
-		local matg, matg_lm = LK3D.RTToMaterial(rtg, transp)
-
-		LK3D.Textures[index] = {
-			rt = rtg,
-			mat = matg,
-			mat_lm = matg_lm,
-			name = index
-		}
-	end
+	initTex(index, w, h, transp, ignorez)
 
 	local matGetWhite = LK3D.FriendlySourceTexture(mat)
 
-	local ow, oh = ScrW(), ScrH()
-	cam.Start2D()
-	render.PushRenderTarget(LK3D.Textures[index].rt)
-	render.SetViewPort(0, 0, w, h)
-		if transp then
-			render.OverrideAlphaWriteEnable(true, true)
-		end
-		render.Clear(0, 0, 0, 0)
+	pushRT(index, w, h, transp)
 		render.SetMaterial(matGetWhite)
 		render.DrawScreenQuad()
-		if transp then
-			render.OverrideAlphaWriteEnable(false)
-		end
-	render.SetViewPort(0, 0, ow, oh)
-	render.PopRenderTarget()
-	cam.End2D()
+	popRT()
 end
 
 function LK3D.DeclareTextureFromMatObj(index, w, h, matobj, transp)
 	LK3D.New_D_Print("Declaring texture \"" .. index .. "\" [" .. w .. "x" .. h .. "]; MATOBJ", LK3D_SEVERITY_DEBUG, "Textures")
-	if not LK3D.Textures[index] then
-		local rtg = GetRenderTarget("lk3d_mat_" .. index .. "_rt", w, h)
-		local matg, matg_lm = LK3D.RTToMaterial(rtg, transp)
+	initTex(index, w, h, transp, ignorez)
 
-		LK3D.Textures[index] = {
-			rt = rtg,
-			mat = matg,
-			mat_lm = matg_lm,
-			name = index
-		}
-	end
-
-	local ow, oh = ScrW(), ScrH()
-
-
-	render.SetViewPort(0, 0, w, h)
-	cam.Start2D()
-	render.PushRenderTarget(LK3D.Textures[index].rt)
-		if transp then
-			render.OverrideAlphaWriteEnable(true, true)
-		end
-		render.Clear(0, 0, 0, 0)
+	pushRT(index, w, h, transp)
 		surface.SetDrawColor(255, 255, 255)
 		surface.SetMaterial(matobj)
 		surface.DrawTexturedRect(0, 0, ScrW(), ScrH())
-		if transp then
-			render.OverrideAlphaWriteEnable(false)
-		end
-	render.PopRenderTarget()
-	cam.End2D()
-	render.SetViewPort(0, 0, ow, oh)
+	popRT()
 end
+
+function LK3D.DeclareTextureFromPNGFile(index, fpath, transp)
+	local realPath = LK3D.GetDataPathToFile("textures/" .. fpath .. ".png")
+	LK3D.New_D_Print("Loading Texture \"" .. index .. "\" (" .. fpath .. ") from LKPack!", LK3D_SEVERITY_INFO, "ModelUtils")
+
+	timer.Simple(2, function() -- lateload fix so no weird png load errors
+		local matObj = Material("../data/" .. realPath, "nocull ignorez")
+		LK3D.DeclareTextureFromMatObj(index, matObj:Width(), matObj:Height(), matObj, transp)
+	end)
+end
+
 
 function LK3D.CopyTextureRT(name, to)
 	local ow, oh = ScrW(), ScrH()
@@ -789,10 +778,6 @@ function LK3D.SetupBaseMaterials()
 		return c1, c2, c3, c4
 	end
 
-	--local mat_spheremap = Material("lk3d/spheremap_bar.png", "nocull ignorez smooth")
-	--LK3D.DeclareTextureFromMatObj("spheremap", 256, 256, mat_spheremap)
-	--LK3D.CompressTexture("spheremap")
-
 	LK3D.DecompressTexture("spheremap_lq", false, false, "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")
 
 
@@ -958,9 +943,6 @@ function LK3D.SetupBaseMaterials()
 	end)
 
 
-
-
-
 	LK3D.DeclareTextureFromFunc("process_loka1", 196, 196, function()
 		render.Clear(250 * .5, 240 * .5, 174 * .5, 255)
 	end)
@@ -982,34 +964,6 @@ function LK3D.SetupBaseMaterials()
 		cam.PopModelMatrix()
 	end)
 
-	--[[
-	LK3D.ApplyShaderEffect("lokaface2", function(xc, yc, img_arr)
-		local dx = xc / ScrW()
-		local dy = yc / ScrH()
-
-		local rdx = (dx - .5) * 2
-		local rdy = (dy - .5) * 2
-
-		local dist_from_center = math.Distance(rdx, rdy, 0, 0) + .01 -- avoid div by 0
-		if dist_from_center > 1 then -- we dont care dont do the fancy math
-			surface.SetDrawColor(0, 0, 0)
-			surface.DrawRect(xc, yc, 1, 1)
-			return
-		end
-
-		local dmd_dx = rdx * math.pow(dist_from_center, 2)
-		local dmd_dy = rdy * math.pow(dist_from_center, 2)
-
-		-- convert back to 0-scrw
-		dmd_dx = math.floor((dmd_dx + 1) * (ScrW() * .5))
-		dmd_dy = math.floor((dmd_dy + 1) * (ScrH() * .5))
-
-		local pixel_contents = img_arr[dmd_dx][dmd_dy]
-
-		surface.SetDrawColor(pixel_contents[1], pixel_contents[2], pixel_contents[3])
-		surface.DrawRect(xc, yc, 1, 1)
-	end)
-	]]--
 
 	LK3D.DeclareTextureFromFunc("change_add", 128, 128, function()
 		render.Clear(0, 0, 0, 0)

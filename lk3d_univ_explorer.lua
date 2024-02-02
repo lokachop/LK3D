@@ -198,7 +198,7 @@ local function openUE()
 		LK3D.FAR_Z = LK3D.UE.ZFar
 		LK3D.NEAR_Z = LK3D.UE.ZNear
 
-		LK3D.SetRenderer(LK3D.Const.RENDER_HARD)
+		LK3D.SetRenderer(LK3D_RENDER_HARD)
 		LK3D.SetFOV(90)
 		LK3D.PushRenderTarget(rt_renderCanvas)
 			LK3D.PushUniverse(LK3D.UniverseRegistry[LK3D.UE.Univ])

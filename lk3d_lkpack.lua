@@ -290,6 +290,16 @@ function LK3D.LoadLKPack(name)
     LK3D.New_D_Print("Loaded LKPack \"" .. name .. "\" successfully!", LK3D_SEVERITY_INFO, "LKPack")
 end
 
+function LK3D.GetDataPathToFile(path)
+    if LK3D.LKPackDevMode then
+        return "lk3d/lkpack/compile/" .. LK3D.FallbackLKPack .. "/" .. path
+    end
+
+    return "lk3d/lkpack/decomp_active/" .. LK3D.ActiveLKPack .. "/" .. path .. ".txt"
+end
+
+
+
 LK3D.LKPackDevMode = true
 LK3D.FallbackLKPack = "deepdive_content"
 function LK3D.ReadFileFromLKPack(path)

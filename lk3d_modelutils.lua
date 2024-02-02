@@ -586,7 +586,8 @@ function LK3D.AddModelLKC(name, data)
 	f_pointer:Close()
 end
 
-function LK3D.AddModelOBJ(name, objData)
+
+local function parseOBJMesh(objData)
 	local data = {}
 	data["verts"] = {}
 	data["uvs"] = {}
@@ -661,11 +662,11 @@ function LK3D.AddModelOBJ(name, objData)
 					bInd[#bInd + 1] = {i1, i2}
 				end
 
-				if i1 and i2 and i3 then -- pos / norm / tex
+				if i1 and i2 and i3 then -- pos / tex / norm
 					applyNormFromIdx = true
 					bInd[#bInd + 1] = {i1, i2}
 
-					s_normals[i1] = _fileNormBuff[i2] * 1
+					s_normals[i1] = _fileNormBuff[i3] * 1
 				end
 
 				if i1 and (not i2) and i3 then -- pos // norm
@@ -693,6 +694,13 @@ function LK3D.AddModelOBJ(name, objData)
 		end
 	end
 
+	return data, hadNormal
+end
+
+
+function LK3D.AddModelOBJ(name, objData)
+	local data, hadNormal = parseOBJMesh(objData)
+
 	LK3D.Models[name] = data
 	if not hadNormal then
 		LK3D.GenerateNormals(name)
@@ -714,6 +722,19 @@ function LK3D.DeclareModelFromLKCFile(name, fpath)
 	LK3D.New_D_Print("Loading LKC model \"" .. name .. "\" (" .. fpath .. ") from LKPack!", LK3D_SEVERITY_INFO, "ModelUtils")
 
 	LK3D.AddModelLKC(name, fcontents)
+end
+
+function LK3D.DeclareAnimatedModel(name, fpath)
+	LK3D.New_D_Print("Loading Animated model \"" .. name .. "\" (" .. fpath .. ") from LKPack!", LK3D_SEVERITY_INFO, "ModelUtils")
+	local jsonInfo = LK3D.ReadFileFromLKPack("models/" .. fpath .. "/params.json")
+	local jsonTbl = util.JSONToTable(jsonInfo)
+
+	if not jsonTbl then
+		LK3D.New_D_Print("Failed to load JSON info when loading animated model \"" .. name .. "\"!", LK3D_SEVERITY_ERROR, "ModelUtils")
+		return
+	end
+
+	PrintTable(jsonTbl)
 end
 
 

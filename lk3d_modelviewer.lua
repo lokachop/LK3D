@@ -381,7 +381,7 @@ local function openMV()
 		LK3D.SetCamPos(c_pos)
 
 
-		LK3D.SetRenderer(LK3D.Const.RENDER_HARD)
+		LK3D.SetRenderer(LK3D_RENDER_HARD)
 		LK3D.SetFOV(90)
 		LK3D.SetWireFrame(LK3D.MV.Wireframe or false)
 		LK3D.PushRenderTarget(rt_renderCanvas)

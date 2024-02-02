@@ -111,7 +111,7 @@ local function updateLK3DRenders()
 
     LK3D.RenderActiveUniverse()
 
-    LK3D.SetRenderer(LK3D.Const.RENDER_HARD)
+    LK3D.SetRenderer(LK3D_RENDER_HARD)
     LK3D.PushRenderTarget(rtCamera)
         LK3D.RenderClear(25, 25, 100)
 
@@ -130,7 +130,7 @@ local function updateLK3DRenders()
     -- move shit to a diff universe so we dont have objects from default universe
 
     -- hardware renderer
-    LK3D.SetRenderer(LK3D.Const.RENDER_HARD)
+    LK3D.SetRenderer(LK3D_RENDER_HARD)
 
     --LK3D.PushUniverse(universe)
     LK3D.RenderClear(25, 100, 25)
@@ -144,7 +144,7 @@ local function updateLK3DRenders()
     LK3D.PopRenderTarget()
 
     -- back to software
-    LK3D.SetRenderer(LK3D.Const.RENDER_SOFT)
+    LK3D.SetRenderer(LK3D_RENDER_SOFT)
 
     LK3D.UpdateTexture("ScreenCopy", function()
         local rtmat = LK3D.RTToMaterial(rtCamera)

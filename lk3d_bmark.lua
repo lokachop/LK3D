@@ -875,7 +875,7 @@ function LK3D.BenchmarkRender()
 
 	LK3D.PushUniverse(univBenchmark)
 		LK3D.PushRenderTarget(rtBenchmark)
-			LK3D.SetRenderer(LK3D.Const.RENDER_HARD)
+			LK3D.SetRenderer(LK3D_RENDER_HARD)
 			LK3D.RenderClear(12, 12, 16)
 			local stage_dat = stages[currStage]
 			if not stage_dat then

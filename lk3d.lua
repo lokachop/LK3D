@@ -77,9 +77,19 @@ LK3D.ActiveRenderer = 2 -- this should always be the hardware renderer
 LK3D.Renderers = LK3D.Renderers or {}
 --include("lk3d_fileparser.lua") -- new fileparser!
 
+local lastRendererID = 0
+function LK3D.DeclareRenderer(renderer)
+	lastRendererID = lastRendererID + 1
+	LK3D.Renderers[lastRendererID] = renderer
+
+	return lastRendererID
+end
 
 include("lk3d_renderer_soft.lua")
 include("lk3d_renderer_hard.lua")
+include("lk3d_renderer_hard2.lua")
+
+LK3D.ActiveRenderer = LK3D_RENDER_HARD or LK3D.ActiveRenderer
 
 
 function LK3D.SetRenderer(rid)
@@ -256,7 +266,7 @@ end
 function LK3D.RenderActiveUniverse()
 	local fine, err = pcall(LK3D.Renderers[LK3D.ActiveRenderer].Render)
 	if not fine then
-		LK3D.New_D_Print("Error while rendering the whole scene using the \"" .. LK3D.Renderers[LK3D.ActiveRenderer].PrettyName .. "\" renderer; " .. err, LK3D_SERVERITY_ERROR, "LK3D")
+		LK3D.New_D_Print("Error while rendering the whole scene using the \"" .. LK3D.Renderers[LK3D.ActiveRenderer].PrettyName .. "\" renderer; " .. err, LK3D_SERVERITY_FATAL, "LK3D")
 	end
 end
 
