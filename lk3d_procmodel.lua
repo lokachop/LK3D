@@ -63,7 +63,7 @@ function LK3D.DeclareProcSphere(nm, coli, rowi, szx, szy, uvm, invert)
 		end
 	end
 	LK3D.Models[nm] = mdat
-	LK3D.GenerateNormals(nm, invert)
+	LK3D.GenerateNormals(LK3D.Models[nm], invert)
 
 
 	local mdldat = LK3D.Models[nm]
@@ -271,7 +271,7 @@ function LK3D.DeclareProcCylinder(nm, cyl_itr)
 
 
 	LK3D.Models[nm] = mdat
-	LK3D.GenerateNormals(nm)
+	LK3D.GenerateNormals(LK3D.Models[nm])
 
 
 	local mdldat = LK3D.Models[nm]
@@ -407,7 +407,7 @@ function LK3D.DeclareProcPlane(nm, psx, psy, itrx, itry, distortfunc)
 	end
 
 	LK3D.Models[nm] = mdat
-	LK3D.GenerateNormals(nm)
+	LK3D.GenerateNormals(LK3D.Models[nm])
 end
 
 
@@ -553,7 +553,7 @@ function LK3D.DeclareCubeMarchModel(name, detail, sz, func)
 
 	local opti_mdat = LK3D.GetOptimizedModelTable(mdat)
 	LK3D.Models[name] = opti_mdat
-	LK3D.GenerateNormals(name)
+	LK3D.GenerateNormals(LK3D.Models[name])
 end
 
 
