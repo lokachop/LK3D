@@ -156,13 +156,34 @@ function LK3D.DeclareTextureFromMatObj(index, w, h, matobj, transp)
 	popRT()
 end
 
-function LK3D.DeclareTextureFromPNGFile(index, fpath, transp)
+
+local function makeFakeFile(path)
+	local fRead = file.Read(path , "DATA")
+	file.Write(path .. "_fake.png", fRead)
+
+	return path .. "_fake.png"
+end
+
+
+function LK3D.DeclareTextureFromPNGFile(index, w, h, fpath, transp)
 	local realPath = LK3D.GetDataPathToFile("textures/" .. fpath .. ".png")
 	LK3D.New_D_Print("Loading Texture \"" .. index .. "\" (" .. fpath .. ") from LKPack!", LK3D_SEVERITY_INFO, "ModelUtils")
 
+	LK3D.DeclareTextureFromFunc(index, w, h, function()
+		render.Clear(16, 32, 64, 255)
+	end, false, transp)
+
+	local fakePath = makeFakeFile(realPath)
+
+
 	timer.Simple(2, function() -- lateload fix so no weird png load errors
-		local matObj = Material("../data/" .. realPath, "nocull ignorez")
-		LK3D.DeclareTextureFromMatObj(index, matObj:Width(), matObj:Height(), matObj, transp)
+		local matObj = Material("../data/" .. fakePath, "nocull ignorez")
+
+		LK3D.UpdateTexture(index, function()
+			surface.SetDrawColor(255, 255, 255)
+			surface.SetMaterial(matObj)
+			surface.DrawTexturedRect(0, 0, ScrW(), ScrH())
+		end)
 	end)
 end
 

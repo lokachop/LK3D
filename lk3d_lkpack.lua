@@ -7,6 +7,8 @@ file.CreateDir("lk3d/lkpack/out")
 file.CreateDir("lk3d/lkpack/temp")
 file.CreateDir("lk3d/lkpack/decomp_active")
 
+local VAL_FOLDER_ID = 0xFFFFFFFF
+
 LK3D.ActiveLKPack = nil
 
 -- makes a flat table which has each key being 
@@ -58,6 +60,7 @@ function LK3D.MakeLKPack(dir)
             dir_count = dir_count + 1
         end
     end
+    --PrintTable(descriptors)
 
     -- the lookup table with the compressed contents of file, generate
     local index_arr = {}
@@ -94,7 +97,7 @@ function LK3D.MakeLKPack(dir)
     -- write the descriptor_to_name lookup table
     --temp_f:WriteULong(#descriptor_to_name) -- number of entries
     for k, v in ipairs(descriptor_to_name) do
-        temp_f:WriteUShort(#v)
+        temp_f:WriteULong(#v)
         temp_f:Write(v)
     end
     temp_f:WriteByte(0xF0) -- tag as done
@@ -102,7 +105,7 @@ function LK3D.MakeLKPack(dir)
     -- write the descriptor_to_parent lookup table
     --temp_f:WriteULong(#descriptor_to_parent) -- number of entries
     for k, v in ipairs(descriptor_to_parent) do
-        temp_f:WriteUShort(#v)
+        temp_f:WriteULong(#v)
         temp_f:Write(v)
     end
     temp_f:WriteByte(0xF0) -- tag as done
@@ -111,9 +114,9 @@ function LK3D.MakeLKPack(dir)
     --temp_f:WriteULong(#descriptor_to_type)
     for k, v in ipairs(descriptor_to_file) do
         if v == -1 then
-            temp_f:WriteUShort(0xFF)
+            temp_f:WriteULong(VAL_FOLDER_ID)
         else
-            temp_f:WriteUShort(v)
+            temp_f:WriteULong(v)
         end
     end
     temp_f:WriteByte(0xF0) -- tag as done
@@ -183,7 +186,7 @@ function LK3D.LoadLKPack(name)
     -- name LUT
     local name_lut = {}
     for i = 1, descriptor_count do
-        local read_len = fp_decomp:ReadUShort()
+        local read_len = fp_decomp:ReadULong()
         name_lut[i] = fp_decomp:Read(read_len)
     end
 
@@ -197,7 +200,7 @@ function LK3D.LoadLKPack(name)
     -- parent LUT
     local parent_lut = {}
     for i = 1, descriptor_count do
-        local read_len = fp_decomp:ReadUShort()
+        local read_len = fp_decomp:ReadULong()
         parent_lut[i] = fp_decomp:Read(read_len)
     end
 
@@ -212,9 +215,9 @@ function LK3D.LoadLKPack(name)
     -- descriptor LUT
     local descriptor_lut = {}
     for i = 1, descriptor_count do
-        local read_lookup = fp_decomp:ReadUShort()
+        local read_lookup = fp_decomp:ReadULong()
 
-        descriptor_lut[i] = (read_lookup == 0xFF) and -1 or read_lookup
+        descriptor_lut[i] = (read_lookup == VAL_FOLDER_ID) and -1 or read_lookup
     end
 
     read_check = fp_decomp:ReadByte()
