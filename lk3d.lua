@@ -85,9 +85,10 @@ function LK3D.DeclareRenderer(renderer)
 	return lastRendererID
 end
 
-include("lk3d_renderer_soft.lua")
-include("lk3d_renderer_hard.lua")
-include("lk3d_renderer_hard2.lua")
+include("renderers/renderer_soft/lk3d_renderer_soft.lua")
+include("renderers/renderer_hard/lk3d_renderer_hard.lua")
+include("renderers/renderer_hard2/lk3d_renderer_hard2.lua")
+include("renderers/renderer_soft2/lk3d_renderer_soft2.lua")
 
 LK3D.ActiveRenderer = LK3D_RENDER_HARD or LK3D.ActiveRenderer
 

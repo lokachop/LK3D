@@ -896,7 +896,7 @@ function LK3D.PushModelAnims(index, an_index)
 
 		local meshPush = nil
 		if not object["NO_SHADING"] then
-			if object["SHADE_SMOOTH"] then
+			if object["SHADING_SMOOTH"] then
 				meshPush = v.meshesSmooth
 			else
 				meshPush = v.meshesFlat
