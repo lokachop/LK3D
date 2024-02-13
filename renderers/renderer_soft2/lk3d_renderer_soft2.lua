@@ -706,7 +706,7 @@ function Renderer.Render()
 
 			local fine, err = pcall(renderModel, v)
 			if not fine then
-				LK3D.New_D_Print("Error rendering model \"" .. k .. "\" on universe \"" .. currUniv.tag .. "\": " .. err, LK3D_SEVERITY_ERROR, "Hardware2")
+				LK3D.New_D_Print("Error rendering model \"" .. k .. "\" on universe \"" .. currUniv.tag .. "\": " .. err, LK3D_SEVERITY_ERROR, "Software2")
 				break
 			end
 		end

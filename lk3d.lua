@@ -15,7 +15,7 @@ concommand.Add("lk3d_toggledebug", function()
 	LK3D.Debug = not LK3D.Debug
 	print("Debug is now: " .. (LK3D.Debug and "on" or "off"))
 end)
-LK3D.Version = "1.3 \'Green Square\'"
+LK3D.Version = "1.4 'Teal Triangle'"
 
 function LK3D.D_Print(...)
 	if not LK3D.Debug then
@@ -301,6 +301,30 @@ function LK3D.GetLightIntensity(pos, norm)
 	return ret, rg, rb
 end
 
+function LK3D.ToScreen(pos)
+	local crt = LK3D.CurrRenderTarget
+	local rtw, rth = crt:Width(), crt:Height()
+
+	cam.Start({
+		type = "3D",
+		x = 0,
+		y = 0,
+		w = rtw,
+		h = rth,
+		aspect = rtw / rth,
+		origin = LK3D.CamPos,
+		angles = LK3D.CamAng,
+		fov = LK3D.FOV,
+		zfar = LK3D.FAR_Z,
+		znear = LK3D.NEAR_Z,
+		ortho = LK3D.Ortho and LK3D.OrthoParameters or nil
+	})
+		local data = pos:ToScreen()
+	cam.End3D()
+
+	return data
+end
+
 
 -- this should clear the renderer (erase) with rgb colour
 function LK3D.RenderClear(r, g, b, a)
@@ -467,7 +491,8 @@ function LK3D.RTToMaterialNoZ(rt, transp)
 end
 
 -- this uses render.Spin() to render a helpful message over how we're processing sutff
-local rt_nfo = GetRenderTarget("lk3d_processing_rt", 512, 512)
+local rt_nfo = GetRenderTarget("lk3d_processing_rt2", ScrW(), ScrH())
+local REAL_W, REAL_H = ScrW(), ScrH()
 function LK3D.RenderProcessingMessage(message, prog, xtrarender)
 	local last_rt = nil
 	if render.GetRenderTarget() ~= nil then
@@ -477,23 +502,42 @@ function LK3D.RenderProcessingMessage(message, prog, xtrarender)
 
 
 	local ow, oh = ScrW(), ScrH()
-	render.SetViewPort(0, 0, 512, 512)
+	render.SetViewPort(0, 0, REAL_W, REAL_H)
 	cam.Start2D()
 	render.PushRenderTarget(rt_nfo)
 		render.SetColorMaterialIgnoreZ()
 		draw.NoTexture()
 
-		local proc_mat = LK3D.GetTextureByIndex("lk3d_processing").mat
-		surface.SetDrawColor(255, 255, 255, 255)
-		surface.SetMaterial(proc_mat)
-		surface.DrawTexturedRect(0, 0, ScrW(), ScrH())
+		local proc_mat = LK3D.GetTextureByIndex("lk3d_processing")
+		if proc_mat then
+			surface.SetDrawColor(255, 255, 255, 255)
+			surface.SetMaterial(proc_mat.mat)
+			surface.DrawTexturedRectUV(0, 0, ScrW(), ScrH(), 0, 0, (ScrW() / ScrH()) * 8, 8)
+		else
+			surface.SetDrawColor(57, 104, 57)
+			surface.DrawRect(0, 0, ScrW(), ScrH())
+		end
+
+		local m_scl = Matrix()
+		m_scl:SetTranslation(Vector(8, 0))
+		m_scl:SetScale(Vector(4, 4))
+		cam.PushModelMatrix(m_scl)
+			draw.SimpleText("LK3D Processing...", "BudgetLabel", 0, 0, Color(255, 160, 76), TEXT_ALIGN_LEFT, TEXT_ALIGN_TOP)
+		cam.PopModelMatrix()
+
+		m_scl = Matrix()
+		m_scl:SetTranslation(Vector(8, 12 * 4))
+		m_scl:SetScale(Vector(4, 4))
+		cam.PushModelMatrix(m_scl)
+			draw.SimpleText("Please wait...", "BudgetLabel", 0, 0, Color(255, 160, 76), TEXT_ALIGN_LEFT, TEXT_ALIGN_TOP)
+		cam.PopModelMatrix()
 
 		if message then
 			surface.SetDrawColor(64, 84, 200)
 
 			local m_scl = Matrix()
-			m_scl:SetTranslation(Vector(0, 12 * 4))
-			m_scl:SetScale(Vector(2, 2))
+			m_scl:SetTranslation(Vector(8, 32 * 4))
+			m_scl:SetScale(Vector(4, 4))
 			cam.PushModelMatrix(m_scl)
 				draw.DrawText(message, "BudgetLabel", 0, 0, Color(64, 84, 200), TEXT_ALIGN_LEFT, TEXT_ALIGN_TOP)
 			cam.PopModelMatrix()
@@ -501,8 +545,8 @@ function LK3D.RenderProcessingMessage(message, prog, xtrarender)
 
 		if prog then
 			local m_scl = Matrix()
-			m_scl:SetTranslation(Vector(0, ScrH() - 120))
-			m_scl:SetScale(Vector(4, 4))
+			m_scl:SetTranslation(Vector(8, ScrH() - 120))
+			m_scl:SetScale(Vector(8, 8))
 			cam.PushModelMatrix(m_scl)
 				draw.DrawText(string.format("%05.2f%%", prog), "BudgetLabel", 0, 0, Color(200, 84, 240), TEXT_ALIGN_LEFT, TEXT_ALIGN_BOTTOM)
 			cam.PopModelMatrix()
@@ -671,6 +715,7 @@ include("lk3d_lkpack.lua") -- lkpack first
 include("lk3d_modelutils.lua")
 include("lk3d_procmodel.lua")
 include("lk3d_models.lua")
+include("lk3d_textures.lua")
 
 LK3D.ModelInitExtra = LK3D.ModelInitExtra or {}
 for k, v in pairs(LK3D.ModelInitExtra) do
@@ -680,7 +725,6 @@ for k, v in pairs(LK3D.ModelInitExtra) do
 	end
 end
 
-include("lk3d_textures.lua")
 
 
 include("lk3d_particles.lua")
@@ -701,6 +745,4 @@ include("lk3d_intro.lua")
 include("lk3d_changelog.lua")
 include("lk3d_about.lua")
 -- todo surface2d (3d mesh. based 2d lib for lk3d)
-
-LK3D.InitProcessTexture()
 LK3D.New_D_Print("LK3D fully loaded!", LK3D_SEVERITY_INFO, "LK3D")

@@ -856,6 +856,11 @@ function LK3D.DeclareAnimatedModel(name, fpath)
 
 		local animPtr = regTbl.anims[animIndex]
 		for i = fStart, fEnd do
+			if LK3D.RenderProcessingMessage and i % 24 then
+				LK3D.RenderProcessingMessage("Anim load [" .. name .. ": " .. animIndex .. "]", ((i - fStart) / (fEnd - fStart)) * 100)
+			end
+
+
 			local objStr = LK3D.ReadFileFromLKPack("models/" .. fpath .. "/anims/" .. animIndex .. "/" .. mdlName .. i .. ".obj")
 			local data, hadNormal = parseOBJMesh(objStr)
 			if not hadNormal then

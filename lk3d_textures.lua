@@ -173,6 +173,16 @@ function LK3D.DeclareTextureFromPNGFile(index, w, h, fpath, transp)
 		render.Clear(16, 32, 64, 255)
 	end, false, transp)
 
+	if file.Exists(realPath .. "_fake.png", "DATA") then
+		-- already cached, render instantly?
+		local matObj = Material("../data/" .. realPath .. "_fake.png", "nocull ignorez")
+		LK3D.UpdateTexture(index, function()
+			surface.SetDrawColor(255, 255, 255)
+			surface.SetMaterial(matObj)
+			surface.DrawTexturedRect(0, 0, ScrW(), ScrH())
+		end)
+	end
+
 	local fakePath = makeFakeFile(realPath)
 
 
@@ -653,9 +663,9 @@ function LK3D.InitProcessTexture()
 		LK3D.SetModelFlag("loka_test", "NO_SHADING", true)
 		LK3D.SetModelFlag("loka_test", "SHADING_SMOOTH", false)
 		LK3D.SetModelFlag("loka_test", "NO_LIGHTING", false)
-		LK3D.SetModelFlag("loka_test", "NORM_LIGHT_AFFECT", false)
+		LK3D.SetModelFlag("loka_test", "NORM_LIGHT_AFFECT", true)
 		LK3D.SetModelFlag("loka_test", "SHADOW_VOLUME", true)
-		LK3D.SetModelFlag("loka_test", "SHADOW_ZPASS", false)
+		LK3D.SetModelFlag("loka_test", "SHADOW_ZPASS", true)
 		LK3D.SetModelScale("loka_test", Vector(.25, .25, .25))
 		LK3D.SetModelMat("loka_test", "process_loka1")
 
@@ -697,23 +707,9 @@ function LK3D.InitProcessTexture()
 		render.BlurRenderTarget(render.GetRenderTarget(), 4, 4, 6)
 		surface.SetDrawColor(96, 74, 65, 96)
 		surface.DrawRect(0, 0, ScrW(), ScrH())
-
-
-		local m_scl = Matrix()
-		m_scl:SetTranslation(Vector(ScrW() * .5, 0))
-		m_scl:SetScale(Vector(4, 4))
-		cam.PushModelMatrix(m_scl)
-			draw.SimpleText("LK3D Processing...", "BudgetLabel", 0, 0, Color(255, 160, 76), TEXT_ALIGN_CENTER, TEXT_ALIGN_TOP)
-		cam.PopModelMatrix()
-
-		m_scl = Matrix()
-		m_scl:SetTranslation(Vector(0, ScrH()))
-		m_scl:SetScale(Vector(4, 4))
-		cam.PushModelMatrix(m_scl)
-			draw.SimpleText("Please wait...", "BudgetLabel", 0, 0, Color(255, 160, 76), TEXT_ALIGN_LEFT, TEXT_ALIGN_BOTTOM)
-		cam.PopModelMatrix()
 	end, false, true)
 end
+LK3D.InitProcessTexture()
 
 function LK3D.SetupBaseMaterials()
 	-- make default mats
