@@ -584,6 +584,13 @@ function LK3D.AddModelLKC(name, data)
 end
 
 
+local string = string
+local string_Trim = string.Trim
+local string_TrimRight = string.TrimRight
+local string_sub = string.sub
+local string_Explode = string.Explode
+
+
 local function parseOBJMesh(objData)
 	local data = {}
 	data["verts"] = {}
@@ -603,10 +610,10 @@ local function parseOBJMesh(objData)
 	local hadNormal = false
 
 	-- its obj so parse each line
-	for k, v in ipairs(string.Explode("\n", objData, false)) do
-		local ident = string.sub(v, 1, 2)
-		ident = string.TrimRight(ident)
-		local cont = string.sub(v, #ident + 2) -- shit code
+	for k, v in ipairs(string_Explode("\n", objData, false)) do
+		local ident = string_sub(v, 1, 2)
+		ident = string_TrimRight(ident)
+		local cont = string_sub(v, #ident + 2) -- shit code
 		if not cont then
 			continue
 		end
@@ -614,41 +621,41 @@ local function parseOBJMesh(objData)
 		if ident == "#" then
 			LK3D.New_D_Print("[Comment]: " .. cont, LK3D_SEVERITY_DEBUG, "ModelUtils")
 		elseif ident == "v" then
-			local expVars = string.Explode(" ", cont, false)
+			local expVars = string_Explode(" ", cont, false)
 
-			local x = tonumber(string.Trim(expVars[1]))
-			local y = tonumber(string.Trim(expVars[2]))
-			local z = tonumber(string.Trim(expVars[3]))
+			local x = tonumber(string_Trim(expVars[1]))
+			local y = tonumber(string_Trim(expVars[2]))
+			local z = tonumber(string_Trim(expVars[3]))
 
 			local vecBuild = Vector(x, y, z)
 			verts[#verts + 1] = vecBuild
 		elseif ident == "vt" then
-			local expVars = string.Explode(" ", cont, false)
+			local expVars = string_Explode(" ", cont, false)
 
-			local uR = tonumber(string.Trim(expVars[1]))
-			local vR = tonumber(string.Trim(expVars[2]))
+			local uR = tonumber(string_Trim(expVars[1]))
+			local vR = tonumber(string_Trim(expVars[2]))
 
 			uvs[#uvs + 1] = {uR, vR}
 		elseif ident == "vn" then
 			hadNormal = true
 
-			local expVars = string.Explode(" ", cont, false)
-			local x = tonumber(string.Trim(expVars[1]))
-			local y = tonumber(string.Trim(expVars[2]))
-			local z = tonumber(string.Trim(expVars[3]))
+			local expVars = string_Explode(" ", cont, false)
+			local x = tonumber(string_Trim(expVars[1]))
+			local y = tonumber(string_Trim(expVars[2]))
+			local z = tonumber(string_Trim(expVars[3]))
 
 			local vecBuild = Vector(x, y, z)
 			vecBuild:Normalize()
 			_fileNormBuff[#_fileNormBuff + 1] = vecBuild
 		elseif ident == "f" then
-			local expVars = string.Explode(" ", cont, false)
+			local expVars = string_Explode(" ", cont, false)
 
 			local bInd = {}
 
 			local applyNormFromIdx = false
 
 			for i = 1, 3 do
-				local datExp2 = string.Explode("/", expVars[i], false)
+				local datExp2 = string_Explode("/", expVars[i], false)
 				local i1, i2, i3 = tonumber(datExp2[1]), tonumber(datExp2[2]), tonumber(datExp2[3])
 
 				if i1 and (not i2) and (not i3) then -- pos only
@@ -817,6 +824,147 @@ local function makeRegistryMesh(mdlinfo, shade, smooth)
 	return mesh_obj
 end
 
+-- lets make a faster but bigger model format
+file.CreateDir("lk3d/fam_export")
+local function exportFastAnimatedModel(name, path, mdlData)
+	if not mdlData then
+		return
+	end
+
+	file.Write("lk3d/fam_export/" .. path .. "/" .. name .. ".fam.txt", "TEMP")
+	local fPtr = file.Open("lk3d/fam_export/" .. path .. "/" .. name .. ".fam.txt", "wb", "DATA")
+	if not fPtr then
+		return
+	end
+
+	local verts = mdlData.verts
+	local uvs = mdlData.uvs
+	local ind = mdlData.indices
+	local normals = mdlData.normals
+	local s_norm = mdlData.s_normals
+
+	fPtr:WriteByte(string.byte("F"))
+	fPtr:WriteByte(string.byte("A"))
+	fPtr:WriteByte(string.byte("M"))
+	fPtr:WriteByte(0x00)
+
+	fPtr:WriteULong(#verts)
+	for i = 1, #verts do
+		local vert = verts[i]
+		fPtr:WriteFloat(vert[1])
+		fPtr:WriteFloat(vert[2])
+		fPtr:WriteFloat(vert[3])
+	end
+
+	fPtr:WriteULong(#uvs)
+	for i = 1, #uvs do
+		local uv = uvs[i]
+		fPtr:WriteFloat(uv[1])
+		fPtr:WriteFloat(uv[2])
+	end
+
+	fPtr:WriteULong(#ind)
+	for i = 1, #ind do
+		local idx = ind[i]
+		fPtr:WriteULong(idx[1][1])
+		fPtr:WriteULong(idx[1][2])
+
+		fPtr:WriteULong(idx[2][1])
+		fPtr:WriteULong(idx[2][2])
+
+		fPtr:WriteULong(idx[3][1])
+		fPtr:WriteULong(idx[3][2])
+	end
+
+	fPtr:WriteULong(#normals)
+	for i = 1, #normals do
+		local norm = normals[i]
+		fPtr:WriteFloat(norm[1])
+		fPtr:WriteFloat(norm[2])
+		fPtr:WriteFloat(norm[3])
+	end
+
+	fPtr:WriteULong(#s_norm)
+	for i = 1, #s_norm do
+		local snorm = s_norm[i]
+		fPtr:WriteFloat(snorm[1])
+		fPtr:WriteFloat(snorm[2])
+		fPtr:WriteFloat(snorm[3])
+	end
+
+	fPtr:WriteByte(string.byte("E"))
+	fPtr:WriteByte(0x00)
+	fPtr:WriteByte(0x00)
+	fPtr:WriteByte(0x00)
+
+	fPtr:Close()
+end
+
+local function loadFastAnimatedModel(path)
+	local fPtr = file.Open(path, "rb", "DATA")
+	if not fPtr then
+		return
+	end
+
+	-- read header
+	local head_read = fPtr:ReadULong()
+	if head_read ~= 5062982 then
+		error("invalid header; ", head_read)
+		fPtr:Close()
+		return
+	end
+
+	local mdlData = {
+		verts = {},
+		uvs = {},
+		indices = {},
+		normals = {},
+		s_normals = {},
+	}
+
+	local verts = mdlData.verts
+	local uvs = mdlData.uvs
+	local ind = mdlData.indices
+	local normals = mdlData.normals
+	local s_norm = mdlData.s_normals
+
+
+
+	local vertCount = fPtr:ReadULong()
+	for i = 1, vertCount do
+		verts[i] = Vector(fPtr:ReadFloat(), fPtr:ReadFloat(), fPtr:ReadFloat())
+	end
+
+	local uvCount = fPtr:ReadULong()
+	for i = 1, uvCount do
+		uvs[i] = {fPtr:ReadFloat(), fPtr:ReadFloat()}
+	end
+
+	local indCount = fPtr:ReadULong()
+	for i = 1, indCount do
+		ind[i] = {
+			{fPtr:ReadULong(), fPtr:ReadULong()},
+			{fPtr:ReadULong(), fPtr:ReadULong()},
+			{fPtr:ReadULong(), fPtr:ReadULong()}
+		}
+	end
+
+	local normCount = fPtr:ReadULong()
+	for i = 1, normCount do
+		normals[i] = Vector(fPtr:ReadFloat(), fPtr:ReadFloat(), fPtr:ReadFloat())
+	end
+
+	local s_normCount = fPtr:ReadULong()
+	for i = 1, s_normCount do
+		s_norm[i] = Vector(fPtr:ReadFloat(), fPtr:ReadFloat(), fPtr:ReadFloat())
+	end
+
+	fPtr:Close()
+
+	return mdlData
+end
+
+
 
 
 function LK3D.DeclareAnimatedModel(name, fpath)
@@ -830,8 +978,17 @@ function LK3D.DeclareAnimatedModel(name, fpath)
 	end
 
 	local mdlName = params.modelName
-	local objBase = LK3D.ReadFileFromLKPack("models/" .. fpath .. "/" .. mdlName .. ".obj")
-	LK3D.AddModelOBJ(name, objBase)
+	local mdlFormat = params.modelFormat or "obj"
+
+
+	if mdlFormat == "obj" then
+		local objBase = LK3D.ReadFileFromLKPack("models/" .. fpath .. "/" .. mdlName .. ".obj")
+		LK3D.AddModelOBJ(name, objBase)
+	elseif mdlFormat == "fam" then
+		local realPath = LK3D.GetDataPathToFile("models/" .. fpath .. "/" .. mdlName .. ".fam")
+		local mdlData = loadFastAnimatedModel(realPath)
+		LK3D.Models[name] = mdlData
+	end
 
 	animatedModelRegistry[mdlName] = {
 		name = mdlName,
@@ -856,15 +1013,21 @@ function LK3D.DeclareAnimatedModel(name, fpath)
 
 		local animPtr = regTbl.anims[animIndex]
 		for i = fStart, fEnd do
-			if LK3D.RenderProcessingMessage and i % 24 then
+			if LK3D.RenderProcessingMessage and i % 48 then
 				LK3D.RenderProcessingMessage("Anim load [" .. name .. ": " .. animIndex .. "]", ((i - fStart) / (fEnd - fStart)) * 100)
 			end
 
 
-			local objStr = LK3D.ReadFileFromLKPack("models/" .. fpath .. "/anims/" .. animIndex .. "/" .. mdlName .. i .. ".obj")
-			local data, hadNormal = parseOBJMesh(objStr)
-			if not hadNormal then
-				LK3D.GenerateNormals(data)
+			local data, hadNormal = {}, false
+			if mdlFormat == "obj" then
+				local objStr = LK3D.ReadFileFromLKPack("models/" .. fpath .. "/anims/" .. animIndex .. "/" .. mdlName .. i .. ".obj")
+				data, hadNormal = parseOBJMesh(objStr)
+				if not hadNormal then
+					LK3D.GenerateNormals(data)
+				end
+			elseif mdlFormat == "fam" then
+				local realPath =  LK3D.GetDataPathToFile("models/" .. fpath .. "/anims/" .. animIndex .. "/" .. mdlName .. i .. ".fam")
+				data = loadFastAnimatedModel(realPath)
 			end
 
 			local safeInd = (i - fStart) + 1
@@ -880,7 +1043,6 @@ function LK3D.PushModelAnims(index, an_index)
 	local object = LK3D.CurrUniv["objects"][index]
 
 	if object.mdl ~= an_index then
-		print(object.mdl, an_index)
 		return
 	end
 
@@ -919,8 +1081,47 @@ function LK3D.PushModelAnims(index, an_index)
 end
 
 
+function LK3D.ExportAnimatedModelFAM(index, fpath)
+	local jsonInfo = LK3D.ReadFileFromLKPack("models/" .. fpath .. "/params.json")
+	local params = util.JSONToTable(jsonInfo)
+
+	if not params then
+		LK3D.New_D_Print("Failed to load JSON info when loading animated model \"" .. name .. "\"!", LK3D_SEVERITY_ERROR, "ModelUtils")
+		return
+	end
+
+	local mdlName = params.modelName
+
+	file.CreateDir("lk3d/fam_export/" .. mdlName)
+
+	local objBase = LK3D.ReadFileFromLKPack("models/" .. fpath .. "/" .. mdlName .. ".obj")
+	local dataBase, hadNormalBase = parseOBJMesh(objBase)
+	if not hadNormalBase then
+		LK3D.GenerateNormals(dataBase)
+	end
+	exportFastAnimatedModel(mdlName, mdlName, dataBase)
+
+
+	for k, v in pairs(params.animations) do
+		local animIndex = k
+		local fStart = tonumber(v.fStart)
+		local fEnd = tonumber(v.fEnd)
+
+		file.CreateDir("lk3d/fam_export/" .. mdlName .. "/anims/" .. animIndex)
+		for i = fStart, fEnd do
+			local objStr = LK3D.ReadFileFromLKPack("models/" .. fpath .. "/anims/" .. animIndex .. "/" .. mdlName .. i .. ".obj")
+			local data, hadNormal = parseOBJMesh(objStr)
+			if not hadNormal then
+				LK3D.GenerateNormals(data)
+			end
+
+
+			exportFastAnimatedModel(mdlName .. i, mdlName .. "/anims/" .. animIndex, data)
+		end
+	end
+end
+
+
+
 
 LK3D.New_D_Print("LK3D modelutils fully loaded!", LK3D_SEVERITY_INFO, "Base")
-
--- TODO: write models as ain files so i can load them if theyre massive
--- that way i dont need to do base64 aswell
