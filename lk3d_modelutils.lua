@@ -730,7 +730,7 @@ function LK3D.DeclareModelFromLKCFile(name, fpath)
 end
 
 
-local animatedModelRegistry = {}
+LK3D.AnimatedModelRegistry = LK3D.AnimatedModelRegistry or {}
 
 local fake_SunDir = Vector(0.75, 1, 1)
 fake_SunDir:Normalize()
@@ -967,7 +967,7 @@ end
 
 
 
-function LK3D.DeclareAnimatedModel(name, fpath)
+function LK3D.DeclareAnimatedModel(name, fpath, flush)
 	LK3D.New_D_Print("Loading Animated model \"" .. name .. "\" (" .. fpath .. ") from LKPack!", LK3D_SEVERITY_INFO, "ModelUtils")
 	local jsonInfo = LK3D.ReadFileFromLKPack("models/" .. fpath .. "/params.json")
 	local params = util.JSONToTable(jsonInfo)
@@ -990,33 +990,42 @@ function LK3D.DeclareAnimatedModel(name, fpath)
 		LK3D.Models[name] = mdlData
 	end
 
-	animatedModelRegistry[mdlName] = {
-		name = mdlName,
-		anims = {},
-	}
+	if not LK3D.AnimatedModelRegistry[mdlName] or flush then
+		LK3D.AnimatedModelRegistry[mdlName] = {
+			name = mdlName,
+			anims = {},
+		}
+	end
 
-	local regTbl = animatedModelRegistry[mdlName]
+	local regTbl = LK3D.AnimatedModelRegistry[mdlName]
 
 	for k, v in pairs(params.animations) do
 		local animIndex = k
 		local fStart = tonumber(v.fStart)
 		local fEnd = tonumber(v.fEnd)
 
-		regTbl.anims[animIndex] = {
-			fStart = fStart,
-			fEnd = fEnd,
-			meshesFB = {},
-			meshesFlat = {},
-			meshesSmooth = {}
-		}
+		if not regTbl.anims[animIndex] or flush then
+			regTbl.anims[animIndex] = {
+				fStart = fStart,
+				fEnd = fEnd,
+				meshesFB = {},
+				meshesFlat = {},
+				meshesSmooth = {}
+			}
+		end
 
 
 		local animPtr = regTbl.anims[animIndex]
 		for i = fStart, fEnd do
+			local safeInd = (i - fStart) + 1
+
+			if animPtr.meshesFB[safeInd] and (not flush) then
+				continue
+			end
+
 			if LK3D.RenderProcessingMessage and i % 48 then
 				LK3D.RenderProcessingMessage("Anim load [" .. name .. ": " .. animIndex .. "]", ((i - fStart) / (fEnd - fStart)) * 100)
 			end
-
 
 			local data, hadNormal = {}, false
 			if mdlFormat == "obj" then
@@ -1030,7 +1039,6 @@ function LK3D.DeclareAnimatedModel(name, fpath)
 				data = loadFastAnimatedModel(realPath)
 			end
 
-			local safeInd = (i - fStart) + 1
 
 			animPtr.meshesFB[safeInd] = makeRegistryMesh(data, false, false)
 			animPtr.meshesFlat[safeInd] = makeRegistryMesh(data, true, false)
@@ -1051,7 +1059,7 @@ function LK3D.PushModelAnims(index, an_index)
 	end
 
 
-	local regTbl = animatedModelRegistry[an_index]
+	local regTbl = LK3D.AnimatedModelRegistry[an_index]
 	for k, v in pairs(regTbl.anims) do
 		local frameCount = v.fEnd - v.fStart
 		object.mdlCache[k] = {
