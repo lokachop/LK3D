@@ -271,6 +271,7 @@ local _TEX_NEAREST = 1
 local _TEX_BAYER = 2
 local _TEX_LINEAR = 3
 local texMode = _TEX_NEAREST
+local perspTex = true
 
 local _table = {255, 0, 0}
 local function renderTriangleSimple(x0, y0, x1, y1, x2, y2, c0, c1, c2, v0_w, v1_w, v2_w, u0, v0, u1, v1, u2, v2, tdata)
@@ -326,6 +327,7 @@ local function renderTriangleSimple(x0, y0, x1, y1, x2, y2, c0, c1, c2, v0_w, v1
 					local tv = math_floor(texH * vCalc) % texH
 
 					--tCol = {255, 0, 0}--tdata[tu + (tv * texW)]
+
 					tCol = {tu * 255, tv * 255, 0}
 				elseif texMode == _TEX_BAYER then
 					local bayerIdx = (x % 4) + ((y % 4) * 4) + 1
@@ -373,9 +375,15 @@ local function renderTriangleSimple(x0, y0, x1, y1, x2, y2, c0, c1, c2, v0_w, v1
 					bCalc = bCalc / negW
 				end
 
+				--surface.SetDrawColor(uCalc * 255, vCalc * 255, 0)
+				--surface.DrawRect(math.floor(x), math.floor(y), 1, 1)
+				surface.SetDrawColor(rCalc * 255, gCalc * 255, bCalc * 255)
+				surface.DrawTexturedRectUV(math.floor(x), math.floor(y), 1, 1, uCalc, vCalc, uCalc, vCalc)
+
 				--rt[x + (y * rtW)] = {tCol[1] * rCalc, tCol[2] * gCalc, tCol[3] * bCalc}
-				render.SetViewPort(math.floor(x), math.floor(y), 1, 1)
-				render.Clear(tCol[1] * rCalc, tCol[2] * rCalc, tCol[3] * rCalc, 255)
+
+				--render.SetViewPort(math.floor(x), math.floor(y), 1, 1)
+				--render.Clear(tCol[1] * rCalc, tCol[2] * rCalc, tCol[3] * rCalc, 255)
 				--render.Clear((x / ScrW()) * 255, (y / ScrH()) * 255, 0, 255)
 
 				dBuff[x + (y * rtW)] = dCalc
@@ -622,6 +630,9 @@ local function renderModel(obj)
 			--v1_w, v2_w, v3_w,
 			--tu1, tv1, tu2, tv2, tu3, tv3, textureData
 			--)
+
+			--surface.SetDrawColor(col_s1, col_s2, col_s3)
+			surface.SetMaterial(LK3D.Textures[obj.mat].mat)
 
 			local textureData = {}
 			renderTriangleSimple(

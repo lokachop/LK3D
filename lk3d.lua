@@ -713,6 +713,8 @@ end
 
 include("lk3d_lkpack.lua") -- lkpack first
 include("lk3d_modelutils.lua")
+
+
 include("lk3d_procmodel.lua")
 include("lk3d_models.lua")
 include("lk3d_textures.lua")
@@ -734,6 +736,7 @@ include("lk3d_bmark.lua")
 include("lk3d_rt.lua")
 include("lk3d_proctex.lua")
 include("lk3d_physics.lua")
+include("physics/lk3d_physics_external_fps.lua")
 include("lk3d_sceneexport.lua")
 include("lk3d_musisynth.lua")
 include("lk3d_modelviewer.lua")
