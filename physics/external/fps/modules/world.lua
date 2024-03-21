@@ -176,8 +176,8 @@ function world.step(world_,dt)
 		end
 	end
 	
-	for _,body_a in ipairs(world_.bodies) do
-		body_a:step(dt)
+	for _,body_ in ipairs(world_.bodies) do
+		body_:step(dt)
 	end
 end
 

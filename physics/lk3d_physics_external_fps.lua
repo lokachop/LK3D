@@ -90,23 +90,20 @@ local function getBoxShape(size)
 		recalculatedFaces[i + 2] = BOX_FACES[i + 2]
 	end
 
+	--print("-verts-")
+	--PrintTable(recalculatedVertices)
 
+	--print("-faces-")
+	--PrintTable(recalculatedFaces)
 
-
-
-	print("-verts-")
-	PrintTable(recalculatedVertices)
-
-	print("-faces-")
-	PrintTable(recalculatedFaces)
-
-	return fps.shape.new(recalculatedVertices, recalculatedFaces)
+	return fps.shape.new(recalculatedVertices, BOX_FACES)
 end
 
 local function getBoxCollider(size)
 	local coll = fps.collider.new()
 	coll:set_shape(getBoxShape(size))
 	coll:set_restitution(0.55)
+	--coll:set_friction(0.5)
 
 	return coll
 end
@@ -462,7 +459,7 @@ end
 
 local physItr = 5
 function LK3D.PhysicsThink()
-	local dt = FrameTime() * .25
+	local dt = 1 / 600--FrameTime() * .25
 
 	local pWorld = getPhysicsWorld(LK3D.CurrUniv)
 	if not pWorld then
