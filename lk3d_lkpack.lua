@@ -302,9 +302,8 @@ function LK3D.GetDataPathToFile(path)
 end
 
 
-
-LK3D.LKPackDevMode = true
-LK3D.FallbackLKPack = "deepdive_content"
+LK3D.LKPackDevMode = LK3D.LKPackDevMode ~= nil and LK3D.LKPackDevMode or false
+LK3D.FallbackLKPack = LK3D.FallbackLKPack ~= nil and LK3D.FallbackLKPack or "none"
 function LK3D.ReadFileFromLKPack(path)
 	if LK3D.ActiveLKPack == nil and not LK3D.LKPackDevMode then
 		LK3D.New_D_Print("No LKPack loaded, falling back to DevMode (raw read from compile directory...)", LK3D_SEVERITY_WARN, "LKPack")
@@ -357,6 +356,6 @@ end
 
 
 
-if LK3D.AutoLoadLKPack then
+if LK3D.AutoLoadLKPack and not LK3D.LKPackDevMode then
 	LK3D.LoadLKPack(LK3D.AutoLoadLKPack)
 end

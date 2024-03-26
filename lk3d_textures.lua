@@ -173,21 +173,25 @@ function LK3D.DeclareTextureFromPNGFile(index, w, h, fpath, transp)
 		render.Clear(16, 32, 64, 255)
 	end, false, transp)
 
-	if file.Exists(realPath .. "_fake.png", "DATA") then
-		-- already cached, render instantly?
-		local matObj = Material("../data/" .. realPath .. "_fake.png", "nocull ignorez")
-		LK3D.UpdateTexture(index, function()
-			surface.SetDrawColor(255, 255, 255)
-			surface.SetMaterial(matObj)
-			surface.DrawTexturedRect(0, 0, ScrW(), ScrH())
-		end)
-	end
 
-	local fakePath = makeFakeFile(realPath)
+	local truePath = realPath
+	if not LK3D.LKPackDevMode then -- only wnat to do buffering if we're not on DevMode
+		if file.Exists(realPath .. "_fake.png", "DATA") then
+			-- already cached, render instantly?
+			local matObj = Material("../data/" .. realPath .. "_fake.png", "nocull ignorez")
+			LK3D.UpdateTexture(index, function()
+				surface.SetDrawColor(255, 255, 255)
+				surface.SetMaterial(matObj)
+				surface.DrawTexturedRect(0, 0, ScrW(), ScrH())
+			end)
+		end
+
+		truePath = makeFakeFile(realPath)
+	end
 
 
 	timer.Simple(2, function() -- lateload fix so no weird png load errors
-		local matObj = Material("../data/" .. fakePath, "nocull ignorez")
+		local matObj = Material("../data/" .. truePath, "nocull ignorez")
 
 		LK3D.UpdateTexture(index, function()
 			surface.SetDrawColor(255, 255, 255)

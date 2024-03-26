@@ -1674,8 +1674,8 @@ local function lightmapCalcObject(object)
 			if (i % 24) == 0 then
 				local the_rt = render.GetRenderTarget()
 				LK3D.RenderProcessingMessage("Radiosity calculate light\n[" .. object .. "]", (i / ((LK3D.LIGHTMAP_RES * LK3D.LIGHTMAP_RES) - 1)) * 100, function()
-					render.DrawTextureToScreenRect(the_rt, 0, 288 * (ScrH() / 512), 512, 512)
-					renderHemicubeRTsTest(400 * (ScrH() / 512) * 2, 400 * (ScrH() / 512))
+					render.DrawTextureToScreenRect(the_rt, 0, 288, 512, 512)
+					renderHemicubeRTsTest(ScrW() * .5, ScrH() * .5)
 				end)
 			end
 		end
