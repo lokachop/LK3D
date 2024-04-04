@@ -1552,6 +1552,8 @@ local function lightmapInit()
 		makeLightMapUV(k, LK3D.LIGHTMAP_RES, LK3D.LIGHTMAP_RES)
 		buildTriLUTAndPatches(k, LK3D.LIGHTMAP_RES, LK3D.LIGHTMAP_RES)
 
+		local prevFilter = LK3D.FilterMode
+		LK3D.SetFilterMode(LK3D.LightmapFilterMode)
 		local idx_orig = getLMTexNames(k)
 		LK3D.DeclareTextureFromFunc(idx_orig, LK3D.LIGHTMAP_RES, LK3D.LIGHTMAP_RES, function()
 			if obj_ptr.RADIOSITY_LIT then
@@ -1560,6 +1562,8 @@ local function lightmapInit()
 				render.Clear(0, 0, 0, 255)
 			end
 		end)
+		LK3D.SetFilterMode(prevFilter)
+
 	end
 
 	generateLightmapPtrTextures()
@@ -1789,14 +1793,18 @@ local function loadLightmapObject(data, tag, obj_idx)
 		return
 	end
 
-	local tw = f_pointer_temp:ReadULong()
-	local th = f_pointer_temp:ReadULong()
+	local tw = f_pointer_temp:ReadULong() * LK3D.LightmapUpscale
+	local th = f_pointer_temp:ReadULong() * LK3D.LightmapUpscale
 
+
+	local prevFilter = LK3D.FilterMode
+	LK3D.SetFilterMode(LK3D.LightmapFilterMode)
 	local lm_tex_idx = "lightmap_" .. tag .. "_" .. obj_idx .. "_" .. tw .. "_" .. th
 	LK3D.DeclareTextureFromFunc(lm_tex_idx, tw, th, function()
 		render.Clear(4, 32, 8, 255)
 		draw.SimpleText("Lightmap Load, Stage1", "BudgetLabel", 0, 0, Color(16, 255, 32))
 	end)
+	LK3D.SetFilterMode(prevFilter)
 
 	local thing_path = targ_temp .. tag .. "_" .. obj_idx .. "_" .. tw .. "_" .. th .. ".png"
 	local png_data_writer = file.Open(thing_path, "wb", "DATA")
@@ -1823,6 +1831,8 @@ local function loadLightmapObject(data, tag, obj_idx)
 	timer.Simple(2, function() -- wait abit before loading
 		local _lmMat = Material("../data/" .. thing_path, "ignorez nocull")
 
+		local prevFilter = LK3D.FilterMode
+		LK3D.SetFilterMode(LK3D.LightmapFilterMode)
 		LK3D.DeclareTextureFromFunc(lm_tex_idx, tw, th, function()
 			render.Clear(4, 8, 32, 255)
 			draw.SimpleText("Lightmap Load, Stage2", "BudgetLabel", 0, 0, Color(16, 32, 255))
@@ -1831,6 +1841,7 @@ local function loadLightmapObject(data, tag, obj_idx)
 			surface.SetDrawColor(255, 255, 255, 255)
 			surface.DrawTexturedRect(0, 0, tw, th)
 		end)
+		LK3D.SetFilterMode(prevFilter)
 		--file.Delete(thing_path, "DATA") -- this breaks lightmapping
 	end)
 

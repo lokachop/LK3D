@@ -398,13 +398,19 @@ local function renderCached(object)
 	if not tag then
 		object.mdlCache[1]:Draw()
 	else
+		local anim_nfo = object.mdlCache[tag]
+		local frameCount = anim_nfo.frames
+
+
 		if (FrameNumber() - (object.anim_lastframe or 0)) > 0 and object.anim_state then
-			object.anim_delta = ((object.anim_delta or 0) + (FrameTime() * object.anim_rate)) % 1
+			object.anim_delta = ((object.anim_delta or 0) + (FrameTime() * (object.anim_rate / frameCount))) % 1.00001
 			object.anim_lastframe = FrameNumber()
 		end
 
 
-		local anim_nfo = object.mdlCache[tag]
+
+
+
 		local frame_t_calc = math.floor(object.anim_delta * (anim_nfo.frames - 1)) + 1
 
 		object.mdlCache[tag].meshes[frame_t_calc]:Draw()

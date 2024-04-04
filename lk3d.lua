@@ -56,7 +56,9 @@ LK3D.SHADOW_EXTRUDE = 20
 LK3D.DoExpensiveTrace = false
 LK3D.TraceReturnTable = false
 LK3D.TraceOverrideNoTrace = false
-LK3D.FilterMode = TEXFILTER.POINT
+LK3D.FilterMode = LK3D.FilterMode or TEXFILTER.POINT
+LK3D.LightmapFilterMode = LK3D.LightmapFilterMode or TEXFILTER.POINT
+LK3D.LightmapUpscale = LK3D.LightmapUpscale or 1
 LK3D.MatRefresh = 0
 LK3D.AmbientCol = Color(0, 0, 0)
 LK3D.OrthoParameters = {
@@ -703,7 +705,11 @@ function LK3D.SetModelAnimPlay(index, bool)
 end
 
 function LK3D.SetModelAnimDelta(index, delta)
-	LK3D.CurrUniv["objects"][index].anim_delta = delta or 0
+	LK3D.CurrUniv["objects"][index].anim_delta = math.min(math.max(delta, 0), 1) or 0
+end
+
+function LK3D.GetModelAnimDelta(index)
+	return LK3D.CurrUniv["objects"][index].anim_delta
 end
 
 function LK3D.SetModelAnim(index, an_index)

@@ -302,20 +302,24 @@ function LK3D.GetDataPathToFile(path)
 end
 
 
-LK3D.LKPackDevMode = LK3D.LKPackDevMode ~= nil and LK3D.LKPackDevMode or false
-LK3D.FallbackLKPack = LK3D.FallbackLKPack ~= nil and LK3D.FallbackLKPack or "none"
-function LK3D.ReadFileFromLKPack(path)
-	if LK3D.ActiveLKPack == nil and not LK3D.LKPackDevMode then
-		LK3D.New_D_Print("No LKPack loaded, falling back to DevMode (raw read from compile directory...)", LK3D_SEVERITY_WARN, "LKPack")
-		LK3D.New_D_Print("Fallback directory is \"lk3d/lkpack/compile/" .. LK3D.FallbackLKPack .. "\"", LK3D_SEVERITY_WARN, "LKPack")
-
-		LK3D.New_D_Print("If you are actively developing, set LK3D.LKPackDevMode = true!", LK3D_SEVERITY_WARN, "LKPack")
-
-
-		LK3D.LKPackDevMode = true
+local function noLKPackCheck()
+	if LK3D.ActiveLKPack ~= nil or LK3D.LKPackDevMode then
+		return
 	end
 
 
+	LK3D.New_D_Print("No LKPack loaded, falling back to DevMode (raw read from compile directory...)", LK3D_SEVERITY_WARN, "LKPack")
+	LK3D.New_D_Print("Fallback directory is \"lk3d/lkpack/compile/" .. LK3D.FallbackLKPack .. "\"", LK3D_SEVERITY_WARN, "LKPack")
+	LK3D.New_D_Print("If you are actively developing, set LK3D.LKPackDevMode = true!", LK3D_SEVERITY_WARN, "LKPack")
+
+	LK3D.LKPackDevMode = true
+end
+
+
+LK3D.LKPackDevMode = LK3D.LKPackDevMode ~= nil and LK3D.LKPackDevMode or false
+LK3D.FallbackLKPack = LK3D.FallbackLKPack ~= nil and LK3D.FallbackLKPack or "none"
+function LK3D.ReadFileFromLKPack(path)
+	noLKPackCheck()
 
 	if LK3D.LKPackDevMode then
 		local read = file.Read("lk3d/lkpack/compile/" .. LK3D.FallbackLKPack .. "/" .. path)
@@ -327,8 +331,6 @@ function LK3D.ReadFileFromLKPack(path)
 		return read
 	end
 
-
-
 	local read = file.Read("lk3d/lkpack/decomp_active/" .. LK3D.ActiveLKPack .. "/" .. path .. ".txt")
 	if not read then
 		LK3D.New_D_Print("Attempt to read missing file [\"" .. path .. "\"] (" .. LK3D.ActiveLKPack .. ")", LK3D_SEVERITY_ERROR, "LKPack")
@@ -337,6 +339,30 @@ function LK3D.ReadFileFromLKPack(path)
 
 	return read
 end
+
+
+function LK3D.OpenFileFromLKPack(path, openMode)
+	noLKPackCheck()
+
+	if LK3D.LKPackDevMode then
+		local fPtr = file.Open("lk3d/lkpack/compile/" .. LK3D.FallbackLKPack .. "/" .. path, openMode or "r", "DATA")
+		if not fPtr then
+			LK3D.New_D_Print("Attempt to open missing file [\"" .. path .. "\"] (" .. LK3D.FallbackLKPack .. ")", LK3D_SEVERITY_ERROR, "LKPack")
+			return
+		end
+
+		return fPtr
+	end
+
+	local fPtr = file.Open("lk3d/lkpack/decomp_active/" .. LK3D.ActiveLKPack .. "/" .. path .. ".txt", openMode or "r", "DATA")
+	if not fPtr then
+		LK3D.New_D_Print("Attempt to open missing file [\"" .. path .. "\"] (" .. LK3D.ActiveLKPack .. ")", LK3D_SEVERITY_ERROR, "LKPack")
+		return
+	end
+
+	return fPtr
+end
+
 
 -- TODO: audio module
 local function makeFakeFile(path)

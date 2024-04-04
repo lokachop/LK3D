@@ -229,7 +229,6 @@ local function renderModel(object)
 
 	local r, g, b = col.r, col.g, col.b
 
-
 	render_SetMaterial(LK3D.WireFrame and wfMat or (object.limap_tex and LK3D.Textures[mat].mat_lm or LK3D.Textures[mat].mat))
 	render.SetLightmapTexture(object.limap_tex and LK3D.Textures[object.limap_tex].rt or LK3D.Textures["lightmap_neutral2"].rt)
 

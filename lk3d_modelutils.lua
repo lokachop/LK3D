@@ -329,14 +329,14 @@ function LK3D.DeclareAnimatedModel(name, fpath, flush)
 		LK3D.Models[name] = mdlData
 	end
 
-	if not LK3D.AnimatedModelRegistry[mdlName] or flush then
-		LK3D.AnimatedModelRegistry[mdlName] = {
-			name = mdlName,
+	if not LK3D.AnimatedModelRegistry[name] or flush then
+		LK3D.AnimatedModelRegistry[name] = {
+			name = name,
 			anims = {},
 		}
 	end
 
-	local regTbl = LK3D.AnimatedModelRegistry[mdlName]
+	local regTbl = LK3D.AnimatedModelRegistry[name]
 
 	for k, v in pairs(params.animations) do
 		local animIndex = k
