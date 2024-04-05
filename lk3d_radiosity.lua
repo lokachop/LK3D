@@ -855,41 +855,41 @@ local function cloneUniverseRadiosity(univ, cont)
 				continue
 			end
 
-			LK3D.AddModelToUniverse(k, v.mdl)
-			LK3D.SetModelPosAng(k, v.pos, v.ang)
-			LK3D.SetModelScale(k, v.scl)
-			LK3D.SetModelMat(k, mat)
-			LK3D.SetModelFlag(k, "NO_SHADING", true)
-			LK3D.SetModelFlag(k, "NO_LIGHTING", true)
+			LK3D.AddObjectToUniverse(k, v.mdl)
+			LK3D.SetObjectPosAng(k, v.pos, v.ang)
+			LK3D.SetObjectScale(k, v.scl)
+			LK3D.SetObjectMat(k, mat)
+			LK3D.SetObjectFlag(k, "NO_SHADING", true)
+			LK3D.SetObjectFlag(k, "NO_LIGHTING", true)
 			if tblRef and tblRef[k] then
 				local indexObj = tblRef[k]
 				local pr, pg, pb = packRGB_LP(indexObj)
-				LK3D.SetModelCol(k, Color(pr, pg, pb))
+				LK3D.SetObjectCol(k, Color(pr, pg, pb))
 			elseif tblRef then
-				LK3D.SetModelCol(k, Color(0, 0, 0))
+				LK3D.SetObjectCol(k, Color(0, 0, 0))
 			else
-				LK3D.SetModelCol(k, Color(255, 255, 255))
+				LK3D.SetObjectCol(k, Color(255, 255, 255))
 			end
-			LK3D.SetModelFlag(k, "CONSTANT", true)
-			LK3D.SetModelFlag(k, "ORIG_UNIV", prevUniv["tag"])
+			LK3D.SetObjectFlag(k, "CONSTANT", true)
+			LK3D.SetObjectFlag(k, "ORIG_UNIV", prevUniv["tag"])
 			if objects_to_lightmap[k] then
-				LK3D.SetModelFlag(k, "lightmap_uvs", v.lightmap_uvs)
-				LK3D.SetModelFlag(k, "UV_USE_LIGHTMAP", true)
+				LK3D.SetObjectFlag(k, "lightmap_uvs", v.lightmap_uvs)
+				LK3D.SetObjectFlag(k, "UV_USE_LIGHTMAP", true)
 			end
 
 
 			local idx_inv = k .. "_lm_inv"
-			LK3D.AddModelToUniverse(idx_inv, v.mdl)
-			LK3D.SetModelPosAng(idx_inv, v.pos, v.ang)
-			LK3D.SetModelScale(idx_inv, v.scl)
-			LK3D.SetModelMat(idx_inv, "white")
-			LK3D.SetModelFlag(idx_inv, "NO_SHADING", true)
-			LK3D.SetModelFlag(idx_inv, "NO_LIGHTING", true)
-			LK3D.SetModelCol(idx_inv, Color(0, 0, 0))
-			LK3D.SetModelFlag(idx_inv, "CONSTANT", true)
-			LK3D.SetModelFlag(idx_inv, "NORM_INVERT", true)
-			LK3D.SetModelFlag(idx_inv, "NO_TRACE", true)
-			LK3D.SetModelFlag(idx_inv, "ORIG_UNIV", prevUniv["tag"])
+			LK3D.AddObjectToUniverse(idx_inv, v.mdl)
+			LK3D.SetObjectPosAng(idx_inv, v.pos, v.ang)
+			LK3D.SetObjectScale(idx_inv, v.scl)
+			LK3D.SetObjectMat(idx_inv, "white")
+			LK3D.SetObjectFlag(idx_inv, "NO_SHADING", true)
+			LK3D.SetObjectFlag(idx_inv, "NO_LIGHTING", true)
+			LK3D.SetObjectCol(idx_inv, Color(0, 0, 0))
+			LK3D.SetObjectFlag(idx_inv, "CONSTANT", true)
+			LK3D.SetObjectFlag(idx_inv, "NORM_INVERT", true)
+			LK3D.SetObjectFlag(idx_inv, "NO_TRACE", true)
+			LK3D.SetObjectFlag(idx_inv, "ORIG_UNIV", prevUniv["tag"])
 		end
 
 
@@ -907,28 +907,28 @@ local function cloneUniverseRadiosity(univ, cont)
 			end
 
 			local idx = k .. "_also"
-			LK3D.AddModelToUniverse(idx, "sphere_simple")
-			LK3D.SetModelPosAng(idx, v[1], Angle(0, 45, 45))
-			LK3D.SetModelScale(idx, inten_vec)
-			LK3D.SetModelFlag(idx, "NO_SHADING", true)
-			LK3D.SetModelFlag(idx, "NO_LIGHTING", true)
-			LK3D.SetModelFlag(idx, "NO_TRACE", true)
-			LK3D.SetModelFlag(idx, "CONSTANT", true)
-			LK3D.SetModelMat(idx, "white")
-			LK3D.SetModelCol(idx, liIdxCol)
+			LK3D.AddObjectToUniverse(idx, "sphere_simple")
+			LK3D.SetObjectPosAng(idx, v[1], Angle(0, 45, 45))
+			LK3D.SetObjectScale(idx, inten_vec)
+			LK3D.SetObjectFlag(idx, "NO_SHADING", true)
+			LK3D.SetObjectFlag(idx, "NO_LIGHTING", true)
+			LK3D.SetObjectFlag(idx, "NO_TRACE", true)
+			LK3D.SetObjectFlag(idx, "CONSTANT", true)
+			LK3D.SetObjectMat(idx, "white")
+			LK3D.SetObjectCol(idx, liIdxCol)
 
 
 			idx = k .. "_invr_also"
-			LK3D.AddModelToUniverse(idx, "sphere_simple")
-			LK3D.SetModelPosAng(idx, v[1], Angle(0, 45, 45))
-			LK3D.SetModelScale(idx, inten_vec)
-			LK3D.SetModelFlag(idx, "NO_SHADING", true)
-			LK3D.SetModelFlag(idx, "NO_LIGHTING", true)
-			LK3D.SetModelFlag(idx, "NO_TRACE", true)
-			LK3D.SetModelFlag(idx, "CONSTANT", true)
-			LK3D.SetModelFlag(idx, "NORM_INVERT", true)
-			LK3D.SetModelMat(idx, "white")
-			LK3D.SetModelCol(idx, liIdxCol)
+			LK3D.AddObjectToUniverse(idx, "sphere_simple")
+			LK3D.SetObjectPosAng(idx, v[1], Angle(0, 45, 45))
+			LK3D.SetObjectScale(idx, inten_vec)
+			LK3D.SetObjectFlag(idx, "NO_SHADING", true)
+			LK3D.SetObjectFlag(idx, "NO_LIGHTING", true)
+			LK3D.SetObjectFlag(idx, "NO_TRACE", true)
+			LK3D.SetObjectFlag(idx, "CONSTANT", true)
+			LK3D.SetObjectFlag(idx, "NORM_INVERT", true)
+			LK3D.SetObjectMat(idx, "white")
+			LK3D.SetObjectCol(idx, liIdxCol)
 		end
 	LK3D.PopUniverse()
 end

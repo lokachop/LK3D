@@ -126,22 +126,22 @@ local objecti = {}
 function LK3D.DebugRenderPhysicsObjects()
 	for k, v in pairs(LK3D.CurrUniv["physics"]) do
 		if not LK3D.CurrUniv["objects"][k] then
-			LK3D.AddModelToUniverse(k, "cube_nuv")
-			LK3D.SetModelMat(k, "wireframe_fake")
-			LK3D.SetModelPosAng(k, v.pos, v.ang:toAngle()) -- ang is a quat, translate back to ang!
-			LK3D.SetModelScale(k, v.scl)
-			LK3D.SetModelFlag(k, "NO_SHADING", false)
-			LK3D.SetModelFlag(k, "NO_LIGHTING", true)
-			LK3D.SetModelFlag(k, "CONSTANT", false)
-			LK3D.SetModelFlag(k, "SHADING_SMOOTH", true)
+			LK3D.AddObjectToUniverse(k, "cube_nuv")
+			LK3D.SetObjectMat(k, "wireframe_fake")
+			LK3D.SetObjectPosAng(k, v.pos, v.ang:toAngle()) -- ang is a quat, translate back to ang!
+			LK3D.SetObjectScale(k, v.scl)
+			LK3D.SetObjectFlag(k, "NO_SHADING", false)
+			LK3D.SetObjectFlag(k, "NO_LIGHTING", true)
+			LK3D.SetObjectFlag(k, "CONSTANT", false)
+			LK3D.SetObjectFlag(k, "SHADING_SMOOTH", true)
 			objecti[k] = true
 		end
-		LK3D.SetModelPosAng(k, v.pos, v.ang:toAngle())
+		LK3D.SetObjectPosAng(k, v.pos, v.ang:toAngle())
 	end
 
 	for k, v in pairs(objecti) do
 		if LK3D.CurrUniv["physics"][k] == nil then
-			LK3D.RemoveModelFromUniverse(k)
+			LK3D.RemoveObjectFromUniverse(k)
 			objecti[k] = nil
 		end
 	end

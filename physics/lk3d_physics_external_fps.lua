@@ -418,20 +418,20 @@ function LK3D.DebugRenderPhysicsObjects()
 
 
 		if not LK3D.CurrUniv["objects"][k] then
-			LK3D.AddModelToUniverse(k, "cube_nuv")
-			LK3D.SetModelMat(k, "checker")
-			LK3D.SetModelPosAng(k, Vector(0, 0, 0), Angle(0, 0, 0))
-			LK3D.SetModelScale(k, LK3D.GetPhysicsBodyScl(k) * 0.5)
-			LK3D.SetModelFlag(k, "NO_SHADING", true)
-			LK3D.SetModelFlag(k, "NO_LIGHTING", true)
-			LK3D.SetModelFlag(k, "CONSTANT", true)
-			LK3D.SetModelFlag(k, "SHADING_SMOOTH", false)
-			LK3D.SetModelFlag(k, "COL_LIT", true)
+			LK3D.AddObjectToUniverse(k, "cube_nuv")
+			LK3D.SetObjectMat(k, "checker")
+			LK3D.SetObjectPosAng(k, Vector(0, 0, 0), Angle(0, 0, 0))
+			LK3D.SetObjectScale(k, LK3D.GetPhysicsBodyScl(k) * 0.5)
+			LK3D.SetObjectFlag(k, "NO_SHADING", true)
+			LK3D.SetObjectFlag(k, "NO_LIGHTING", true)
+			LK3D.SetObjectFlag(k, "CONSTANT", true)
+			LK3D.SetObjectFlag(k, "SHADING_SMOOTH", false)
+			LK3D.SetObjectFlag(k, "COL_LIT", true)
 
 
-			--LK3D.PushModelAnims(k, "acube")
-			--LK3D.SetModelAnim(k, "wiggle")
-			--LK3D.SetModelAnimPlayRate(k, .15)
+			--LK3D.PushObjectAnims(k, "acube")
+			--LK3D.SetObjectAnim(k, "wiggle")
+			--LK3D.SetObjectAnimPlayRate(k, .15)
 
 
 			debugObjects[k] = true
@@ -440,14 +440,14 @@ function LK3D.DebugRenderPhysicsObjects()
 		local mat = LK3D.GetPhysicsBodyMatrix(k)
 
 
-		LK3D.SetModelPosAng(k, mat:GetTranslation(), mat:GetAngles())
+		LK3D.SetObjectPosAng(k, mat:GetTranslation(), mat:GetAngles())
 		--local bounds = LK3D.GetPhysicsBodyBoundary(k)
 		--drawDebugAABB(bounds)
 	end
 
 	for k, v in pairs(debugObjects) do
 		if LK3D.CurrUniv["physics_objects"][k] == nil then
-			LK3D.RemoveModelFromUniverse(k)
+			LK3D.RemoveObjectFromUniverse(k)
 			debugObjects[k] = nil
 		end
 	end

@@ -25,25 +25,25 @@ local univ_lk3dmv = LK3D.NewUniverse("lk3d_uni_mv")
 
 local function initUniv()
 	LK3D.PushUniverse(univ_lk3dmv)
-		LK3D.AddModelToUniverse("floor_plane", "plane_editor")
+		LK3D.AddObjectToUniverse("floor_plane", "plane_editor")
 		local aabb_mdl = LK3D.TraceTriangleAABBs[LK3D.MV.Model]
 
-		LK3D.SetModelPosAng("floor_plane", Vector(0, 0, aabb_mdl[1].z), Angle(0, 0, 90))
-		LK3D.SetModelFlag("floor_plane", "NO_SHADING", false)
-		LK3D.SetModelFlag("floor_plane", "NO_LIGHTING", true)
-		LK3D.SetModelFlag("floor_plane", "CONSTANT", true)
-		LK3D.SetModelFlag("floor_plane", "SHADING_SMOOTH", false)
-		LK3D.SetModelScale("floor_plane", Vector(1, 1, 1))
-		LK3D.SetModelMat("floor_plane", "checker")
+		LK3D.SetObjectPosAng("floor_plane", Vector(0, 0, aabb_mdl[1].z), Angle(0, 0, 90))
+		LK3D.SetObjectFlag("floor_plane", "NO_SHADING", false)
+		LK3D.SetObjectFlag("floor_plane", "NO_LIGHTING", true)
+		LK3D.SetObjectFlag("floor_plane", "CONSTANT", true)
+		LK3D.SetObjectFlag("floor_plane", "SHADING_SMOOTH", false)
+		LK3D.SetObjectScale("floor_plane", Vector(1, 1, 1))
+		LK3D.SetObjectMat("floor_plane", "checker")
 
 
-		LK3D.SetModelFlag("floor_plane", "VERT_SH_PARAMS", {
+		LK3D.SetObjectFlag("floor_plane", "VERT_SH_PARAMS", {
 			[1] = false, -- vpos
 			[2] = true, -- vuv
 			[3] = false, -- vrgb
 			[4] = false, -- shader obj ref
 		})
-		LK3D.SetModelFlag("floor_plane", "VERT_SHADER", function(vpos, vuv, vrgb)
+		LK3D.SetObjectFlag("floor_plane", "VERT_SHADER", function(vpos, vuv, vrgb)
 			vuv[1] = vuv[1] * 16
 			vuv[2] = vuv[2] * 16
 		end)
@@ -51,14 +51,14 @@ local function initUniv()
 
 		LK3D.AddLight("light1_test", Vector(0, 1.225, 0), 2.6, Color(255, 255, 255), true)
 
-		LK3D.AddModelToUniverse("the_model", "cube_nuv")
-		LK3D.SetModelPosAng("the_model", Vector(0, 0, 0), Angle(0, 0, 90))
-		LK3D.SetModelFlag("the_model", "NO_SHADING", true)
-		LK3D.SetModelFlag("the_model", "NO_LIGHTING", true)
-		LK3D.SetModelFlag("the_model", "CONSTANT", true)
-		LK3D.SetModelFlag("the_model", "SHADING_SMOOTH", false)
-		LK3D.SetModelScale("the_model", Vector(1, 1, 1))
-		LK3D.SetModelMat("the_model", "checker")
+		LK3D.AddObjectToUniverse("the_model", "cube_nuv")
+		LK3D.SetObjectPosAng("the_model", Vector(0, 0, 0), Angle(0, 0, 90))
+		LK3D.SetObjectFlag("the_model", "NO_SHADING", true)
+		LK3D.SetObjectFlag("the_model", "NO_LIGHTING", true)
+		LK3D.SetObjectFlag("the_model", "CONSTANT", true)
+		LK3D.SetObjectFlag("the_model", "SHADING_SMOOTH", false)
+		LK3D.SetObjectScale("the_model", Vector(1, 1, 1))
+		LK3D.SetObjectMat("the_model", "checker")
 	LK3D.PopUniverse()
 	end
 
@@ -120,111 +120,111 @@ local function openMV()
 
 	addParam(pnl_sidebar, "Hide Floor", function(self, state)
 		LK3D.PushUniverse(univ_lk3dmv)
-			LK3D.SetModelHide("floor_plane", state)
+			LK3D.SetObjectHide("floor_plane", state)
 		LK3D.PopUniverse()
 	end)
 
 	addParam(pnl_sidebar, "Shading", function(self, state)
 		LK3D.PushUniverse(univ_lk3dmv)
-			LK3D.SetModelFlag("the_model", "NO_SHADING", not state)
-			LK3D.SetModelFlag("floor_plane", "NO_SHADING", not state)
+			LK3D.SetObjectFlag("the_model", "NO_SHADING", not state)
+			LK3D.SetObjectFlag("floor_plane", "NO_SHADING", not state)
 
-			LK3D.SetModelFlag("floor_plane", "NEEDS_CACHE_UPDATE", true)
-			LK3D.SetModelFlag("the_model", "NEEDS_CACHE_UPDATE", true)
+			LK3D.SetObjectFlag("floor_plane", "NEEDS_CACHE_UPDATE", true)
+			LK3D.SetObjectFlag("the_model", "NEEDS_CACHE_UPDATE", true)
 		LK3D.PopUniverse()
 	end)
 
 	addParam(pnl_sidebar, "Gouraud", function(self, state)
 		LK3D.PushUniverse(univ_lk3dmv)
-			LK3D.SetModelFlag("the_model", "SHADING_SMOOTH", state)
-			LK3D.SetModelFlag("floor_plane", "SHADING_SMOOTH", state)
+			LK3D.SetObjectFlag("the_model", "SHADING_SMOOTH", state)
+			LK3D.SetObjectFlag("floor_plane", "SHADING_SMOOTH", state)
 
-			LK3D.SetModelFlag("floor_plane", "NEEDS_CACHE_UPDATE", true)
-			LK3D.SetModelFlag("the_model", "NEEDS_CACHE_UPDATE", true)
+			LK3D.SetObjectFlag("floor_plane", "NEEDS_CACHE_UPDATE", true)
+			LK3D.SetObjectFlag("the_model", "NEEDS_CACHE_UPDATE", true)
 		LK3D.PopUniverse()
 	end)
 
 	addParam(pnl_sidebar, "Lighting", function(self, state)
 		LK3D.PushUniverse(univ_lk3dmv)
-			LK3D.SetModelFlag("the_model", "NO_LIGHTING", not state)
-			LK3D.SetModelFlag("floor_plane", "NO_LIGHTING", not state)
+			LK3D.SetObjectFlag("the_model", "NO_LIGHTING", not state)
+			LK3D.SetObjectFlag("floor_plane", "NO_LIGHTING", not state)
 
-			LK3D.SetModelFlag("floor_plane", "NEEDS_CACHE_UPDATE", true)
-			LK3D.SetModelFlag("the_model", "NEEDS_CACHE_UPDATE", true)
+			LK3D.SetObjectFlag("floor_plane", "NEEDS_CACHE_UPDATE", true)
+			LK3D.SetObjectFlag("the_model", "NEEDS_CACHE_UPDATE", true)
 		LK3D.PopUniverse()
 	end)
 
 	addParam(pnl_sidebar, "Lighting Normal Affect", function(self, state)
 		LK3D.PushUniverse(univ_lk3dmv)
-			LK3D.SetModelFlag("the_model", "NORM_LIGHT_AFFECT", state)
-			LK3D.SetModelFlag("floor_plane", "NORM_LIGHT_AFFECT", state)
+			LK3D.SetObjectFlag("the_model", "NORM_LIGHT_AFFECT", state)
+			LK3D.SetObjectFlag("floor_plane", "NORM_LIGHT_AFFECT", state)
 
-			LK3D.SetModelFlag("floor_plane", "NEEDS_CACHE_UPDATE", true)
-			LK3D.SetModelFlag("the_model", "NEEDS_CACHE_UPDATE", true)
+			LK3D.SetObjectFlag("floor_plane", "NEEDS_CACHE_UPDATE", true)
+			LK3D.SetObjectFlag("the_model", "NEEDS_CACHE_UPDATE", true)
 		LK3D.PopUniverse()
 	end)
 
 	addParam(pnl_sidebar, "Normal Invert", function(self, state)
 		LK3D.PushUniverse(univ_lk3dmv)
-			LK3D.SetModelFlag("the_model", "NORM_INVERT", state)
-			LK3D.SetModelFlag("floor_plane", "NORM_INVERT", state)
+			LK3D.SetObjectFlag("the_model", "NORM_INVERT", state)
+			LK3D.SetObjectFlag("floor_plane", "NORM_INVERT", state)
 
-			LK3D.SetModelFlag("floor_plane", "NEEDS_CACHE_UPDATE", true)
-			LK3D.SetModelFlag("the_model", "NEEDS_CACHE_UPDATE", true)
+			LK3D.SetObjectFlag("floor_plane", "NEEDS_CACHE_UPDATE", true)
+			LK3D.SetObjectFlag("the_model", "NEEDS_CACHE_UPDATE", true)
 		LK3D.PopUniverse()
 	end)
 
 	addParam(pnl_sidebar, "ShadowVolume", function(self, state)
 		LK3D.PushUniverse(univ_lk3dmv)
-			LK3D.SetModelFlag("the_model", "SHADOW_VOLUME", state)
+			LK3D.SetObjectFlag("the_model", "SHADOW_VOLUME", state)
 
-			LK3D.SetModelFlag("the_model", "NEEDS_CACHE_UPDATE", true)
+			LK3D.SetObjectFlag("the_model", "NEEDS_CACHE_UPDATE", true)
 		LK3D.PopUniverse()
 	end)
 
 	addParam(pnl_sidebar, "Shadow ZPass", function(self, state)
 		LK3D.PushUniverse(univ_lk3dmv)
-			LK3D.SetModelFlag("the_model", "SHADOW_ZPASS", state)
+			LK3D.SetObjectFlag("the_model", "SHADOW_ZPASS", state)
 
-			LK3D.SetModelFlag("the_model", "NEEDS_CACHE_UPDATE", true)
+			LK3D.SetObjectFlag("the_model", "NEEDS_CACHE_UPDATE", true)
 		LK3D.PopUniverse()
 	end)
 
 	addParam(pnl_sidebar, "Shadow Sun", function(self, state)
 		LK3D.PushUniverse(univ_lk3dmv)
-			LK3D.SetModelFlag("the_model", "SHADOW_DOSUN", state)
+			LK3D.SetObjectFlag("the_model", "SHADOW_DOSUN", state)
 
-			LK3D.SetModelFlag("the_model", "NEEDS_CACHE_UPDATE", true)
+			LK3D.SetObjectFlag("the_model", "NEEDS_CACHE_UPDATE", true)
 		LK3D.PopUniverse()
 	end)
 
 	addParam(pnl_sidebar, "Shadow Constant", function(self, state)
 		LK3D.PushUniverse(univ_lk3dmv)
-			LK3D.SetModelFlag("the_model", "SHADOW_VOLUME_BAKE", state)
+			LK3D.SetObjectFlag("the_model", "SHADOW_VOLUME_BAKE", state)
 
-			LK3D.SetModelFlag("the_model", "NEEDS_CACHE_UPDATE", true)
-			LK3D.SetModelFlag("the_model", "SHADOW_VOLUME_BAKE_CLEAR", true)
+			LK3D.SetObjectFlag("the_model", "NEEDS_CACHE_UPDATE", true)
+			LK3D.SetObjectFlag("the_model", "SHADOW_VOLUME_BAKE_CLEAR", true)
 		LK3D.PopUniverse()
 	end)
 
 
 	addParam(pnl_sidebar, "No Constant", function(self, state)
 		LK3D.PushUniverse(univ_lk3dmv)
-			LK3D.SetModelFlag("the_model", "CONSTANT", not state)
-			LK3D.SetModelFlag("floor_plane", "CONSTANT", not state)
+			LK3D.SetObjectFlag("the_model", "CONSTANT", not state)
+			LK3D.SetObjectFlag("floor_plane", "CONSTANT", not state)
 
-			LK3D.SetModelFlag("floor_plane", "NEEDS_CACHE_UPDATE", true)
-			LK3D.SetModelFlag("the_model", "NEEDS_CACHE_UPDATE", true)
+			LK3D.SetObjectFlag("floor_plane", "NEEDS_CACHE_UPDATE", true)
+			LK3D.SetObjectFlag("the_model", "NEEDS_CACHE_UPDATE", true)
 		LK3D.PopUniverse()
 	end)
 
 	addParam(pnl_sidebar, "Shader No SmoothNormal", function(self, state)
 		LK3D.PushUniverse(univ_lk3dmv)
-			LK3D.SetModelFlag("the_model", "SHADER_NO_SMOOTHNORM", state)
-			LK3D.SetModelFlag("floor_plane", "SHADER_NO_SMOOTHNORM", state)
+			LK3D.SetObjectFlag("the_model", "SHADER_NO_SMOOTHNORM", state)
+			LK3D.SetObjectFlag("floor_plane", "SHADER_NO_SMOOTHNORM", state)
 
-			LK3D.SetModelFlag("floor_plane", "NEEDS_CACHE_UPDATE", true)
-			LK3D.SetModelFlag("the_model", "NEEDS_CACHE_UPDATE", true)
+			LK3D.SetObjectFlag("floor_plane", "NEEDS_CACHE_UPDATE", true)
+			LK3D.SetObjectFlag("the_model", "NEEDS_CACHE_UPDATE", true)
 		LK3D.PopUniverse()
 	end)
 
@@ -245,12 +245,12 @@ local function openMV()
 
 
 		LK3D.PushUniverse(univ_lk3dmv)
-			LK3D.SetModelModel("the_model", LK3D.MV.Model)
-			LK3D.SetModelFlag("the_model", "NEEDS_CACHE_UPDATE", true)
-			LK3D.SetModelFlag("the_model", "SHADOW_VOLUME_BAKE_CLEAR", true)
+			LK3D.SetObjectModel("the_model", LK3D.MV.Model)
+			LK3D.SetObjectFlag("the_model", "NEEDS_CACHE_UPDATE", true)
+			LK3D.SetObjectFlag("the_model", "SHADOW_VOLUME_BAKE_CLEAR", true)
 
 			local n_aabb = LK3D.GetRecalcAABB(LK3D.CurrUniv["objects"]["the_model"])
-			LK3D.SetModelPosAng("floor_plane", Vector(0, 0, n_aabb[1].z), Angle(0, 0, 90))
+			LK3D.SetObjectPosAng("floor_plane", Vector(0, 0, n_aabb[1].z), Angle(0, 0, 90))
 		LK3D.PopUniverse()
 	end
 
@@ -269,9 +269,9 @@ local function openMV()
 
 
 		LK3D.PushUniverse(univ_lk3dmv)
-			LK3D.SetModelMat("the_model", LK3D.MV.Texture)
-			LK3D.SetModelFlag("the_model", "NEEDS_CACHE_UPDATE", true)
-			LK3D.SetModelFlag("the_model", "SHADOW_VOLUME_BAKE_CLEAR", true)
+			LK3D.SetObjectMat("the_model", LK3D.MV.Texture)
+			LK3D.SetObjectFlag("the_model", "NEEDS_CACHE_UPDATE", true)
+			LK3D.SetObjectFlag("the_model", "SHADOW_VOLUME_BAKE_CLEAR", true)
 		LK3D.PopUniverse()
 	end
 
@@ -292,9 +292,9 @@ local function openMV()
 
 
 		LK3D.PushUniverse(univ_lk3dmv)
-			LK3D.SetModelPrefabShader("the_model", LK3D.MV.BaseShader)
-			LK3D.SetModelFlag("the_model", "NEEDS_CACHE_UPDATE", true)
-			LK3D.SetModelFlag("the_model", "SHADOW_VOLUME_BAKE_CLEAR", true)
+			LK3D.SetObjectPrefabShader("the_model", LK3D.MV.BaseShader)
+			LK3D.SetObjectFlag("the_model", "NEEDS_CACHE_UPDATE", true)
+			LK3D.SetObjectFlag("the_model", "SHADOW_VOLUME_BAKE_CLEAR", true)
 		LK3D.PopUniverse()
 	end
 

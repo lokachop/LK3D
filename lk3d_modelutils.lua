@@ -386,7 +386,7 @@ function LK3D.DeclareAnimatedModel(name, fpath, flush)
 	end
 end
 
-function LK3D.PushModelAnims(index, an_index)
+function LK3D.PushObjectAnims(index, an_index)
 	local object = LK3D.CurrUniv["objects"][index]
 
 	if object.mdl ~= an_index then
@@ -425,6 +425,11 @@ function LK3D.PushModelAnims(index, an_index)
 	object.anim_delta = object.anim_delta or 0
 	object.anim_rate = object.anim_rate or 1
 	object.anim_state = object.anim_state or true
+end
+
+function LK3D.PushModelAnims(index, an_index)
+	LK3D.New_D_Print("Using deprecated function LK3D.PushModelAnims(), use LK3D.PushObjectAnims()", LK3D_SEVERITY_WARN, "LK3D")
+	LK3D.PushObjectAnims(index, an_index)
 end
 
 

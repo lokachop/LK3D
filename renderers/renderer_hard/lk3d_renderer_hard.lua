@@ -142,10 +142,10 @@ local function renderModel(object)
 
 	local mat = object.mat
 	if object["COL_LIT"] then
-		if (LK3D.MatRefresh or 0) > (object.last_matrefresh or 0) then
-			object.last_matrefresh = (LK3D.MatRefresh or 0)
-			colLitApply(object)
-		end
+		--if (LK3D.MatRefresh or 0) > (object.last_matrefresh or 0) then
+		--	object.last_matrefresh = (LK3D.MatRefresh or 0)
+		--	colLitApply(object)
+		--end
 
 		if not object.ogMat then
 			colLitApply(object)
@@ -842,7 +842,7 @@ function Renderer.Render()
 			render_SetStencilCompareFunction(STENCIL_NOTEQUAL)
 
 			cam_End3D()
-			surface.SetDrawColor(0, 0, 0, 196)
+			surface.SetDrawColor(0, 0, 0, LK3D.ShadowAlpha or 196)
 			surface.DrawRect(0, 0, ScrW(), ScrH())
 			render_SetStencilEnable(false)
 		else

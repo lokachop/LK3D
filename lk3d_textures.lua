@@ -241,13 +241,6 @@ function LK3D.UpdateTexture(index, func)
 		return
 	end
 
-	--if (LK3D.Textures[index].nextUpdate or 0) > CurTime() then
-	--	return
-	--end
-
-	--LK3D.Textures[index].nextUpdate = CurTime() + LK3D.ScreenWait
-
-
 	local rt = LK3D.Textures[index].rt
 
 	local w, h = rt:Width(), rt:Height()
@@ -649,7 +642,7 @@ end
 
 
 function LK3D.InitProcessTexture()
-	if not LK3D.AddModelToUniverse then
+	if not LK3D.AddObjectToUniverse then
 		return
 	end
 
@@ -662,25 +655,25 @@ function LK3D.InitProcessTexture()
 		LK3D.AddLight("li_1", Vector(-.8, .4, .7), 1.75, Color(245, 240, 196), true)
 
 
-		LK3D.AddModelToUniverse("loka_test", "lokachop")
-		LK3D.SetModelPosAng("loka_test", Vector(0, 0, 0), Angle(0, 90, 90))
-		LK3D.SetModelFlag("loka_test", "NO_SHADING", true)
-		LK3D.SetModelFlag("loka_test", "SHADING_SMOOTH", false)
-		LK3D.SetModelFlag("loka_test", "NO_LIGHTING", false)
-		LK3D.SetModelFlag("loka_test", "NORM_LIGHT_AFFECT", true)
-		LK3D.SetModelFlag("loka_test", "SHADOW_VOLUME", true)
-		LK3D.SetModelFlag("loka_test", "SHADOW_ZPASS", true)
-		LK3D.SetModelScale("loka_test", Vector(.25, .25, .25))
-		LK3D.SetModelMat("loka_test", "process_loka1")
+		LK3D.AddObjectToUniverse("loka_test", "lokachop")
+		LK3D.SetObjectPosAng("loka_test", Vector(0, 0, 0), Angle(0, 90, 90))
+		LK3D.SetObjectFlag("loka_test", "NO_SHADING", true)
+		LK3D.SetObjectFlag("loka_test", "SHADING_SMOOTH", false)
+		LK3D.SetObjectFlag("loka_test", "NO_LIGHTING", false)
+		LK3D.SetObjectFlag("loka_test", "NORM_LIGHT_AFFECT", true)
+		LK3D.SetObjectFlag("loka_test", "SHADOW_VOLUME", true)
+		LK3D.SetObjectFlag("loka_test", "SHADOW_ZPASS", true)
+		LK3D.SetObjectScale("loka_test", Vector(.25, .25, .25))
+		LK3D.SetObjectMat("loka_test", "process_loka1")
 
 
-		LK3D.AddModelToUniverse("plane_face", "plane")
-		LK3D.SetModelPosAng("plane_face", Vector(-.18, 0, .25), Angle(0, 90, 0))
-		LK3D.SetModelFlag("plane_face", "NO_SHADING", true)
-		LK3D.SetModelFlag("plane_face", "NO_LIGHTING", true)
-		LK3D.SetModelScale("plane_face", Vector(.175, .175, .15))
-		LK3D.SetModelMat("plane_face", "lokaface4_slash")
-		LK3D.SetModelHide("plane_face", true)
+		LK3D.AddObjectToUniverse("plane_face", "plane")
+		LK3D.SetObjectPosAng("plane_face", Vector(-.18, 0, .25), Angle(0, 90, 0))
+		LK3D.SetObjectFlag("plane_face", "NO_SHADING", true)
+		LK3D.SetObjectFlag("plane_face", "NO_LIGHTING", true)
+		LK3D.SetObjectScale("plane_face", Vector(.175, .175, .15))
+		LK3D.SetObjectMat("plane_face", "lokaface4_slash")
+		LK3D.SetObjectHide("plane_face", true)
 	LK3D.PopUniverse()
 
 
@@ -713,7 +706,6 @@ function LK3D.InitProcessTexture()
 		surface.DrawRect(0, 0, ScrW(), ScrH())
 	end, false, true)
 end
-LK3D.InitProcessTexture()
 
 function LK3D.SetupBaseMaterials()
 	-- make default mats
@@ -1049,4 +1041,5 @@ function LK3D.SetupBaseMaterials()
 	LK3D.InitProcessTexture()
 end
 LK3D.SetupBaseMaterials()
+LK3D.InitProcessTexture()
 LK3D.New_D_Print("LK3D textures fully loaded!", LK3D_SEVERITY_INFO, "Base")

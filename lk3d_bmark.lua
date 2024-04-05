@@ -9,12 +9,12 @@ end
 
 
 local function makeLitPlane()
-	LK3D.AddModelToUniverse("plane_hd", "plane_hp")
-	LK3D.SetModelPos("plane_hd", Vector(0, 0, 0))
-	LK3D.SetModelScale("plane_hd", Vector(1, 1, 1))
-	LK3D.SetModelCol("plane_hd", Color(255, 255, 255))
-	LK3D.SetModelAng("plane_hd", Angle(0, 0, 90))
-	--LK3D.SetModelFlag("plane_hd", "NO_VW_CULLING", true)
+	LK3D.AddObjectToUniverse("plane_hd", "plane_hp")
+	LK3D.SetObjectPos("plane_hd", Vector(0, 0, 0))
+	LK3D.SetObjectScale("plane_hd", Vector(1, 1, 1))
+	LK3D.SetObjectCol("plane_hd", Color(255, 255, 255))
+	LK3D.SetObjectAng("plane_hd", Angle(0, 0, 90))
+	--LK3D.SetObjectFlag("plane_hd", "NO_VW_CULLING", true)
 
 	LK3D.AddLight("light1_test", Vector(0, .225, 0), 0.6, Color(255, 0, 0))
 	LK3D.AddLight("light2_test", Vector(.225, -.225, 0), 0.6, Color(0, 255, 0))
@@ -30,13 +30,13 @@ local function makeHell(shaded, lit, opti)
 		local nm = "plyhell_" .. i
 		local col = HSVToColor((i / (det * det)) * 360, 1, 1)
 
-		LK3D.AddModelToUniverse(nm, "playeropti")
-		LK3D.SetModelPos(nm, Vector(x / (det * .5), y / (det * .5), 0))
-		LK3D.SetModelScale(nm, Vector(.005, .005, .005))
-		LK3D.SetModelCol(nm, col)
-		LK3D.SetModelFlag(nm, "NO_SHADING", not shaded)
-		LK3D.SetModelFlag(nm, "NO_LIGHTING", not lit)
-		LK3D.SetModelFlag(nm, "CONSTANT", opti or false)
+		LK3D.AddObjectToUniverse(nm, "playeropti")
+		LK3D.SetObjectPos(nm, Vector(x / (det * .5), y / (det * .5), 0))
+		LK3D.SetObjectScale(nm, Vector(.005, .005, .005))
+		LK3D.SetObjectCol(nm, col)
+		LK3D.SetObjectFlag(nm, "NO_SHADING", not shaded)
+		LK3D.SetObjectFlag(nm, "NO_LIGHTING", not lit)
+		LK3D.SetObjectFlag(nm, "CONSTANT", opti or false)
 	end
 end
 
@@ -87,23 +87,23 @@ local stages = {
 		name = "Generic Scene Shaded",
 		len = g_len,
 		func_init = function()
-			LK3D.AddModelToUniverse("cube_bm", "submarine_vis")
-			LK3D.SetModelPos("cube_bm", Vector(0, 0, 0))
-			LK3D.SetModelScale("cube_bm", Vector(1, 1, 1))
-			LK3D.SetModelFlag("cube_bm", "NO_VW_CULLING", true)
-			LK3D.SetModelAng("cube_bm", Angle(0, 0, 90))
-			LK3D.SetModelMat("cube_bm", "submarine_metal_new2")
+			LK3D.AddObjectToUniverse("cube_bm", "submarine_vis")
+			LK3D.SetObjectPos("cube_bm", Vector(0, 0, 0))
+			LK3D.SetObjectScale("cube_bm", Vector(1, 1, 1))
+			LK3D.SetObjectFlag("cube_bm", "NO_VW_CULLING", true)
+			LK3D.SetObjectAng("cube_bm", Angle(0, 0, 90))
+			LK3D.SetObjectMat("cube_bm", "submarine_metal_new2")
 
 			for i = 1, 4 do
 				local nm = "plydummy" .. i
-				LK3D.AddModelToUniverse(nm, "playeropti")
-				LK3D.SetModelScale(nm, Vector(.01, .01, .01))
-				LK3D.SetModelPos(nm, Vector(1, -2 + (i / 2), 0))
-				LK3D.SetModelCol(nm, HSVToColor(i / 4 * 360, 1, 1))
+				LK3D.AddObjectToUniverse(nm, "playeropti")
+				LK3D.SetObjectScale(nm, Vector(.01, .01, .01))
+				LK3D.SetObjectPos(nm, Vector(1, -2 + (i / 2), 0))
+				LK3D.SetObjectCol(nm, HSVToColor(i / 4 * 360, 1, 1))
 			end
 		end,
 		func_think = function()
-			--LK3D.SetModelAng("cube_bm", Angle(0, CurTime() * 60, CurTime() * 40))
+			--LK3D.SetObjectAng("cube_bm", Angle(0, CurTime() * 60, CurTime() * 40))
 		end,
 		func_render = function()
 			LK3D.SetCamPos(Vector(0, -1, math.sin(bm_time() * 2) * .5 + .5))
@@ -115,19 +115,19 @@ local stages = {
 		name = "Generic Scene Lit Shaded",
 		len = g_len,
 		func_init = function()
-			LK3D.AddModelToUniverse("cube_bm", "submarine_vis")
-			LK3D.SetModelPos("cube_bm", Vector(0, 0, 0))
-			LK3D.SetModelScale("cube_bm", Vector(1, 1, 1))
-			LK3D.SetModelFlag("cube_bm", "NO_VW_CULLING", true)
-			LK3D.SetModelAng("cube_bm", Angle(0, 0, 90))
-			LK3D.SetModelMat("cube_bm", "submarine_metal_new2")
+			LK3D.AddObjectToUniverse("cube_bm", "submarine_vis")
+			LK3D.SetObjectPos("cube_bm", Vector(0, 0, 0))
+			LK3D.SetObjectScale("cube_bm", Vector(1, 1, 1))
+			LK3D.SetObjectFlag("cube_bm", "NO_VW_CULLING", true)
+			LK3D.SetObjectAng("cube_bm", Angle(0, 0, 90))
+			LK3D.SetObjectMat("cube_bm", "submarine_metal_new2")
 
 			for i = 1, 4 do
 				local nm = "plydummy" .. i
-				LK3D.AddModelToUniverse(nm, "playeropti")
-				LK3D.SetModelScale(nm, Vector(.01, .01, .01))
-				LK3D.SetModelPos(nm, Vector(1, -2 + (i / 2), 0))
-				LK3D.SetModelCol(nm, HSVToColor(i / 4 * 360, 1, 1))
+				LK3D.AddObjectToUniverse(nm, "playeropti")
+				LK3D.SetObjectScale(nm, Vector(.01, .01, .01))
+				LK3D.SetObjectPos(nm, Vector(1, -2 + (i / 2), 0))
+				LK3D.SetObjectCol(nm, HSVToColor(i / 4 * 360, 1, 1))
 			end
 
 			for i = 1, 8 do
@@ -170,7 +170,7 @@ local stages = {
 			})
 		end,
 		func_think = function()
-			--LK3D.SetModelAng("cube_bm", Angle(0, CurTime() * 60, CurTime() * 40))
+			--LK3D.SetObjectAng("cube_bm", Angle(0, CurTime() * 60, CurTime() * 40))
 			LK3D.UpdateParticles()
 		end,
 		func_render = function()
@@ -183,50 +183,50 @@ local stages = {
 		name = "TraceSystem Generic Scene",
 		len = g_len,
 		func_init = function()
-			LK3D.AddModelToUniverse("cube_bm", "submarine_vis")
-			LK3D.SetModelPos("cube_bm", Vector(0, 0, 0))
-			LK3D.SetModelScale("cube_bm", Vector(1, 1, 1))
-			LK3D.SetModelFlag("cube_bm", "NO_VW_CULLING", true)
-			LK3D.SetModelAng("cube_bm", Angle(0, 0, 90))
-			LK3D.SetModelMat("cube_bm", "submarine_metal_new2")
+			LK3D.AddObjectToUniverse("cube_bm", "submarine_vis")
+			LK3D.SetObjectPos("cube_bm", Vector(0, 0, 0))
+			LK3D.SetObjectScale("cube_bm", Vector(1, 1, 1))
+			LK3D.SetObjectFlag("cube_bm", "NO_VW_CULLING", true)
+			LK3D.SetObjectAng("cube_bm", Angle(0, 0, 90))
+			LK3D.SetObjectMat("cube_bm", "submarine_metal_new2")
 
 			for i = 1, 4 do
 				local nm = "plydummy" .. i
-				LK3D.AddModelToUniverse(nm, "playeropti")
-				LK3D.SetModelScale(nm, Vector(.01, .01, .01))
-				LK3D.SetModelPos(nm, Vector(1, -2 + (i / 2), 0))
-				LK3D.SetModelCol(nm, HSVToColor(i / 4 * 360, 1, 1))
+				LK3D.AddObjectToUniverse(nm, "playeropti")
+				LK3D.SetObjectScale(nm, Vector(.01, .01, .01))
+				LK3D.SetObjectPos(nm, Vector(1, -2 + (i / 2), 0))
+				LK3D.SetObjectCol(nm, HSVToColor(i / 4 * 360, 1, 1))
 			end
 
 			for i = 1, 8 do
 				LK3D.AddLight("li_test" .. i, Vector(0, -3.75 + (i / 1.4), .5), 1.65, HSVToColor(i / 8 * 360, 1, 1))
 			end
 
-			LK3D.AddModelToUniverse("beam", "cube_nuv")
-			LK3D.SetModelPos("beam", Vector(0, 0, 0))
-			LK3D.SetModelScale("beam", Vector(.25, .25, .25))
-			LK3D.SetModelFlag("beam", "NO_VW_CULLING", true)
-			LK3D.SetModelAng("beam", Angle(0, 0, 90))
-			LK3D.SetModelMat("beam", "fail")
-			LK3D.SetModelFlag("beam", "NO_TRACE", true)
+			LK3D.AddObjectToUniverse("beam", "cube_nuv")
+			LK3D.SetObjectPos("beam", Vector(0, 0, 0))
+			LK3D.SetObjectScale("beam", Vector(.25, .25, .25))
+			LK3D.SetObjectFlag("beam", "NO_VW_CULLING", true)
+			LK3D.SetObjectAng("beam", Angle(0, 0, 90))
+			LK3D.SetObjectMat("beam", "fail")
+			LK3D.SetObjectFlag("beam", "NO_TRACE", true)
 
-			LK3D.AddModelToUniverse("hitpos", "cube_nuv")
-			LK3D.SetModelPos("hitpos", Vector(0, 0, 0))
-			LK3D.SetModelScale("hitpos", Vector(.25, .25, .25))
-			LK3D.SetModelFlag("hitpos", "NO_VW_CULLING", true)
-			LK3D.SetModelAng("hitpos", Angle(0, 0, 90))
-			LK3D.SetModelMat("hitpos", "fail")
-			LK3D.SetModelFlag("hitpos", "NO_TRACE", true)
+			LK3D.AddObjectToUniverse("hitpos", "cube_nuv")
+			LK3D.SetObjectPos("hitpos", Vector(0, 0, 0))
+			LK3D.SetObjectScale("hitpos", Vector(.25, .25, .25))
+			LK3D.SetObjectFlag("hitpos", "NO_VW_CULLING", true)
+			LK3D.SetObjectAng("hitpos", Angle(0, 0, 90))
+			LK3D.SetObjectMat("hitpos", "fail")
+			LK3D.SetObjectFlag("hitpos", "NO_TRACE", true)
 
 		end,
 		func_think = function()
-			--LK3D.SetModelAng("cube_bm", Angle(0, CurTime() * 60, CurTime() * 40))
+			--LK3D.SetObjectAng("cube_bm", Angle(0, CurTime() * 60, CurTime() * 40))
 			local pos_trace, norm_trace = LK3D.TraceRayScene(Vector(0, 0, .5), Vector(math.sin(bm_time() * .5), math.cos(bm_time() * .5), 0))
-			LK3D.SetModelPos("beam", LerpVector(.5, Vector(0, 0, .5), pos_trace))
-			LK3D.SetModelAng("beam", (pos_trace - Vector(0, 0, .5)):Angle() + Angle(0, 0, 90))
-			LK3D.SetModelScale("beam", Vector(Vector(0, 0, .5):Distance(pos_trace) / 2, .015, .015))
+			LK3D.SetObjectPos("beam", LerpVector(.5, Vector(0, 0, .5), pos_trace))
+			LK3D.SetObjectAng("beam", (pos_trace - Vector(0, 0, .5)):Angle() + Angle(0, 0, 90))
+			LK3D.SetObjectScale("beam", Vector(Vector(0, 0, .5):Distance(pos_trace) / 2, .015, .015))
 
-			LK3D.SetModelPos("hitpos", pos_trace + norm_trace * .15)
+			LK3D.SetObjectPos("hitpos", pos_trace + norm_trace * .15)
 		end,
 		func_render = function()
 			LK3D.SetCamPos(Vector(0, 0, .65))
@@ -262,9 +262,9 @@ local stages = {
 		func_init = function()
 			makeLitPlane()
 
-			LK3D.AddModelToUniverse("cube_bm", "playeropti")
-			LK3D.SetModelPos("cube_bm", Vector(0, 0, 0))
-			LK3D.SetModelScale("cube_bm", Vector(.01, .01, .01))
+			LK3D.AddObjectToUniverse("cube_bm", "playeropti")
+			LK3D.SetObjectPos("cube_bm", Vector(0, 0, 0))
+			LK3D.SetObjectScale("cube_bm", Vector(.01, .01, .01))
 		end,
 		func_think = function()
 		end,
@@ -276,14 +276,14 @@ local stages = {
 		func_init = function()
 			makeLitPlane()
 
-			LK3D.AddModelToUniverse("cube_bm", "playeropti")
-			LK3D.SetModelPos("cube_bm", Vector(0, 0, 0))
-			LK3D.SetModelScale("cube_bm", Vector(.01, .01, .01))
-			LK3D.SetModelCol("cube_bm", Color(255, 255, 255))
+			LK3D.AddObjectToUniverse("cube_bm", "playeropti")
+			LK3D.SetObjectPos("cube_bm", Vector(0, 0, 0))
+			LK3D.SetObjectScale("cube_bm", Vector(.01, .01, .01))
+			LK3D.SetObjectCol("cube_bm", Color(255, 255, 255))
 		end,
 		func_think = function()
-			LK3D.SetModelPos("cube_bm", Vector(0, 0, math.abs(math.sin(bm_time() * 8) * .25)))
-			LK3D.SetModelAng("cube_bm", Angle(0, 90 + (bm_time() * 512), 0))
+			LK3D.SetObjectPos("cube_bm", Vector(0, 0, math.abs(math.sin(bm_time() * 8) * .25)))
+			LK3D.SetObjectAng("cube_bm", Angle(0, 90 + (bm_time() * 512), 0))
 		end,
 		func_render = boring_renderfunc
 	},
@@ -291,12 +291,12 @@ local stages = {
 		name = "Fullbright Polygon Hell",
 		len = g_len,
 		func_init = function()
-			LK3D.AddModelToUniverse("plane_hd", "plane_hp")
-			LK3D.SetModelPos("plane_hd", Vector(0, 0, 0))
-			LK3D.SetModelScale("plane_hd", Vector(1, 1, 1))
-			LK3D.SetModelCol("plane_hd", Color(255, 255, 255))
-			LK3D.SetModelAng("plane_hd", Angle(0, 0, 90))
-			--LK3D.SetModelFlag("plane_hd", "NO_VW_CULLING", true)
+			LK3D.AddObjectToUniverse("plane_hd", "plane_hp")
+			LK3D.SetObjectPos("plane_hd", Vector(0, 0, 0))
+			LK3D.SetObjectScale("plane_hd", Vector(1, 1, 1))
+			LK3D.SetObjectCol("plane_hd", Color(255, 255, 255))
+			LK3D.SetObjectAng("plane_hd", Angle(0, 0, 90))
+			--LK3D.SetObjectFlag("plane_hd", "NO_VW_CULLING", true)
 
 			makeHell(false, false)
 		end,
@@ -308,12 +308,12 @@ local stages = {
 		name = "Shaded Polygon Hell",
 		len = g_len,
 		func_init = function()
-			LK3D.AddModelToUniverse("plane_hd", "plane_hp")
-			LK3D.SetModelPos("plane_hd", Vector(0, 0, 0))
-			LK3D.SetModelScale("plane_hd", Vector(1, 1, 1))
-			LK3D.SetModelCol("plane_hd", Color(255, 255, 255))
-			LK3D.SetModelAng("plane_hd", Angle(0, 0, 90))
-			--LK3D.SetModelFlag("plane_hd", "NO_VW_CULLING", true)
+			LK3D.AddObjectToUniverse("plane_hd", "plane_hp")
+			LK3D.SetObjectPos("plane_hd", Vector(0, 0, 0))
+			LK3D.SetObjectScale("plane_hd", Vector(1, 1, 1))
+			LK3D.SetObjectCol("plane_hd", Color(255, 255, 255))
+			LK3D.SetObjectAng("plane_hd", Angle(0, 0, 90))
+			--LK3D.SetObjectFlag("plane_hd", "NO_VW_CULLING", true)
 
 			makeHell(true, false)
 		end,
@@ -397,20 +397,20 @@ local stages = {
 		name = "Shader VPOS",
 		len = g_len,
 		func_init = function()
-			LK3D.AddModelToUniverse("plane_hd", "plane_hp")
-			LK3D.SetModelPos("plane_hd", Vector(0, 0, 0))
-			LK3D.SetModelScale("plane_hd", Vector(1, 1, 1))
-			LK3D.SetModelCol("plane_hd", Color(255, 255, 255))
-			LK3D.SetModelAng("plane_hd", Angle(0, 0, 90))
-			LK3D.SetModelFlag("plane_hd", "NO_BF_CULLING", true)
+			LK3D.AddObjectToUniverse("plane_hd", "plane_hp")
+			LK3D.SetObjectPos("plane_hd", Vector(0, 0, 0))
+			LK3D.SetObjectScale("plane_hd", Vector(1, 1, 1))
+			LK3D.SetObjectCol("plane_hd", Color(255, 255, 255))
+			LK3D.SetObjectAng("plane_hd", Angle(0, 0, 90))
+			LK3D.SetObjectFlag("plane_hd", "NO_BF_CULLING", true)
 
-			LK3D.SetModelFlag("plane_hd", "VERT_SH_PARAMS", {
+			LK3D.SetObjectFlag("plane_hd", "VERT_SH_PARAMS", {
 				[1] = true, -- vpos
 				[2] = false, -- vuv
 				[3] = false, -- vrgb
 				[4] = false, -- shader obj ref
 			})
-			LK3D.SetModelFlag("plane_hd", "VERT_SHADER", function(vpos)
+			LK3D.SetObjectFlag("plane_hd", "VERT_SHADER", function(vpos)
 				vpos[2] = vpos[2] + (math.sin(math.Distance(vpos[1] * 4, vpos[3] * 4, 0, 0) + (bm_time() * 4)) / 8)
 			end)
 		end,
@@ -423,21 +423,21 @@ local stages = {
 		name = "Shader VUV",
 		len = g_len,
 		func_init = function()
-			LK3D.AddModelToUniverse("plane_hd", "plane_hp")
-			LK3D.SetModelPos("plane_hd", Vector(0, 0, 0))
-			LK3D.SetModelScale("plane_hd", Vector(1, 1, 1))
-			LK3D.SetModelCol("plane_hd", Color(255, 255, 255))
-			LK3D.SetModelAng("plane_hd", Angle(0, 0, 90))
-			LK3D.SetModelFlag("plane_hd", "NO_BF_CULLING", true)
-			LK3D.SetModelMat("plane_hd", "fail")
+			LK3D.AddObjectToUniverse("plane_hd", "plane_hp")
+			LK3D.SetObjectPos("plane_hd", Vector(0, 0, 0))
+			LK3D.SetObjectScale("plane_hd", Vector(1, 1, 1))
+			LK3D.SetObjectCol("plane_hd", Color(255, 255, 255))
+			LK3D.SetObjectAng("plane_hd", Angle(0, 0, 90))
+			LK3D.SetObjectFlag("plane_hd", "NO_BF_CULLING", true)
+			LK3D.SetObjectMat("plane_hd", "fail")
 
-			LK3D.SetModelFlag("plane_hd", "VERT_SH_PARAMS", {
+			LK3D.SetObjectFlag("plane_hd", "VERT_SH_PARAMS", {
 				[1] = false, -- vpos
 				[2] = true, -- vuv
 				[3] = false, -- vrgb
 				[4] = false, -- shader obj ref
 			})
-			LK3D.SetModelFlag("plane_hd", "VERT_SHADER", function(vpos, vuv)
+			LK3D.SetObjectFlag("plane_hd", "VERT_SHADER", function(vpos, vuv)
 				vuv[1] = vuv[1] + math.sin(bm_time() * 1)
 				vuv[2] = vuv[2] + math.cos(bm_time() * 1)
 			end)
@@ -451,21 +451,21 @@ local stages = {
 		name = "Shader VRGB",
 		len = g_len,
 		func_init = function()
-			LK3D.AddModelToUniverse("plane_hd", "plane_hp")
-			LK3D.SetModelPos("plane_hd", Vector(0, 0, 0))
-			LK3D.SetModelScale("plane_hd", Vector(1, 1, 1))
-			LK3D.SetModelCol("plane_hd", Color(255, 255, 255))
-			LK3D.SetModelAng("plane_hd", Angle(0, 0, 90))
-			LK3D.SetModelFlag("plane_hd", "NO_BF_CULLING", true)
-			LK3D.SetModelMat("plane_hd", "white")
+			LK3D.AddObjectToUniverse("plane_hd", "plane_hp")
+			LK3D.SetObjectPos("plane_hd", Vector(0, 0, 0))
+			LK3D.SetObjectScale("plane_hd", Vector(1, 1, 1))
+			LK3D.SetObjectCol("plane_hd", Color(255, 255, 255))
+			LK3D.SetObjectAng("plane_hd", Angle(0, 0, 90))
+			LK3D.SetObjectFlag("plane_hd", "NO_BF_CULLING", true)
+			LK3D.SetObjectMat("plane_hd", "white")
 
-			LK3D.SetModelFlag("plane_hd", "VERT_SH_PARAMS", {
+			LK3D.SetObjectFlag("plane_hd", "VERT_SH_PARAMS", {
 				[1] = false, -- vpos
 				[2] = false, -- vuv
 				[3] = true, -- vrgb
 				[4] = false, -- shader obj ref
 			})
-			LK3D.SetModelFlag("plane_hd", "VERT_SHADER", function(vpos, vuv, vrgb)
+			LK3D.SetObjectFlag("plane_hd", "VERT_SHADER", function(vpos, vuv, vrgb)
 				vrgb[1] = (math.sin((vpos[1] * 1) + bm_time()) + 1) * 128
 				vrgb[2] = (math.sin((vpos[3] * 1) + bm_time()) + 1) * 128
 				vrgb[3] = 0
@@ -480,21 +480,21 @@ local stages = {
 		name = "Multi Shader",
 		len = g_len,
 		func_init = function()
-			LK3D.AddModelToUniverse("plane_hd", "plane_hp")
-			LK3D.SetModelPos("plane_hd", Vector(0, 0, 0))
-			LK3D.SetModelScale("plane_hd", Vector(1, 1, 1))
-			LK3D.SetModelCol("plane_hd", Color(255, 255, 255))
-			LK3D.SetModelAng("plane_hd", Angle(0, 0, 90))
-			LK3D.SetModelFlag("plane_hd", "NO_BF_CULLING", true)
-			LK3D.SetModelMat("plane_hd", "fail")
+			LK3D.AddObjectToUniverse("plane_hd", "plane_hp")
+			LK3D.SetObjectPos("plane_hd", Vector(0, 0, 0))
+			LK3D.SetObjectScale("plane_hd", Vector(1, 1, 1))
+			LK3D.SetObjectCol("plane_hd", Color(255, 255, 255))
+			LK3D.SetObjectAng("plane_hd", Angle(0, 0, 90))
+			LK3D.SetObjectFlag("plane_hd", "NO_BF_CULLING", true)
+			LK3D.SetObjectMat("plane_hd", "fail")
 
-			LK3D.SetModelFlag("plane_hd", "VERT_SH_PARAMS", {
+			LK3D.SetObjectFlag("plane_hd", "VERT_SH_PARAMS", {
 				[1] = true, -- vpos
 				[2] = true, -- vuv
 				[3] = true, -- vrgb
 				[4] = false, -- shader obj ref
 			})
-			LK3D.SetModelFlag("plane_hd", "VERT_SHADER", function(vpos, vuv, vrgb)
+			LK3D.SetObjectFlag("plane_hd", "VERT_SHADER", function(vpos, vuv, vrgb)
 				vpos[2] = vpos[2] + (math.sin(math.Distance(vpos[1] * 4, vpos[3] * 4, 0, 0) + (bm_time() * 4)) / 8)
 
 				vuv[1] = vuv[1] + math.sin(bm_time() * 1)
@@ -514,18 +514,18 @@ local stages = {
 		name = "Shadowed Simple Sun (Static)",
 		len = g_len,
 		func_init = function()
-			LK3D.AddModelToUniverse("plane_hd", "plane_hp")
-			LK3D.SetModelPos("plane_hd", Vector(0, 0, 0))
-			LK3D.SetModelScale("plane_hd", Vector(1, 1, 1))
-			LK3D.SetModelCol("plane_hd", Color(255, 255, 255))
-			LK3D.SetModelAng("plane_hd", Angle(0, 0, 90))
+			LK3D.AddObjectToUniverse("plane_hd", "plane_hp")
+			LK3D.SetObjectPos("plane_hd", Vector(0, 0, 0))
+			LK3D.SetObjectScale("plane_hd", Vector(1, 1, 1))
+			LK3D.SetObjectCol("plane_hd", Color(255, 255, 255))
+			LK3D.SetObjectAng("plane_hd", Angle(0, 0, 90))
 
 
-			LK3D.AddModelToUniverse("cube_sh", "cube")
-			LK3D.SetModelPos("cube_sh", Vector(0, 0, .2))
-			LK3D.SetModelScale("cube_sh", Vector(.1, .1, .1))
-			LK3D.SetModelFlag("cube_sh", "SHADOW_VOLUME", true)
-			LK3D.SetModelFlag("cube_sh", "SHADOW_DOSUN", true)
+			LK3D.AddObjectToUniverse("cube_sh", "cube")
+			LK3D.SetObjectPos("cube_sh", Vector(0, 0, .2))
+			LK3D.SetObjectScale("cube_sh", Vector(.1, .1, .1))
+			LK3D.SetObjectFlag("cube_sh", "SHADOW_VOLUME", true)
+			LK3D.SetObjectFlag("cube_sh", "SHADOW_DOSUN", true)
 		end,
 		func_think = function()
 		end,
@@ -535,21 +535,21 @@ local stages = {
 		name = "Shadowed Simple Sun (Dynamic)",
 		len = g_len,
 		func_init = function()
-			LK3D.AddModelToUniverse("plane_hd", "plane_hp")
-			LK3D.SetModelPos("plane_hd", Vector(0, 0, 0))
-			LK3D.SetModelScale("plane_hd", Vector(1, 1, 1))
-			LK3D.SetModelCol("plane_hd", Color(255, 255, 255))
-			LK3D.SetModelAng("plane_hd", Angle(0, 0, 90))
+			LK3D.AddObjectToUniverse("plane_hd", "plane_hp")
+			LK3D.SetObjectPos("plane_hd", Vector(0, 0, 0))
+			LK3D.SetObjectScale("plane_hd", Vector(1, 1, 1))
+			LK3D.SetObjectCol("plane_hd", Color(255, 255, 255))
+			LK3D.SetObjectAng("plane_hd", Angle(0, 0, 90))
 
 
-			LK3D.AddModelToUniverse("cube_sh", "cube")
-			LK3D.SetModelPos("cube_sh", Vector(0, 0, .2))
-			LK3D.SetModelScale("cube_sh", Vector(.1, .1, .1))
-			LK3D.SetModelFlag("cube_sh", "SHADOW_VOLUME", true)
-			LK3D.SetModelFlag("cube_sh", "SHADOW_DOSUN", true)
+			LK3D.AddObjectToUniverse("cube_sh", "cube")
+			LK3D.SetObjectPos("cube_sh", Vector(0, 0, .2))
+			LK3D.SetObjectScale("cube_sh", Vector(.1, .1, .1))
+			LK3D.SetObjectFlag("cube_sh", "SHADOW_VOLUME", true)
+			LK3D.SetObjectFlag("cube_sh", "SHADOW_DOSUN", true)
 		end,
 		func_think = function()
-			LK3D.SetModelAng("cube_sh", Angle(bm_time() * 32, 0, bm_time() * 96))
+			LK3D.SetObjectAng("cube_sh", Angle(bm_time() * 32, 0, bm_time() * 96))
 		end,
 		func_render = boring_renderfunc
 	},
@@ -557,29 +557,29 @@ local stages = {
 		name = "Shadowed Simple Point (Static)",
 		len = g_len,
 		func_init = function()
-			LK3D.AddModelToUniverse("plane_hd", "plane_hp")
-			LK3D.SetModelPos("plane_hd", Vector(0, 0, 0))
-			LK3D.SetModelScale("plane_hd", Vector(1, 1, 1))
-			LK3D.SetModelCol("plane_hd", Color(255, 255, 255))
-			LK3D.SetModelAng("plane_hd", Angle(0, 0, 90))
+			LK3D.AddObjectToUniverse("plane_hd", "plane_hp")
+			LK3D.SetObjectPos("plane_hd", Vector(0, 0, 0))
+			LK3D.SetObjectScale("plane_hd", Vector(1, 1, 1))
+			LK3D.SetObjectCol("plane_hd", Color(255, 255, 255))
+			LK3D.SetObjectAng("plane_hd", Angle(0, 0, 90))
 
 
-			LK3D.AddModelToUniverse("cube_sh", "cube")
-			LK3D.SetModelPos("cube_sh", Vector(0, 0, .2))
-			LK3D.SetModelScale("cube_sh", Vector(.1, .1, .1))
-			LK3D.SetModelFlag("cube_sh", "SHADOW_VOLUME", true)
-			LK3D.SetModelFlag("cube_sh", "NO_SHADING", true)
+			LK3D.AddObjectToUniverse("cube_sh", "cube")
+			LK3D.SetObjectPos("cube_sh", Vector(0, 0, .2))
+			LK3D.SetObjectScale("cube_sh", Vector(.1, .1, .1))
+			LK3D.SetObjectFlag("cube_sh", "SHADOW_VOLUME", true)
+			LK3D.SetObjectFlag("cube_sh", "NO_SHADING", true)
 
 
 			LK3D.AddLight("light1_test", Vector(0, 0, .5), 1.3, Color(255, 255, 255), true)
-			LK3D.AddModelToUniverse("cube_lightref", "cube_nuv")
-			LK3D.SetModelFlag("cube_lightref", "NO_SHADING", true)
-			LK3D.SetModelFlag("cube_lightref", "NO_LIGHTING", true)
-			LK3D.SetModelMat("cube_lightref", "white")
-			LK3D.SetModelScale("cube_lightref", Vector(.025, .025, .025))
-			LK3D.SetModelCol("cube_lightref", Color(245, 240, 196))
-			LK3D.SetModelFlag("cube_lightref", "CONSTANT", true)
-			LK3D.SetModelPos("cube_lightref", Vector(0, 0, .5))
+			LK3D.AddObjectToUniverse("cube_lightref", "cube_nuv")
+			LK3D.SetObjectFlag("cube_lightref", "NO_SHADING", true)
+			LK3D.SetObjectFlag("cube_lightref", "NO_LIGHTING", true)
+			LK3D.SetObjectMat("cube_lightref", "white")
+			LK3D.SetObjectScale("cube_lightref", Vector(.025, .025, .025))
+			LK3D.SetObjectCol("cube_lightref", Color(245, 240, 196))
+			LK3D.SetObjectFlag("cube_lightref", "CONSTANT", true)
+			LK3D.SetObjectPos("cube_lightref", Vector(0, 0, .5))
 		end,
 		func_think = function()
 		end,
@@ -589,35 +589,35 @@ local stages = {
 		name = "Shadowed Simple Point (Dynamic)",
 		len = g_len,
 		func_init = function()
-			LK3D.AddModelToUniverse("plane_hd", "plane_hp")
-			LK3D.SetModelPos("plane_hd", Vector(0, 0, 0))
-			LK3D.SetModelScale("plane_hd", Vector(1, 1, 1))
-			LK3D.SetModelCol("plane_hd", Color(255, 255, 255))
-			LK3D.SetModelAng("plane_hd", Angle(0, 0, 90))
+			LK3D.AddObjectToUniverse("plane_hd", "plane_hp")
+			LK3D.SetObjectPos("plane_hd", Vector(0, 0, 0))
+			LK3D.SetObjectScale("plane_hd", Vector(1, 1, 1))
+			LK3D.SetObjectCol("plane_hd", Color(255, 255, 255))
+			LK3D.SetObjectAng("plane_hd", Angle(0, 0, 90))
 
 
-			LK3D.AddModelToUniverse("cube_sh", "cube")
-			LK3D.SetModelPos("cube_sh", Vector(0, 0, .2))
-			LK3D.SetModelScale("cube_sh", Vector(.1, .1, .1))
-			LK3D.SetModelFlag("cube_sh", "SHADOW_VOLUME", true)
-			LK3D.SetModelFlag("cube_sh", "NO_SHADING", true)
+			LK3D.AddObjectToUniverse("cube_sh", "cube")
+			LK3D.SetObjectPos("cube_sh", Vector(0, 0, .2))
+			LK3D.SetObjectScale("cube_sh", Vector(.1, .1, .1))
+			LK3D.SetObjectFlag("cube_sh", "SHADOW_VOLUME", true)
+			LK3D.SetObjectFlag("cube_sh", "NO_SHADING", true)
 
 
 			LK3D.AddLight("light1_test", Vector(0, 0, .5), 1.3, Color(255, 255, 255), true)
-			LK3D.AddModelToUniverse("cube_lightref", "cube_nuv")
-			LK3D.SetModelFlag("cube_lightref", "NO_SHADING", true)
-			LK3D.SetModelFlag("cube_lightref", "NO_LIGHTING", true)
-			LK3D.SetModelMat("cube_lightref", "white")
-			LK3D.SetModelScale("cube_lightref", Vector(.025, .025, .025))
-			LK3D.SetModelCol("cube_lightref", Color(245, 240, 196))
-			LK3D.SetModelFlag("cube_lightref", "CONSTANT", true)
-			LK3D.SetModelPos("cube_lightref", Vector(0, 0, .5))
+			LK3D.AddObjectToUniverse("cube_lightref", "cube_nuv")
+			LK3D.SetObjectFlag("cube_lightref", "NO_SHADING", true)
+			LK3D.SetObjectFlag("cube_lightref", "NO_LIGHTING", true)
+			LK3D.SetObjectMat("cube_lightref", "white")
+			LK3D.SetObjectScale("cube_lightref", Vector(.025, .025, .025))
+			LK3D.SetObjectCol("cube_lightref", Color(245, 240, 196))
+			LK3D.SetObjectFlag("cube_lightref", "CONSTANT", true)
+			LK3D.SetObjectPos("cube_lightref", Vector(0, 0, .5))
 		end,
 		func_think = function()
 			local lp = Vector(math.sin(bm_time() * 0.55) * .75, math.cos(bm_time() * 1.24) * .75, .5)
-			LK3D.SetModelAng("cube_sh", Angle(bm_time() * 32, 0, bm_time() * 96))
+			LK3D.SetObjectAng("cube_sh", Angle(bm_time() * 32, 0, bm_time() * 96))
 			LK3D.UpdateLightPos("light1_test", lp)
-			LK3D.SetModelPos("cube_lightref", lp)
+			LK3D.SetObjectPos("cube_lightref", lp)
 		end,
 		func_render = boring_renderfunc
 	},
@@ -625,18 +625,18 @@ local stages = {
 		name = "Shadowed Complex Sun (Static)",
 		len = g_len,
 		func_init = function()
-			LK3D.AddModelToUniverse("plane_hd", "plane_hp")
-			LK3D.SetModelPos("plane_hd", Vector(0, 0, 0))
-			LK3D.SetModelScale("plane_hd", Vector(1, 1, 1))
-			LK3D.SetModelCol("plane_hd", Color(255, 255, 255))
-			LK3D.SetModelAng("plane_hd", Angle(0, 0, 90))
+			LK3D.AddObjectToUniverse("plane_hd", "plane_hp")
+			LK3D.SetObjectPos("plane_hd", Vector(0, 0, 0))
+			LK3D.SetObjectScale("plane_hd", Vector(1, 1, 1))
+			LK3D.SetObjectCol("plane_hd", Color(255, 255, 255))
+			LK3D.SetObjectAng("plane_hd", Angle(0, 0, 90))
 
 
-			LK3D.AddModelToUniverse("cube_sh", "playeropti")
-			LK3D.SetModelPos("cube_sh", Vector(0, 0, 0))
-			LK3D.SetModelScale("cube_sh", Vector(.0075, .0075, .0075))
-			LK3D.SetModelFlag("cube_sh", "SHADOW_VOLUME", true)
-			LK3D.SetModelFlag("cube_sh", "SHADOW_DOSUN", true)
+			LK3D.AddObjectToUniverse("cube_sh", "playeropti")
+			LK3D.SetObjectPos("cube_sh", Vector(0, 0, 0))
+			LK3D.SetObjectScale("cube_sh", Vector(.0075, .0075, .0075))
+			LK3D.SetObjectFlag("cube_sh", "SHADOW_VOLUME", true)
+			LK3D.SetObjectFlag("cube_sh", "SHADOW_DOSUN", true)
 		end,
 		func_think = function()
 		end,
@@ -646,22 +646,22 @@ local stages = {
 		name = "Shadowed Complex Sun (Dynamic)",
 		len = g_len,
 		func_init = function()
-			LK3D.AddModelToUniverse("plane_hd", "plane_hp")
-			LK3D.SetModelPos("plane_hd", Vector(0, 0, 0))
-			LK3D.SetModelScale("plane_hd", Vector(1, 1, 1))
-			LK3D.SetModelCol("plane_hd", Color(255, 255, 255))
-			LK3D.SetModelAng("plane_hd", Angle(0, 0, 90))
+			LK3D.AddObjectToUniverse("plane_hd", "plane_hp")
+			LK3D.SetObjectPos("plane_hd", Vector(0, 0, 0))
+			LK3D.SetObjectScale("plane_hd", Vector(1, 1, 1))
+			LK3D.SetObjectCol("plane_hd", Color(255, 255, 255))
+			LK3D.SetObjectAng("plane_hd", Angle(0, 0, 90))
 
 
-			LK3D.AddModelToUniverse("cube_sh", "playeropti")
-			LK3D.SetModelPos("cube_sh", Vector(0, 0, 0))
-			LK3D.SetModelScale("cube_sh", Vector(.0075, .0075, .0075))
-			LK3D.SetModelFlag("cube_sh", "SHADOW_VOLUME", true)
-			LK3D.SetModelFlag("cube_sh", "SHADOW_DOSUN", true)
+			LK3D.AddObjectToUniverse("cube_sh", "playeropti")
+			LK3D.SetObjectPos("cube_sh", Vector(0, 0, 0))
+			LK3D.SetObjectScale("cube_sh", Vector(.0075, .0075, .0075))
+			LK3D.SetObjectFlag("cube_sh", "SHADOW_VOLUME", true)
+			LK3D.SetObjectFlag("cube_sh", "SHADOW_DOSUN", true)
 		end,
 		func_think = function()
-			LK3D.SetModelPos("cube_sh", Vector(0, 0, math.abs(math.sin(bm_time() * 8) * .25)))
-			LK3D.SetModelAng("cube_sh", Angle(0, 90 + (bm_time() * 512), 0))
+			LK3D.SetObjectPos("cube_sh", Vector(0, 0, math.abs(math.sin(bm_time() * 8) * .25)))
+			LK3D.SetObjectAng("cube_sh", Angle(0, 90 + (bm_time() * 512), 0))
 		end,
 		func_render = boring_renderfunc
 	},
@@ -669,29 +669,29 @@ local stages = {
 		name = "Shadowed Complex Point (Static)",
 		len = g_len,
 		func_init = function()
-			LK3D.AddModelToUniverse("plane_hd", "plane_hp")
-			LK3D.SetModelPos("plane_hd", Vector(0, 0, 0))
-			LK3D.SetModelScale("plane_hd", Vector(1, 1, 1))
-			LK3D.SetModelCol("plane_hd", Color(255, 255, 255))
-			LK3D.SetModelAng("plane_hd", Angle(0, 0, 90))
+			LK3D.AddObjectToUniverse("plane_hd", "plane_hp")
+			LK3D.SetObjectPos("plane_hd", Vector(0, 0, 0))
+			LK3D.SetObjectScale("plane_hd", Vector(1, 1, 1))
+			LK3D.SetObjectCol("plane_hd", Color(255, 255, 255))
+			LK3D.SetObjectAng("plane_hd", Angle(0, 0, 90))
 
 
-			LK3D.AddModelToUniverse("cube_sh", "playeropti")
-			LK3D.SetModelPos("cube_sh", Vector(0, 0, 0))
-			LK3D.SetModelScale("cube_sh", Vector(.0075, .0075, .0075))
-			LK3D.SetModelFlag("cube_sh", "SHADOW_VOLUME", true)
-			LK3D.SetModelFlag("cube_sh", "NO_SHADING", true)
+			LK3D.AddObjectToUniverse("cube_sh", "playeropti")
+			LK3D.SetObjectPos("cube_sh", Vector(0, 0, 0))
+			LK3D.SetObjectScale("cube_sh", Vector(.0075, .0075, .0075))
+			LK3D.SetObjectFlag("cube_sh", "SHADOW_VOLUME", true)
+			LK3D.SetObjectFlag("cube_sh", "NO_SHADING", true)
 
 
 			LK3D.AddLight("light1_test", Vector(0, 0, .75), 1.3, Color(255, 255, 255), true)
-			LK3D.AddModelToUniverse("cube_lightref", "cube_nuv")
-			LK3D.SetModelFlag("cube_lightref", "NO_SHADING", true)
-			LK3D.SetModelFlag("cube_lightref", "NO_LIGHTING", true)
-			LK3D.SetModelMat("cube_lightref", "white")
-			LK3D.SetModelScale("cube_lightref", Vector(.025, .025, .025))
-			LK3D.SetModelCol("cube_lightref", Color(245, 240, 196))
-			LK3D.SetModelFlag("cube_lightref", "CONSTANT", true)
-			LK3D.SetModelPos("cube_lightref", Vector(0, 0, .75))
+			LK3D.AddObjectToUniverse("cube_lightref", "cube_nuv")
+			LK3D.SetObjectFlag("cube_lightref", "NO_SHADING", true)
+			LK3D.SetObjectFlag("cube_lightref", "NO_LIGHTING", true)
+			LK3D.SetObjectMat("cube_lightref", "white")
+			LK3D.SetObjectScale("cube_lightref", Vector(.025, .025, .025))
+			LK3D.SetObjectCol("cube_lightref", Color(245, 240, 196))
+			LK3D.SetObjectFlag("cube_lightref", "CONSTANT", true)
+			LK3D.SetObjectPos("cube_lightref", Vector(0, 0, .75))
 		end,
 		func_think = function()
 		end,
@@ -701,38 +701,38 @@ local stages = {
 		name = "Shadowed Complex Point (Dynamic)",
 		len = g_len,
 		func_init = function()
-			LK3D.AddModelToUniverse("plane_hd", "plane_hp")
-			LK3D.SetModelPos("plane_hd", Vector(0, 0, 0))
-			LK3D.SetModelScale("plane_hd", Vector(1, 1, 1))
-			LK3D.SetModelCol("plane_hd", Color(255, 255, 255))
-			LK3D.SetModelAng("plane_hd", Angle(0, 0, 90))
+			LK3D.AddObjectToUniverse("plane_hd", "plane_hp")
+			LK3D.SetObjectPos("plane_hd", Vector(0, 0, 0))
+			LK3D.SetObjectScale("plane_hd", Vector(1, 1, 1))
+			LK3D.SetObjectCol("plane_hd", Color(255, 255, 255))
+			LK3D.SetObjectAng("plane_hd", Angle(0, 0, 90))
 
 
-			LK3D.AddModelToUniverse("cube_sh", "playeropti")
-			LK3D.SetModelPos("cube_sh", Vector(0, 0, 0))
-			LK3D.SetModelScale("cube_sh", Vector(.0075, .0075, .0075))
-			LK3D.SetModelFlag("cube_sh", "SHADOW_VOLUME", true)
-			LK3D.SetModelFlag("cube_sh", "NO_SHADING", true)
+			LK3D.AddObjectToUniverse("cube_sh", "playeropti")
+			LK3D.SetObjectPos("cube_sh", Vector(0, 0, 0))
+			LK3D.SetObjectScale("cube_sh", Vector(.0075, .0075, .0075))
+			LK3D.SetObjectFlag("cube_sh", "SHADOW_VOLUME", true)
+			LK3D.SetObjectFlag("cube_sh", "NO_SHADING", true)
 
 
 			LK3D.AddLight("light1_test", Vector(0, 0, .75), 1.3, Color(255, 255, 255), true)
-			LK3D.AddModelToUniverse("cube_lightref", "cube_nuv")
-			LK3D.SetModelFlag("cube_lightref", "NO_SHADING", true)
-			LK3D.SetModelFlag("cube_lightref", "NO_LIGHTING", true)
-			LK3D.SetModelMat("cube_lightref", "white")
-			LK3D.SetModelScale("cube_lightref", Vector(.025, .025, .025))
-			LK3D.SetModelCol("cube_lightref", Color(245, 240, 196))
-			LK3D.SetModelFlag("cube_lightref", "CONSTANT", true)
-			LK3D.SetModelPos("cube_lightref", Vector(0, 0, .75))
+			LK3D.AddObjectToUniverse("cube_lightref", "cube_nuv")
+			LK3D.SetObjectFlag("cube_lightref", "NO_SHADING", true)
+			LK3D.SetObjectFlag("cube_lightref", "NO_LIGHTING", true)
+			LK3D.SetObjectMat("cube_lightref", "white")
+			LK3D.SetObjectScale("cube_lightref", Vector(.025, .025, .025))
+			LK3D.SetObjectCol("cube_lightref", Color(245, 240, 196))
+			LK3D.SetObjectFlag("cube_lightref", "CONSTANT", true)
+			LK3D.SetObjectPos("cube_lightref", Vector(0, 0, .75))
 		end,
 		func_think = function()
-			LK3D.SetModelPos("cube_sh", Vector(0, 0, math.abs(math.sin(bm_time() * 8) * .25)))
-			LK3D.SetModelAng("cube_sh", Angle(0, 90 + (bm_time() * 512), 0))
+			LK3D.SetObjectPos("cube_sh", Vector(0, 0, math.abs(math.sin(bm_time() * 8) * .25)))
+			LK3D.SetObjectAng("cube_sh", Angle(0, 90 + (bm_time() * 512), 0))
 
 
 			local lp = Vector(math.sin(bm_time() * 0.55) * .75, math.cos(bm_time() * 1.24) * .75, .75)
 			LK3D.UpdateLightPos("light1_test", lp)
-			LK3D.SetModelPos("cube_lightref", lp)
+			LK3D.SetObjectPos("cube_lightref", lp)
 		end,
 		func_render = boring_renderfunc
 	},
@@ -741,30 +741,30 @@ local stages = {
 		name = "Shadowed Complex Point (Static Z-Pass)",
 		len = 12,
 		func_init = function()
-			LK3D.AddModelToUniverse("plane_hd", "plane_hp")
-			LK3D.SetModelPos("plane_hd", Vector(0, 0, 0))
-			LK3D.SetModelScale("plane_hd", Vector(1, 1, 1))
-			LK3D.SetModelCol("plane_hd", Color(255, 255, 255))
-			LK3D.SetModelAng("plane_hd", Angle(0, 0, 90))
+			LK3D.AddObjectToUniverse("plane_hd", "plane_hp")
+			LK3D.SetObjectPos("plane_hd", Vector(0, 0, 0))
+			LK3D.SetObjectScale("plane_hd", Vector(1, 1, 1))
+			LK3D.SetObjectCol("plane_hd", Color(255, 255, 255))
+			LK3D.SetObjectAng("plane_hd", Angle(0, 0, 90))
 
 
-			LK3D.AddModelToUniverse("cube_sh", "playeropti")
-			LK3D.SetModelPos("cube_sh", Vector(0, 0, 0))
-			LK3D.SetModelScale("cube_sh", Vector(.0075, .0075, .0075))
-			LK3D.SetModelFlag("cube_sh", "SHADOW_VOLUME", true)
-			LK3D.SetModelFlag("cube_sh", "SHADOW_ZPASS", true)
-			LK3D.SetModelFlag("cube_sh", "NO_SHADING", true)
+			LK3D.AddObjectToUniverse("cube_sh", "playeropti")
+			LK3D.SetObjectPos("cube_sh", Vector(0, 0, 0))
+			LK3D.SetObjectScale("cube_sh", Vector(.0075, .0075, .0075))
+			LK3D.SetObjectFlag("cube_sh", "SHADOW_VOLUME", true)
+			LK3D.SetObjectFlag("cube_sh", "SHADOW_ZPASS", true)
+			LK3D.SetObjectFlag("cube_sh", "NO_SHADING", true)
 
 
 			LK3D.AddLight("light1_test", Vector(0, 0, .75), 1.3, Color(255, 255, 255), true)
-			LK3D.AddModelToUniverse("cube_lightref", "cube_nuv")
-			LK3D.SetModelFlag("cube_lightref", "NO_SHADING", true)
-			LK3D.SetModelFlag("cube_lightref", "NO_LIGHTING", true)
-			LK3D.SetModelMat("cube_lightref", "white")
-			LK3D.SetModelScale("cube_lightref", Vector(.025, .025, .025))
-			LK3D.SetModelCol("cube_lightref", Color(245, 240, 196))
-			LK3D.SetModelFlag("cube_lightref", "CONSTANT", true)
-			LK3D.SetModelPos("cube_lightref", Vector(0, 0, .75))
+			LK3D.AddObjectToUniverse("cube_lightref", "cube_nuv")
+			LK3D.SetObjectFlag("cube_lightref", "NO_SHADING", true)
+			LK3D.SetObjectFlag("cube_lightref", "NO_LIGHTING", true)
+			LK3D.SetObjectMat("cube_lightref", "white")
+			LK3D.SetObjectScale("cube_lightref", Vector(.025, .025, .025))
+			LK3D.SetObjectCol("cube_lightref", Color(245, 240, 196))
+			LK3D.SetObjectFlag("cube_lightref", "CONSTANT", true)
+			LK3D.SetObjectPos("cube_lightref", Vector(0, 0, .75))
 		end,
 		func_think = function()
 		end,
@@ -774,39 +774,39 @@ local stages = {
 		name = "Shadowed Complex Point (Dynamic Z-Pass)",
 		len = 12,
 		func_init = function()
-			LK3D.AddModelToUniverse("plane_hd", "plane_hp")
-			LK3D.SetModelPos("plane_hd", Vector(0, 0, 0))
-			LK3D.SetModelScale("plane_hd", Vector(1, 1, 1))
-			LK3D.SetModelCol("plane_hd", Color(255, 255, 255))
-			LK3D.SetModelAng("plane_hd", Angle(0, 0, 90))
+			LK3D.AddObjectToUniverse("plane_hd", "plane_hp")
+			LK3D.SetObjectPos("plane_hd", Vector(0, 0, 0))
+			LK3D.SetObjectScale("plane_hd", Vector(1, 1, 1))
+			LK3D.SetObjectCol("plane_hd", Color(255, 255, 255))
+			LK3D.SetObjectAng("plane_hd", Angle(0, 0, 90))
 
 
-			LK3D.AddModelToUniverse("cube_sh", "playeropti")
-			LK3D.SetModelPos("cube_sh", Vector(0, 0, 0))
-			LK3D.SetModelScale("cube_sh", Vector(.0075, .0075, .0075))
-			LK3D.SetModelFlag("cube_sh", "SHADOW_VOLUME", true)
-			LK3D.SetModelFlag("cube_sh", "SHADOW_ZPASS", true)
-			LK3D.SetModelFlag("cube_sh", "NO_SHADING", true)
+			LK3D.AddObjectToUniverse("cube_sh", "playeropti")
+			LK3D.SetObjectPos("cube_sh", Vector(0, 0, 0))
+			LK3D.SetObjectScale("cube_sh", Vector(.0075, .0075, .0075))
+			LK3D.SetObjectFlag("cube_sh", "SHADOW_VOLUME", true)
+			LK3D.SetObjectFlag("cube_sh", "SHADOW_ZPASS", true)
+			LK3D.SetObjectFlag("cube_sh", "NO_SHADING", true)
 
 
 			LK3D.AddLight("light1_test", Vector(0, 0, .75), 1.3, Color(255, 255, 255), true)
-			LK3D.AddModelToUniverse("cube_lightref", "cube_nuv")
-			LK3D.SetModelFlag("cube_lightref", "NO_SHADING", true)
-			LK3D.SetModelFlag("cube_lightref", "NO_LIGHTING", true)
-			LK3D.SetModelMat("cube_lightref", "white")
-			LK3D.SetModelScale("cube_lightref", Vector(.025, .025, .025))
-			LK3D.SetModelCol("cube_lightref", Color(245, 240, 196))
-			LK3D.SetModelFlag("cube_lightref", "CONSTANT", true)
-			LK3D.SetModelPos("cube_lightref", Vector(0, 0, .75))
+			LK3D.AddObjectToUniverse("cube_lightref", "cube_nuv")
+			LK3D.SetObjectFlag("cube_lightref", "NO_SHADING", true)
+			LK3D.SetObjectFlag("cube_lightref", "NO_LIGHTING", true)
+			LK3D.SetObjectMat("cube_lightref", "white")
+			LK3D.SetObjectScale("cube_lightref", Vector(.025, .025, .025))
+			LK3D.SetObjectCol("cube_lightref", Color(245, 240, 196))
+			LK3D.SetObjectFlag("cube_lightref", "CONSTANT", true)
+			LK3D.SetObjectPos("cube_lightref", Vector(0, 0, .75))
 		end,
 		func_think = function()
-			LK3D.SetModelPos("cube_sh", Vector(0, 0, math.abs(math.sin(bm_time() * 8) * .25)))
-			LK3D.SetModelAng("cube_sh", Angle(0, 90 + (bm_time() * 512), 0))
+			LK3D.SetObjectPos("cube_sh", Vector(0, 0, math.abs(math.sin(bm_time() * 8) * .25)))
+			LK3D.SetObjectAng("cube_sh", Angle(0, 90 + (bm_time() * 512), 0))
 
 
 			local lp = Vector(math.sin(bm_time() * 0.55) * .75, math.cos(bm_time() * 1.24) * .75, .75)
 			LK3D.UpdateLightPos("light1_test", lp)
-			LK3D.SetModelPos("cube_lightref", lp)
+			LK3D.SetObjectPos("cube_lightref", lp)
 		end,
 		func_render = boring_renderfunc
 	},
