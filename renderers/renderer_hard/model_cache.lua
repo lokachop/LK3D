@@ -403,7 +403,11 @@ local function renderCached(object)
 
 
 		if (FrameNumber() - (object.anim_lastframe or 0)) > 0 and object.anim_state then
-			object.anim_delta = ((object.anim_delta or 0) + (FrameTime() * (object.anim_rate / frameCount))) % 1.00001
+			if LK3D.AnimFrameDiv then
+				object.anim_delta = ((object.anim_delta or 0) + (FrameTime() * (object.anim_rate / frameCount))) % 1.00001
+			else
+				object.anim_delta = ((object.anim_delta or 0) + (FrameTime() * object.anim_rate)) % 1.00001
+			end
 			object.anim_lastframe = FrameNumber()
 		end
 

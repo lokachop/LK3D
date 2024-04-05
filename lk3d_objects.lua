@@ -190,7 +190,7 @@ local nextWarnPosAng = CurTime()
 function LK3D.SetModelPosAng(index, pos, ang)
 	if CurTime() > nextWarnPosAng then
 		nextWarnPosAng = nextWarnPosAng + lowWarnTime
-		LK3D.New_D_Print("Using deprecated function LK3D.SetModelAng(), use LK3D.SetObjectAng()", LK3D_SEVERITY_WARN, "LK3D")
+		LK3D.New_D_Print("Using deprecated function LK3D.SetModelPosAng(), use LK3D.SetObjectPosAng()", LK3D_SEVERITY_WARN, "LK3D")
 	end
 
 	LK3D.SetObjectPosAng(index, pos, ang)

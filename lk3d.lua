@@ -66,6 +66,8 @@ LK3D.LightmapUpscale = LK3D.LightmapUpscale or 1
 
 LK3D.ShadowAlpha = LK3D.ShadowAlpha or 196
 
+LK3D.AnimFrameDiv = LK3D.AnimFrameDiv ~= nil and LK3D.AnimFrameDiv or false
+
 LK3D.AmbientCol = Color(0, 0, 0)
 LK3D.OrthoParameters = {
 	left = 1,

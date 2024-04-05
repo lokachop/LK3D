@@ -3,14 +3,14 @@ LK3D.Shaders = LK3D.Shaders or {}
 -- misc. shaders i guess for stuff
 
 
-function LK3D.SetModelPrefabShader(obj, shader)
+function LK3D.SetObjectPrefabShader(obj, shader)
 	if not shader then
 		return
 	end
 
 	if string.lower(shader) == "none" then
-		LK3D.SetModelFlag(obj, "VERT_SH_PARAMS", nil)
-		LK3D.SetModelFlag(obj, "VERT_SHADER", nil)
+		LK3D.SetObjectFlag(obj, "VERT_SH_PARAMS", nil)
+		LK3D.SetObjectFlag(obj, "VERT_SHADER", nil)
 		return
 	end
 
@@ -25,8 +25,13 @@ function LK3D.SetModelPrefabShader(obj, shader)
 		return
 	end
 
-	LK3D.SetModelFlag(obj, "VERT_SH_PARAMS", LK3D.Shaders[shader].sh_params)
-	LK3D.SetModelFlag(obj, "VERT_SHADER", LK3D.Shaders[shader].sh_func)
+	LK3D.SetObjectFlag(obj, "VERT_SH_PARAMS", LK3D.Shaders[shader].sh_params)
+	LK3D.SetObjectFlag(obj, "VERT_SHADER", LK3D.Shaders[shader].sh_func)
+end
+
+function LK3D.SetModelPrefabShader(obj, shader)
+	LK3D.New_D_Print("Using deprecated function LK3D.SetModelPrefabShader(), use LK3D.SetObjectPrefabShader()", LK3D_SEVERITY_WARN, "LK3D")
+	LK3D.SetObjectPrefabShader(obj, shader)
 end
 
 

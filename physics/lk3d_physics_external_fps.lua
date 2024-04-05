@@ -431,7 +431,7 @@ function LK3D.DebugRenderPhysicsObjects()
 
 			--LK3D.PushObjectAnims(k, "acube")
 			--LK3D.SetObjectAnim(k, "wiggle")
-			--LK3D.SetObjectAnimPlayRate(k, .15)
+			--LK3D.SetObjectAnimRate(k, .15)
 
 
 			debugObjects[k] = true

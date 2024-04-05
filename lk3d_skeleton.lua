@@ -127,11 +127,11 @@ function LK3D.RemoveSkeletonObject(object)
 
     for k, v in pairs(obj_ptr.parented_obj_ids) do
         if LK3D.CurrUniv["objects"][v] then
-            LK3D.RemoveModelFromUniverse(v)
+            LK3D.RemoveObjectFromUniverse(v)
         end
     end
 
-    LK3D.RemoveModelFromUniverse(object)
+    LK3D.RemoveObjectFromUniverse(object)
 end
 
 function LK3D.DeclareSkeletonAnim(object, anim, func)
@@ -249,7 +249,7 @@ local function object_update_bone_objects(object)
             --local world_p, world_a = LocalToWorld(b_calc_pos, b_calc_ang, object.pos, object.ang)
 
 
-            LK3D.SetModelPosAng(obj_idex, b_calc_idx:GetTranslation(), b_calc_idx:GetAngles())
+            LK3D.SetObjectPosAng(obj_idex, b_calc_idx:GetTranslation(), b_calc_idx:GetAngles())
         end
     end
 end
