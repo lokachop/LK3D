@@ -377,3 +377,27 @@ LK3D.Shaders["reflective_screen_rot"] = {
 		vuv[2] = math.abs(v_nrot[2] * .5 + .5)
 	end
 }
+
+
+
+LK3D.Shaders["depth"] = {
+	sh_params = {
+		[1] = true, -- vpos
+		[2] = false, -- vuv
+		[3] = true, -- vrgb
+		[4] = true, -- shader obj ref
+		[5] = false, -- vnorm
+	},
+	sh_func = function(vpos, vuv, vrgb, vnorm)
+		local objref = LK3D.SHADER_OBJREF
+		local vertpos = Vector(vpos)
+
+		local worldPos = objref["tmatrix"] * vertpos
+		local camPos = WorldToLocal(worldPos, Angle(0, 0, 0), LK3D.CamPos, LK3D.CamAng)
+		local dVal = math.min(math.max(camPos[1] / (objref.DEPTH_SH_DIST or 16), 0), 1)
+
+		vrgb[1] = dVal * 255
+		vrgb[2] = dVal * 255
+		vrgb[3] = dVal * 255
+	end
+}

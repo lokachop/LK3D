@@ -313,7 +313,7 @@ local function renderModel(object)
 				rgbtbl3 = {rc3, gc3, bc3}
 			end
 
-			local norm1, norm2, norm3 = hasvshparameter, hasvshparameter, hasvshparameter
+			local norm1, norm2, norm3 = norm, norm, norm
 			if donorm and not object["SHADER_NO_SMOOTHNORM"] then -- normal
 				local sn1 = Vector(s_norm[index[1][1]] or normals[i])
 				local sn2 = Vector(s_norm[index[2][1]] or normals[i])
@@ -322,8 +322,6 @@ local function renderModel(object)
 				sn2:Rotate(ang)
 				sn3:Rotate(ang)
 				norm1, norm2, norm3 = sn1, sn2, sn3
-			elseif donorm then
-				norm1, norm2, norm3 = norm, norm, norm
 			end
 
 			LK3D.SHADER_VERTID = i * 3
@@ -347,7 +345,6 @@ local function renderModel(object)
 				uv2 = cuv2
 				uv3 = cuv3
 			end
-
 		else
 			v1 = Vector(verts[index[1][1]])
 			v2 = Vector(verts[index[2][1]])
@@ -364,11 +361,11 @@ local function renderModel(object)
 		--v3:Rotate(ang)
 		--v3:Add(pos)
 
-		if doshader and not donorm then
-			norm = (v2 - v1):Cross(v3 - v1) -- re calculate, shader touches normals
-			norm:Normalize()
-			norm:Rotate(ang)
-		end
+		--if doshader and not donorm then -- wtf was i smoking
+			--norm = (v2 - v1):Cross(v3 - v1) -- re calculate, shader touches normals
+			--norm:Normalize()
+			--norm:Rotate(ang)
+		--end
 
 		if dobfculling then
 			local p_n_c = m_obj * v1
