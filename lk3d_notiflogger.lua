@@ -183,7 +183,7 @@ LK3D.DeclareModuleColour("LKPack", Color(64, 196, 64))
 LK3D.DeclareModuleColour("DPRINT", Color(16, 128, 96))
 LK3D.DeclareModuleColour("Hardware2", Color(16, 68, 128))
 LK3D.DeclareModuleColour("Software2", Color(128, 68, 128))
-
+LK3D.DeclareModuleColour("Noise", Color(50, 197, 116))
 
 
 LK3D.LogSeverity = 1

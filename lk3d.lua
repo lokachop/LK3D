@@ -354,8 +354,7 @@ for k, v in pairs(LK3D.ModelInitExtra) do
 	end
 end
 
-
-
+include("lk3d_noise.lua")
 include("lk3d_particles.lua")
 include("lk3d_debugutils.lua")
 include("lk3d_trace.lua")
