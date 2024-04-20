@@ -139,6 +139,7 @@ end
 
 -- aand please run now??
 -- ???
+-- ok now please work
 
 local function doShaderPreviewStitched(mdl, mat, shader)
 	renderShaderPreview(mdl, mat, false, shader, rtRender)
