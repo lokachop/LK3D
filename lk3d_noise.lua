@@ -1,3 +1,11 @@
+--[[--
+## Noise Module
+---
+
+Module that provides a bunch of noise functions  
+For use with procedural generation / texturing  
+]]
+-- @module noise
 LK3D = LK3D or {}
 LK3D.New_D_Print("Loading!", LK3D_SEVERITY_INFO, "Noise")
 
@@ -50,7 +58,12 @@ local function simplex_mod(x, m)
 	return a < 0 and a + m or a;
 end
 
-
+--- Calculates 2D [Simplex noise](https://en.wikipedia.org/wiki/Simplex_noise)
+-- @tparam number x X Position
+-- @tparam number y Y Position
+-- @tparam number seed Seed (to randomize)
+-- @treturn number Noise value (-1 to 1)
+-- @usage LK3D.Simplex2D(32, 64, 52623)
 function LK3D.Simplex2D(x, y, seed)
 	local n0, n1, n2 = 0, 0, 0
 
@@ -127,9 +140,6 @@ LK3D.New_D_Print("Loaded Simplex (can cause crashes!)!", LK3D_SEVERITY_INFO, "No
 
 
 
-
-
--- https://en.wikipedia.org/wiki/LK3D.ProcTex.Perlin_noise
 local perlin_permutations = {
 	151, 160, 137, 91, 90, 15, 131, 13, 201, 95, 96, 53, 194, 233, 7, 225, 140, 36,
 	103, 30, 69, 142, 8, 99, 37, 240, 21, 10, 23, 190, 6, 148, 247, 120, 234, 75, 0,
@@ -159,6 +169,12 @@ local function perlin_dotGridGradient(ix, iy, x, y, seed)
 	return ((x - ix) * grad[1]) + ((y - iy) * grad[2])
 end
 
+--- Calculates 2D [Perlin noise](https://en.wikipedia.org/wiki/Perlin_noise)
+-- @tparam number x X Position
+-- @tparam number y Y Position
+-- @tparam number seed Seed (to randomize)
+-- @treturn number Noise value (-1 to 1)
+-- @usage LK3D.Perlin2D(32, 64, 52623)
 function LK3D.Perlin2D(x, y, seed)
 	local x0, y0 = math.floor(x), math.floor(y)
 	local x1, y1 = x0 + 1, y0 + 1
@@ -180,9 +196,6 @@ LK3D.New_D_Print("Loaded perlin!", LK3D_SEVERITY_INFO, "Noise")
 
 
 
-
-
--- https://en.wikipedia.org/wiki/Worley_noise
 -- https://thebookofshaders.com/12/
 local function worley_v_f2(v)
 	return Vector(math.floor(v[1]), math.floor(v[2]))
@@ -199,6 +212,12 @@ local function worley_random2(p)
 	return worley_v_fract2(worley_v_s2(Vector(p:Dot(Vector(127.1,311.7)), p:Dot(Vector(269.5, 183.3)))) * 43758.5453)
 end
 
+--- Calculates 2D [Worley noise](https://en.wikipedia.org/wiki/Worley_noise)
+-- @tparam number x X Position
+-- @tparam number y Y Position
+-- @tparam number seed Seed (to randomize)
+-- @treturn number Noise value (0 to 1)
+-- @usage LK3D.Worley2D(32, 64, 52623)
 function LK3D.Worley2D(x, y, seed)
 	local m_dist = 1
 	local st = Vector(x + ((seed or 0) * ScrW()), y + ((seed or 0) * ScrH()))
@@ -233,6 +252,12 @@ local function value_random2(p)
 	return worley_v_fract2(worley_v_s2(Vector(p:Dot(Vector(127.1,311.7)), p:Dot(Vector(269.5, 183.3)))) * 43758.5453)
 end
 
+--- Calculates 2D [Value noise](https://en.wikipedia.org/wiki/Value_noise)
+-- @tparam number x X Position
+-- @tparam number y Y Position
+-- @tparam number seed Seed (to randomize)
+-- @treturn number Noise value (-1 to 1)
+-- @usage LK3D.ValueNoise2D(32, 64, 52623)
 function LK3D.ValueNoise2D(x, y, seed)
 	local fx = math.floor(x)
 	local fy = math.floor(y)

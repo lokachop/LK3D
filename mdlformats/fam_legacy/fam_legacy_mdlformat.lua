@@ -1,8 +1,17 @@
+---
+-- @module modelutils
 LK3D = LK3D or {}
-
-
--- lets make a faster but bigger model format
 file.CreateDir("lk3d/fam_export")
+
+
+--- Exports a standalone FAM model from a animated model
+-- @deprecated
+-- @internal
+-- @tparam string name LK3D model name
+-- @tparam string path Export path
+-- @tparam table mdlData LK3D Model data
+-- @usage -- Don't use this
+-- LK3D.ExportFastAnimatedModel("human", "export_human", LK3D.Models["human"])
 function LK3D.ExportFastAnimatedModel(name, path, mdlData)
 	if not mdlData then
 		return
@@ -77,6 +86,13 @@ function LK3D.ExportFastAnimatedModel(name, path, mdlData)
 	fPtr:Close()
 end
 
+--- Loads a standalone FAM Model
+-- @deprecated
+-- @internal
+-- @tparam string path Path to the FAM model
+-- @treturn table LK3D model data
+-- @usage -- Don't use this
+-- LK3D.ExportFastAnimatedModel("lk3d/fam_test/human1.fam")
 function LK3D.LoadFastAnimatedModel(path)
 	local fPtr = file.Open(path, "rb", "DATA")
 	if not fPtr then
@@ -141,6 +157,12 @@ function LK3D.LoadFastAnimatedModel(path)
 	return mdlData
 end
 
+--- Exports a full FAM model
+-- @deprecated
+-- @tparam string index LK3D Model name
+-- @tparam string fpath Animated model LKPack filepath
+-- @usage -- Don't use this
+-- LK3D.ExportAnimatedModelFAM("human", "dd_main/animated/human/")
 function LK3D.ExportAnimatedModelFAM(index, fpath)
 	local jsonInfo = LK3D.ReadFileFromLKPack("models/" .. fpath .. "/params.json")
 	local params = util.JSONToTable(jsonInfo)

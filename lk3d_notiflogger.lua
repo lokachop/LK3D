@@ -1,7 +1,14 @@
+--[[--
+## NotifLogger
+---
+
+Module that handles logging / console prints  
+]]
+-- @module notiflogger
 LK3D = LK3D or {}
 
--- new notif system
-LK3D.DoLogging = true -- write logs to lk3d/logs, WARNING SLOW, keep off when shipping
+--- Flag for enabling / disabling logging
+LK3D.DoLogging = LK3D.DoLogging or true -- write logs to lk3d/logs, WARNING SLOW, keep off when shipping
 
 if LK3D.DoLogging then
 	file.CreateDir("lk3d/logs")
@@ -115,32 +122,47 @@ if LK3D.DoLogging then
 end
 
 
-
+--- Writes a message to the logs
+-- @tparam string text String to log
+-- @usage LK3D.LogMessage("Hi From LK3DWiki!")
 function LK3D.LogMessage(text)
 	local nice_str = os.date("[%H:%M:%S] ")
 	LK3D.LogFP:Write(nice_str .. text .. "\n")
 end
 
 
+--- Handles the automatic flushing of the log
+-- @usage LK3D.AutoLogFlush()
 local next_flush = CurTime() + 1
 function LK3D.AutoLogFlush()
 	if not LK3D.DoLogging then
 		return
 	end
 
-	if CurTime() > next_flush then
-		LK3D.LogFP:Flush()
-		next_flush = CurTime() + 1
+	if CurTime() < next_flush then
+		return
 	end
+
+	LK3D.LogFP:Flush()
+	next_flush = CurTime() + 1
 end
 
+--- Constants
+-- @section constants
 
--- new enums!
+-- Debug severity type
 LK3D_SEVERITY_DEBUG = 1
+--- Info severity type
 LK3D_SEVERITY_INFO  = 2
+--- Warn severity type
 LK3D_SEVERITY_WARN  = 3
+--- Error severity type
 LK3D_SEVERITY_ERROR = 4
+--- Fatal severity type
 LK3D_SEVERITY_FATAL = 5
+
+--- End
+-- @section end
 
 local fancy_severities = {
 	[1] = "Debug",
@@ -162,6 +184,10 @@ local c_gray = Color(100, 100, 100)
 local c_darkgray = Color(32, 32, 32)
 
 LK3D.ModuleColours = {}
+--- Declares the colour for a log module
+-- @tparam string lk_module Module name
+-- @tparam color col Module colour
+-- @usage LK3D.DeclareModuleColour("Custom", Color(255, 0, 0))
 function LK3D.DeclareModuleColour(lk_module, col)
 	LK3D.ModuleColours[lk_module] = col
 end
@@ -185,10 +211,18 @@ LK3D.DeclareModuleColour("Hardware2", Color(16, 68, 128))
 LK3D.DeclareModuleColour("Software2", Color(128, 68, 128))
 LK3D.DeclareModuleColour("Noise", Color(50, 197, 116))
 
+--- Value that marks which severity to start logging from (inclusive)
+LK3D.LogSeverity = LK3D.LogSeverity or LK3D_SEVERITY_DEBUG
+--- Value that marks which severity to start printing with LK3D.Debug **disabled**
+LK3D.DebugOnlySev = LK3D.DebugOnlySev or LK3D_SEVERITY_INFO
+--- Value that marks which severity to start printing with LK3D.Debug **enabled**
+LK3D.DebugSev = LK3D.DebugSev or LK3D_SEVERITY_INFO
 
-LK3D.LogSeverity = 1
-LK3D.DebugOnlySev = 2
-LK3D.DebugSev = 2
+--- Prints a message to the console and logs it
+-- @tparam string text Text to print
+-- @tparam number severity Severity type constant
+-- @tparam string lk_module Module to log as
+-- @usage LK3D.New_D_Print("Help!" LK3D_SEVERITY_WARN, "Hardware2")
 function LK3D.New_D_Print(text, severity, lk_module)
 	severity = severity or 1
 	lk_module = lk_module or "Base"

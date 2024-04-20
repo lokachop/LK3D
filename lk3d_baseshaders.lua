@@ -1,8 +1,20 @@
+--[[--
+## Prefab shader module
+---
+
+These are built-in helper shaders in LK3D to do neat effects like sphere mapping among other things  
+For a list of shaders with examples, refer to the Base Shaders manual page!  
+**These only work on the Hardware1 renderer!**  
+]]
+-- @module baseshaders
 LK3D = LK3D or {}
 LK3D.Shaders = LK3D.Shaders or {}
--- misc. shaders i guess for stuff
 
 
+
+--- Sets the shader of an object to a prefab one
+-- @tparam string obj the tag of the object
+-- @tparam string shader the name of the shader 
 function LK3D.SetObjectPrefabShader(obj, shader)
 	if not shader then
 		return
@@ -53,7 +65,7 @@ LK3D.Shaders["reflective"] = {
 		local vpos_c = vpos * objref.scl
 		vpos_c:Rotate(objref.ang)
 		vpos_c:Add(objref.pos)
-		local v_dir = (vpos_c - LK3D.CamPos)
+		local v_dir = (LK3D.CamPos - vpos_c)
 		v_dir:Normalize()
 
 		-- reflect mapping
@@ -62,16 +74,26 @@ LK3D.Shaders["reflective"] = {
 		local m = 2 * math.sqrt(
 			math.pow(r.x, 2) +
 			math.pow(r.y, 2) +
-			math.pow(r.z + 1, 2)
+			math.pow(r.z, 2)
 		)
-		local u = r.x / m + .5
-		local v = r.y / m + .5
+
+		-- PostFIX: Correct for my shit bad code and make it good, This makes this the most expensive reflective shader!
+
+		local v_dir_ang = v_dir:Angle()
+		-- localize r
+		local r_local = Vector(r)
+		r_local:Rotate(Angle(0, -v_dir_ang[2], 0))
+		r_local:Rotate(Angle(-v_dir_ang[1], 0, 0))
+		r_local:Normalize()
+
+
+		local u = -r_local.y / m + .5
+		local v = r_local.z / m + .5
 
 		vuv[1] = u
 		vuv[2] = v
 	end
 }
-
 
 LK3D.Shaders["reflective_simple"] = {
 	sh_params = {
@@ -99,6 +121,25 @@ LK3D.Shaders["reflective_simple"] = {
 
 		vuv[1] = u
 		vuv[2] = v
+	end
+}
+
+LK3D.Shaders["reflective_screen_rot"] = {
+	sh_params = {
+		[1] = false, -- vpos
+		[2] = true, -- vuv
+		[3] = false, -- vrgb
+		[4] = false, -- shader obj ref
+		[5] = true, -- vnorm
+	},
+	sh_func = function(vpos, vuv, vrgb, vnorm)
+		local v_nrot = Vector(vnorm)
+		v_nrot:Rotate(Angle(0, -LK3D.CamAng[2], 0))
+		v_nrot:Rotate(Angle(-LK3D.CamAng[1], 0, 0))
+		v_nrot:Normalize()
+
+		vuv[1] = .5 + -v_nrot[2] * .5
+		vuv[2] = .5 + -v_nrot[3] * .5
 	end
 }
 
@@ -190,10 +231,6 @@ LK3D.Shaders["norm_vis_rot"] = {
 		vrgb[3] = (vnorm[3] + 1) * 128
 	end
 }
-
-
-
-
 
 LK3D.Shaders["norm_screenspace"] = {
 	sh_params = {
@@ -313,8 +350,8 @@ LK3D.Shaders["vert_col"] = {
 
 
 
-local rnd = 0
-local rnd2 = 0
+local rnd = 1
+local rnd2 = 1
 LK3D.Shaders["ps1"] = {
 	sh_params = {
 		[1] = true, -- vpos
@@ -357,27 +394,6 @@ LK3D.Shaders["ps1"] = {
 		--vuv[2] = math.Round(vuv[2], 2)
 	end
 }
-
-
-LK3D.Shaders["reflective_screen_rot"] = {
-	sh_params = {
-		[1] = false, -- vpos
-		[2] = true, -- vuv
-		[3] = false, -- vrgb
-		[4] = false, -- shader obj ref
-		[5] = true, -- vnorm
-	},
-	sh_func = function(vpos, vuv, vrgb, vnorm)
-		local v_nrot = Vector(vnorm)
-		v_nrot:Rotate(Angle(0, -LK3D.CamAng[2], 0))
-		v_nrot:Rotate(Angle(-LK3D.CamAng[1], 0, 0))
-		v_nrot:Normalize()
-
-		vuv[1] = .5 + math.abs(v_nrot[1])
-		vuv[2] = math.abs(v_nrot[2] * .5 + .5)
-	end
-}
-
 
 
 LK3D.Shaders["depth"] = {

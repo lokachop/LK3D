@@ -1,3 +1,5 @@
+---
+-- @module modelutils
 LK3D = LK3D or {}
 
 local string = string
@@ -6,7 +8,10 @@ local string_TrimRight = string.TrimRight
 local string_sub = string.sub
 local string_Explode = string.Explode
 
-
+--- Parses a OBJ mesh
+-- @tparam string objData OBJ mesh data
+-- @treturn table LK3D Model data
+-- @usage local data = LK3D.ParseOBJMesh(LK3D.ReadFileFromLKPack("models/ponr_main/revolver/revolver_bakeduvs.obj"))
 function LK3D.ParseOBJMesh(objData)
 	local data = {}
 	data["verts"] = {}
@@ -118,7 +123,11 @@ function LK3D.ParseOBJMesh(objData)
 	return data, hadNormal
 end
 
-
+--- Declares a Model from OBJ model data
+-- @tparam string name LK3D Model name
+-- @tparam string objData OBJ Model data
+-- @usage -- Don't do this, use LK3D.DeclareModelFromOBJFile
+-- LK3D.AddModelOBJ("revolver", LK3D.ReadFileFromLKPack("models/ponr_main/revolver/revolver_bakeduvs.obj"))
 function LK3D.AddModelOBJ(name, objData)
 	local data, hadNormal = LK3D.ParseOBJMesh(objData)
 
@@ -131,6 +140,11 @@ function LK3D.AddModelOBJ(name, objData)
 	LK3D.New_D_Print("Declared model \"" .. name .. "\" with " .. #data.verts .. " verts! [OBJ]", LK3D_SEVERITY_DEBUG, "ModelUtils")
 end
 
+
+--- Declares a Model from OBJ model data
+-- @tparam string name LK3D Model name
+-- @tparam string fpath LKPack filepath
+-- @usage LK3D.DeclareModelFromOBJFile("revolver", "models/ponr_main/revolver/revolver_bakeduvs")
 function LK3D.DeclareModelFromOBJFile(name, fpath)
 	local fcontents = LK3D.ReadFileFromLKPack("models/" .. fpath .. ".obj")
 	LK3D.New_D_Print("Loading OBJ model \"" .. name .. "\" (" .. fpath .. ") from LKPack!", LK3D_SEVERITY_INFO, "ModelUtils")

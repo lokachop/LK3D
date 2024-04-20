@@ -240,7 +240,7 @@ local function renderModel(object)
 	local doshader = object["VERT_SHADER"] ~= nil
 	local vsh_parameter = object["VERT_SH_PARAMS"]
 	local hasvshparameter = (vsh_parameter ~= nil) and true or nil
-	local dobfculling = not object["NO_BF_CULLING"]
+	--local dobfculling = not object["NO_BF_CULLING"]
 
 	if (hasvshparameter and vsh_parameter[4]) or (not hasvshparameter) then
 		LK3D.SHADER_OBJREF = object
@@ -367,6 +367,8 @@ local function renderModel(object)
 			--norm:Rotate(ang)
 		--end
 
+		--[[
+			-- This didn't help
 		if dobfculling then
 			local p_n_c = m_obj * v1
 			p_n_c:Sub(LK3D.CamPos)
@@ -377,6 +379,7 @@ local function renderModel(object)
 				continue
 			end
 		end
+		]]--
 
 
 		if LK3D.DoDirLighting and not object["NO_SHADING"] then
@@ -739,7 +742,7 @@ function Renderer.Render()
 			fov = LK3D.FOV,
 			zfar = LK3D.FAR_Z,
 			znear = LK3D.NEAR_Z,
-			ortho = LK3D.Ortho and LK3D.OrthoParameters or nil
+			ortho = LK3D.Ortho and LK3D.OrthoParams or nil
 		})
 
 
@@ -913,7 +916,7 @@ function Renderer.RenderDepth()
 			fov = LK3D.FOV,
 			zfar = LK3D.FAR_Z,
 			znear = LK3D.NEAR_Z,
-			ortho = LK3D.Ortho and LK3D.OrthoParameters or nil
+			ortho = LK3D.Ortho and LK3D.OrthoParams or nil
 		})
 		for k, v in pairs(LK3D.CurrUniv["objects"]) do
 			if v["RENDER_NOGLOBAL"] then
@@ -987,7 +990,7 @@ function Renderer.RenderObjectAlone(name)
 		fov = LK3D.FOV,
 		zfar = LK3D.FAR_Z,
 		znear = LK3D.NEAR_Z,
-		ortho = LK3D.Ortho and LK3D.OrthoParameters or nil
+		ortho = LK3D.Ortho and LK3D.OrthoParams or nil
 	})
 		if obj["RENDER_PARAMS_PRE"] then
 			pcall(obj["RENDER_PARAMS_PRE"])

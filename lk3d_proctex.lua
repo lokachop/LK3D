@@ -1,3 +1,12 @@
+--[[--
+## Procedural texturing
+---
+
+Module that generates simple procedural textures  
+Currently its very primitive and not good at all, it hasn't been touched in a while  
+The ProcTex table will probably be deprecated soon aswell
+]]
+-- @module proctex
 LK3D = LK3D or {}
 LK3D.ProcTex = LK3D.ProcTex or {}
 LK3D.New_D_Print("Loading!", LK3D_SEVERITY_INFO, "ProcTex")
@@ -5,11 +14,26 @@ LK3D.New_D_Print("Loading!", LK3D_SEVERITY_INFO, "ProcTex")
 LK3D.ProcTex.Coros = {}
 LK3D.ProcTex.PixelItr = 64
 
+--- Declares a new procedural texture  
+-- Secretly an alias to LK3D.DeclareTextureFromFunc
+-- @tparam string name LK3D texture name
+-- @tparam number w Texture width
+-- @tparam number h Texture height
+-- @usage LK3D.ProcTex.New("proc_something", 256, 256)
 function LK3D.ProcTex.New(name, w, h)
 	LK3D.DeclareTextureFromFunc(name, w, h, function()
 	end)
 end
 
+--- Applies a solid colour to a procedural texture
+-- @tparam string name LK3D texture name
+-- @tparam color col_r Color object or red channel value
+-- @tparam number g Green channel value
+-- @tparam number b Blue channel value
+-- @usage -- with colour object
+-- LK3D.ProcTex.ApplySolid("proc_something", Color(128, 255, 128))
+-- @usage -- with RGB value
+-- LK3D.ProcTex.ApplySolid("proc_something", 32, 64, 96)
 function LK3D.ProcTex.ApplySolid(name, col_r, g, b)
 	LK3D.UpdateTexture(name, function()
 		if col_r["r"] then
@@ -20,6 +44,10 @@ function LK3D.ProcTex.ApplySolid(name, col_r, g, b)
 	end)
 end
 
+--- Applies a source engine texture to a procedural texture
+-- @tparam string name LK3D texture name
+-- @tparam string tex Source engine texture name
+-- @usage LK3D.ProcTex.ApplySource("proc_something2", "metal/metalpipe010a")
 function LK3D.ProcTex.ApplySource(name, tex)
 	local f_t = LK3D.FriendlySourceTexture(tex)
 	LK3D.UpdateTexture(name, function()
@@ -30,7 +58,13 @@ function LK3D.ProcTex.ApplySource(name, tex)
 end
 
 
-
+--- Applies a simplex noise base colour
+-- @tparam string name LK3D texture name
+-- @tparam number sx X scale of the simplex noise
+-- @tparam number sy Y scale of the simplex noise
+-- @tparam number mul Colour intensity multiplier
+-- @tparam number seed Seed for simplex
+-- @usage LK3D.ProcTex.ApplySimplexBase("proc_something", 16, 16, 1, 243634)
 function LK3D.ProcTex.ApplySimplexBase(name, sx, sy, mul, seed)
 	local rt = LK3D.Textures[name].rt
 
@@ -56,6 +90,12 @@ function LK3D.ProcTex.ApplySimplexBase(name, sx, sy, mul, seed)
 	render.SetViewPort(0, 0, ow, oh)
 end
 
+--- Additively applies simplex noise
+-- @tparam string name LK3D texture name
+-- @tparam number sx X scale of the simplex noise
+-- @tparam number sy Y scale of the simplex noise
+-- @tparam number seed Seed for simplex
+-- @usage LK3D.ProcTex.SimplexAdditive("proc_something", 16, 16, 14325)
 function LK3D.ProcTex.SimplexAdditive(name, sx, sy, seed)
 	local rt = LK3D.Textures[name].rt
 
@@ -79,7 +119,13 @@ function LK3D.ProcTex.SimplexAdditive(name, sx, sy, seed)
 	render.SetViewPort(0, 0, ow, oh)
 end
 
-
+--- Applies a perlin noise base colour
+-- @tparam string name LK3D texture name
+-- @tparam number sx X scale of the perlin noise
+-- @tparam number sy Y scale of the perlin noise
+-- @tparam number mul Colour intensity multiplier
+-- @tparam number seed Seed for perlin
+-- @usage LK3D.ProcTex.ApplyPerlinBase("proc_something", 16, 16, 1, 243634)
 function LK3D.ProcTex.ApplyPerlinBase(name, sx, sy, mul, seed)
 	local rt = LK3D.Textures[name].rt
 
@@ -102,6 +148,12 @@ function LK3D.ProcTex.ApplyPerlinBase(name, sx, sy, mul, seed)
 	render.SetViewPort(0, 0, ow, oh)
 end
 
+--- Additively applies perlin noise
+-- @tparam string name LK3D texture name
+-- @tparam number sx X scale of the perlin noise
+-- @tparam number sy Y scale of the perlin noise
+-- @tparam number seed Seed for perlin
+-- @usage LK3D.ProcTex.PerlinAdditive("proc_something", 16, 16, 14325)
 function LK3D.ProcTex.PerlinAdditive(name, sx, sy, seed)
 	local rt = LK3D.Textures[name].rt
 
@@ -125,8 +177,13 @@ function LK3D.ProcTex.PerlinAdditive(name, sx, sy, seed)
 	render.SetViewPort(0, 0, ow, oh)
 end
 
-
-
+--- Applies a worley noise base colour
+-- @tparam string name LK3D texture name
+-- @tparam number sx X scale of the worley noise
+-- @tparam number sy Y scale of the worley noise
+-- @tparam bool invert Whether to invert the colour (255 - col)
+-- @tparam number seed Seed for worley
+-- @usage LK3D.ProcTex.ApplyWorleyBase("proc_something", 16, 16, true, 243634)
 function LK3D.ProcTex.ApplyWorleyBase(name, sx, sy, invert, seed)
 	local rt = LK3D.Textures[name].rt
 
@@ -151,6 +208,13 @@ function LK3D.ProcTex.ApplyWorleyBase(name, sx, sy, invert, seed)
 	render.SetViewPort(0, 0, ow, oh)
 end
 
+--- Additively applies worley noise
+-- @tparam string name LK3D texture name
+-- @tparam number sx X scale of the worley noise
+-- @tparam number sy Y scale of the worley noise
+-- @tparam bool sub Whether to invert the added colour (255 - col)
+-- @tparam number seed Seed for worley
+-- @usage LK3D.ProcTex.WorleyAdditive("proc_something", 16, 16, true, 243634)
 function LK3D.ProcTex.WorleyAdditive(name, sx, sy, sub, seed)
 	local rt = LK3D.Textures[name].rt
 
@@ -174,7 +238,12 @@ function LK3D.ProcTex.WorleyAdditive(name, sx, sy, sub, seed)
 	render.SetViewPort(0, 0, ow, oh)
 end
 
-
+--- Sets the colour of each pixel based on a lua function
+-- @tparam string name LK3D texture name
+-- @tparam function call Function to use, refer to usage
+-- @usage LK3D.ProcTex.Operator("proc_something", function(xc, yc, w, h) -- generic gradient
+--   return Color((xc / w) * 255, (yc / h) * 255, 0)
+-- end)
 function LK3D.ProcTex.Operator(name, call)
 	local rt = LK3D.Textures[name].rt
 
@@ -196,6 +265,12 @@ function LK3D.ProcTex.Operator(name, call)
 	render.SetViewPort(0, 0, ow, oh)
 end
 
+--- Applies a value noise base colour
+-- @tparam string name LK3D texture name
+-- @tparam number sx X scale of the value noise
+-- @tparam number sy Y scale of the value noise
+-- @tparam number seed Seed for value noise
+-- @usage LK3D.ProcTex.ApplyValueBase("proc_something", 16, 16, 243634)
 function LK3D.ProcTex.ApplyValueBase(name, sx, sy, seed)
 	local rt = LK3D.Textures[name].rt
 
@@ -217,7 +292,13 @@ function LK3D.ProcTex.ApplyValueBase(name, sx, sy, seed)
 	render.SetViewPort(0, 0, ow, oh)
 end
 
-
+--- Additively a value noise base colour
+-- @tparam string name LK3D texture name
+-- @tparam number sx X scale of the value noise
+-- @tparam number sy Y scale of the value noise
+-- @tparam bool sub Whether to invert the added colour (255 - col)
+-- @tparam number seed Seed for value noise
+-- @usage LK3D.ProcTex.ApplyValueBase("proc_something", 16, 16, 243634)
 function LK3D.ProcTex.ValueAdditive(name, sx, sy, sub, seed)
 	LK3D.UpdateTexture(name, function()
 		render.CapturePixels()
@@ -273,19 +354,44 @@ local function blendif(from, to, sx, sy, tresh, seed, call)
 	end)
 end
 
+--- Masks a texture onto the texture using perlin noise
+-- @tparam string from Texture to be masked
+-- @tparam string to Texture to be applied onto
+-- @tparam number sx X scale of the perlin noise
+-- @tparam number sy Y scale of the perlin noise
+-- @tparam number treshold Threshold to mask from, not a hard cut
+-- @tparam number seed Seed for perlin noise
+-- @usage LK3D.ProcTex.LK3D.ProcTex.PerlinMask("blend_orange", "blend_show", 2, 2, .45, 637742)
 function LK3D.ProcTex.PerlinMask(from, to, sx, sy, treshold, seed)
 	blendif(from, to, 32 * sx, 32 * sy, treshold, seed, LK3D.Perlin2D)
 end
 
+--- Masks a texture onto the texture using worley noise
+-- @tparam string from Texture to be masked
+-- @tparam string to Texture to be applied onto
+-- @tparam number sx X scale of the worley noise
+-- @tparam number sy Y scale of the worley noise
+-- @tparam number treshold Threshold to mask from, not a hard cut
+-- @tparam number seed Seed for worley noise
+-- @usage LK3D.ProcTex.LK3D.ProcTex.WorleyMask("blend_orange", "blend_show", 2, 2, .45, 637742)
 function LK3D.ProcTex.WorleyMask(from, to, sx, sy, treshold, seed)
 	blendif(from, to, .25 * sx, .25 * sy, treshold, seed, LK3D.ProcTex.Worley.worley)
 end
 
+--- Masks a texture onto the texture using simplex noise
+-- @tparam string from Texture to be masked
+-- @tparam string to Texture to be applied onto
+-- @tparam number sx X scale of the simplex noise
+-- @tparam number sy Y scale of the simplex noise
+-- @tparam number treshold Threshold to mask from, not a hard cut
+-- @tparam number seed Seed for simplex noise
+-- @usage LK3D.ProcTex.LK3D.ProcTex.SimplexMask("blend_orange", "blend_show", 2, 2, .45, 637742)
 function LK3D.ProcTex.SimplexMask(from, to, sx, sy, treshold, seed)
 	blendif(from, to, .25 * sx, .25 * sy, treshold, seed, LK3D.Simplex2D)
 end
 
-
+--- Handles the procedural texture generation, call on think
+-- @usage LK3D.ProcTex.TextureGenThink()
 function LK3D.ProcTex.TextureGenThink()
 	LK3D.ProcTex.PixelItr = (196 / #LK3D.ProcTex.Coros)
 

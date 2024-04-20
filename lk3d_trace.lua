@@ -1,9 +1,43 @@
-LK3D = LK3D or {}
------------------------------
--- Trace system, SLOW!
------------------------------
+--[[--
+## Trace (Raycast) Module
+---
+
+This module handles traces in LK3D, Which allow you to perform raycasts  
+It currently only supports rays
+]]
+-- @module trace
+
 -- TODO: Convex hull algorithm (https://github.com/haroldserrano/ConvexHullAlgorithm/blob/Development/ComputingConvexHull/ComputingConvexHull/ConvexHullAlgorithm.cpp)
 -- mesh -> cHull with no blender
+LK3D = LK3D or {}
+LK3D.DoExpensiveTrace = false
+LK3D.TraceReturnTable = false
+LK3D.TraceOverrideNoTrace = false
+
+--- Sets whether or not we should return UVs on the trace  
+-- **This makes traces somewhat slower**
+-- @tparam bool flag Whether or not we should return the UVs
+-- @usage LK3D.SetExpensiveTrace(true)
+function LK3D.SetExpensiveTrace(flag)
+	LK3D.DoExpensiveTrace = flag
+end
+
+--- Sets whether or not the trace should return a table with data rather than variables
+-- **This makes traces very lightly slower**
+-- @tparam bool flag Whether or not we should return a table
+-- @usage LK3D.SetTraceReturnTable(true)
+function LK3D.SetTraceReturnTable(flag)
+	LK3D.TraceReturnTable = flag
+end
+
+--- Internal  
+-- **Don't use this**
+-- @internal
+-- @tparam bool bool
+-- @usage LK3D.SetTraceOverrideNoTrace(true)
+function LK3D.SetTraceOverrideNoTrace(bool)
+	LK3D.TraceOverrideNoTrace = bool
+end
 
 
 
@@ -129,6 +163,10 @@ LK3D.TraceTriangleList = {}
 LK3D.TraceTriangleUVs = {}
 LK3D.TraceTriangleAABBs = {}
 
+--- Generates the triangle list necessary for raycasting
+-- @internal
+-- @tparam string k Model name
+-- @usage LK3D.GenTrList("cube_nuv")
 function LK3D.GenTrList(k)
 	LK3D.TraceTriangleList[k] = {}
 	LK3D.TraceTriangleUVs[k] = {}
@@ -170,6 +208,10 @@ for k, v in pairs(LK3D.Models) do
 	LK3D.GenTrList(k)
 end
 
+--- Generates the AABB for the model
+-- @internal
+-- @tparam string k Model name
+-- @usage LK3D.GenAABB("cube_nuv")
 function LK3D.GenAABB(k)
 	local nfo = LK3D.Models[k]
 	if not nfo then
@@ -201,6 +243,13 @@ for k, v in pairs(LK3D.Models) do
 end
 
 -- https://stackoverflow.com/questions/6053522/how-to-recalculate-axis-aligned-bounding-box-after-translate-rotate/
+
+
+--- Gets the AABB for an object on the active universe
+-- @tparam string obj Object name
+-- @usage local aabb = LK3D.GetRecalcAABB("cube_nuv")
+-- local mins = aabb[1]
+-- local maxs = aabb[2]
 function LK3D.GetRecalcAABB(obj)
 	if not LK3D.TraceTriangleAABBs[obj.mdl] then
 		LK3D.GenTrList(obj.mdl)
@@ -334,7 +383,18 @@ local function traceRayObj(pos, dir, obj, bfcull)
 	return lo_pos, lo_norm, lo_dist, lo_uv, lo_tri
 end
 
-function LK3D.TraceRayModel(pos, dir, name, bfcull)
+--- Traces a ray to a specific object
+-- @tparam vector pos Ray origin
+-- @tparam vector dir Ray direction
+-- @tparam string name LK3D Object index tag to raycast
+-- @tparam ?bool bfcull Whether we should cull backfaces
+-- @treturn vector Hit position
+-- @treturn vector Hit normal
+-- @treturn vector Distance
+-- @treturn table UV coords
+-- @treturn number Triangle index
+-- @usage local pos, norm, dist = LK3D.TraceRayObject(Vector(0, 0, 4), Vector(0, 0, -1), "cube_center", true)
+function LK3D.TraceRayObject(pos, dir, name, bfcull)
 	local obj = LK3D.CurrUniv["objects"][name]
 	if not obj then
 		LK3D.New_D_Print(name .. " does not exist!", LK3D_SEVERITY_ERROR, "TraceSystem")
@@ -345,7 +405,27 @@ function LK3D.TraceRayModel(pos, dir, name, bfcull)
 end
 
 
-LK3D.SUPER_OPTI_TR = false -- this breaks a lot of stuff USE AT OWN RISK
+function LK3D.TraceRayModel(pos, dir, name, bfcull)
+	LK3D.New_D_Print("Using deprecated function LK3D.TraceRayModel(), use LK3D.TraceRayObject()", LK3D_SEVERITY_WARN, "LK3D")
+	LK3D.TraceRayObject(pos, dir, name, bfcull)
+end
+
+--- Super-hacky unethical evil optimization, use at own risk!
+LK3D.SUPER_OPTI_TR = ((LK3D.SUPER_OPTI_TR ~= nil) and LK3D.SUPER_OPTI_TR) or false -- this breaks a lot of stuff USE AT OWN RISK
+
+
+
+--- Traces the entire scene
+-- @tparam vector pos Ray origin
+-- @tparam vector dir Ray direction
+-- @tparam ?bool bfcull Whether we should cull backfaces
+-- @tparam ?number dist Ray distance
+-- @treturn vector Hit position or table if LK3D.TraceReturnTable is true
+-- @treturn vector Hit normal
+-- @treturn vector Distance
+-- @treturn table UV coords
+-- @treturn number Triangle index
+-- @usage local pos, norm, dist = LK3D.TraceRayScene(Vector(0, 0, 4), Vector(0, 0, -1), true, 512000)
 function LK3D.TraceRayScene(pos, dir, bfcull, dist)
 	local possib_objs = {}
 	local lo_tr = dist or math.huge

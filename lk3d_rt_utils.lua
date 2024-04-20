@@ -1,3 +1,6 @@
+--[[--
+]]
+-- @module rendertarget
 LK3D = LK3D or {}
 
 LK3D.MatCache = LK3D.MatCache or {}
@@ -8,6 +11,14 @@ LK3D.MatCache_LM = LK3D.MatCache_LM or {}
 LK3D.MatCacheTR_LM = LK3D.MatCacheTR_LM or {}
 LK3D.MatCacheNoZ_LM = LK3D.MatCacheNoZ_LM or {}
 
+--- Turns a rendertarget into a lua material  
+-- **Not an LK3D Texture**
+-- @tparam rendertarget rt Rendertarget to use
+-- @tparam ?bool transp Add $alphatest shader parameter
+-- @tparam ?bool ignorez Add $ignorez and $nocull shader parameter
+-- @treturn material Material of the RT
+-- @treturn material Lightmapped material of the RT
+-- @usage local rtMat = LK3D.RTToMaterial(rt_render)
 function LK3D.RTToMaterial(rt, transp, ignorez)
 	if not LK3D.MatCache[rt:GetName()] then
 		LK3D.New_D_Print(rt:GetName() .. " isnt cached, caching!", LK3D_SEVERITY_DEBUG, "Utils")
@@ -32,7 +43,19 @@ function LK3D.RTToMaterial(rt, transp, ignorez)
 	return LK3D.MatCache[rt:GetName()], LK3D.MatCache_LM[rt:GetName()]
 end
 
-
+--- Extended version of LK3D.RTToMaterial()  
+-- **Not an LK3D Texture**
+-- @tparam rendertarget rt Rendertarget to use
+-- @tparam table params Parameters, refer to usage
+-- @treturn material Material of the RT
+-- @treturn material Lightmapped material of the RT
+-- @usage local rtMat = LK3D.RTToMaterialEx(rt_render, {
+--	  ["nocull"] = false,
+--	  ["ignorez"] = false,
+--	  ["vertexcolor"] = true,
+--	  ["vertexalpha"] = true,
+--	  ["alphatest"] = false,
+-- })
 function LK3D.RTToMaterialEx(rt, params)
 	if not LK3D.MatCache[rt:GetName()] then
 		LK3D.New_D_Print(rt:GetName() .. " isnt cached, caching!", LK3D_SEVERITY_DEBUG, "Utils")
@@ -63,6 +86,12 @@ function LK3D.RTToMaterialEx(rt, params)
 end
 
 
+--- Translucent version of LK3D.RTToMaterial()  
+-- **Not an LK3D Texture**
+-- @tparam rendertarget rt Rendertarget to use
+-- @treturn material Material of the RT
+-- @treturn material Lightmapped material of the RT
+-- @usage local rtMatTransp = LK3D.RTToMaterialTL(rt_render)
 function LK3D.RTToMaterialTL(rt)
 	if not LK3D.MatCacheTR[rt:GetName()] then
 		LK3D.New_D_Print(rt:GetName() .. " isnt cached, caching!", LK3D_SEVERITY_DEBUG, "Utils")
@@ -85,7 +114,13 @@ function LK3D.RTToMaterialTL(rt)
 	return LK3D.MatCacheTR[rt:GetName()], LK3D.MatCacheTR_LM[rt:GetName()]
 end
 
-
+--- No-Z version of LK3D.RTToMaterial()  
+-- **Not an LK3D Texture**
+-- @tparam rendertarget rt Rendertarget to use
+-- @tparam bool transp **Broken**
+-- @treturn material Material of the RT
+-- @treturn material Lightmapped material of the RT
+-- @usage local rtMatNoZ = LK3D.RTToMaterialNoZ(rt_render)
 function LK3D.RTToMaterialNoZ(rt, transp)
 	if not LK3D.MatCacheNoZ[rt:GetName()] then
 		LK3D.New_D_Print(rt:GetName() .. " isnt cached, caching!", LK3D_SEVERITY_DEBUG, "Utils")

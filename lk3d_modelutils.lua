@@ -1,12 +1,25 @@
+--[[--
+## Model Utilities
+---
+
+Module that contains a bunch of helper model functions  
+]]
+-- @module modelutils
+
 LK3D = LK3D or {}
-
------------------------------
--- Models
------------------------------
-
 LK3D.Models = LK3D.Models or {}
 file.CreateDir("lk3d")
 
+--- Generates normals for a model
+-- @tparam table data LK3D Model data
+-- @tparam bool invert Whether the normals should be inverted or not
+-- @tparam bool smoothOnly Whether we should generate only the vertex normals "*smooth normals*"
+-- @usage -- Generates normals for a model called cube_nuv
+-- LK3D.GenerateNormals(LK3D.Models["cube_nuv_invert"])
+-- @usage -- Generates inverted normals for a model called cube_nuv_inverted
+-- LK3D.GenerateNormals(LK3D.Models["cube_nuv_invert"], true)
+-- @usage -- Generates vertex normals for a model called cylinder_smooth
+-- LK3D.GenerateNormals(LK3D.Models["cylinder_smooth"], false, true)
 function LK3D.GenerateNormals(data, invert, smoothOnly)
 	if not data then
 		LK3D.New_D_Print("Data not provided when genning normals!", LK3D_SEVERITY_WARN, "ModelUtils")
@@ -84,13 +97,18 @@ local function hashUV(uv)
 	return table.concat(concat_tbl_uv, "")
 end
 
-
-function LK3D.GetOptimizedModelTable(tblpointer)
-	local verts = tblpointer.verts
-	local uvs = tblpointer.uvs
-	local indices = tblpointer.indices
-	local normals = tblpointer.normals or {}
-	local snormals = tblpointer.s_normals or {}
+--- Generates an optimized version of the model data
+-- @tparam table data LK3D Model data
+-- @treturn table Optimized LK3D Model data
+-- @usage local opti = LK3D.GetOptimizedModelTable(LK3D.Models["hi_poly"])
+-- LK3D.DeclareModel("hi_poly_opti", opti)
+-- -- internally merges same-pos vertices
+function LK3D.GetOptimizedModelTable(data)
+	local verts = data.verts
+	local uvs = data.uvs
+	local indices = data.indices
+	local normals = data.normals or {}
+	local snormals = data.s_normals or {}
 
 	local newtbl = {
 		verts = {},
@@ -173,8 +191,13 @@ end
 
 
 
--- declares a model from the output table of the helper script
--- refer to lk3d-obj_import.lua
+--- Declares a model from Model data
+-- @tparam string name Model name
+-- @tparam table data LK3D Model data
+-- @usage -- Don't actually do this, use LK3D.AddModelOBJ
+-- local objData = LK3D.ReadFileFromLKPack("models/ponr_main/revolver/revolver_bakeduvs.obj")
+-- local data = LK3D.ParseOBJMesh(objData)
+-- LK3D.DeclareModel("revolver", data)
 function LK3D.DeclareModel(name, data)
 	LK3D.Models[name] = data
 	LK3D.GenerateNormals(LK3D.Models[name])
@@ -194,6 +217,11 @@ local function t_copy(tbl)
 	return nw
 end
 
+
+--- Copies a model
+-- @tparam string from Source model name
+-- @tparam string to Target model name (new)
+-- @usage LK3D.CopyModel("cube_nuv", "cube_nuv_epic")
 function LK3D.CopyModel(from, to)
 	if not LK3D.Models[from] then
 		return
@@ -305,7 +333,11 @@ local function makeRegistryMesh(mdlinfo, shade, smooth)
 	return mesh_obj
 end
 
-
+--- Declares an animated model
+-- @tparam string name LK3D Model name
+-- @tparam string fpath LKPack filepath to the model
+-- @tparam bool flush Whether to reload the model, even if already loaded
+-- @usage LK3D.DeclareAnimatedModel("human", "ponr_main/anim/human_ponr")
 function LK3D.DeclareAnimatedModel(name, fpath, flush)
 	LK3D.New_D_Print("Loading Animated model \"" .. name .. "\" (" .. fpath .. ") from LKPack!", LK3D_SEVERITY_INFO, "ModelUtils")
 	local jsonInfo = LK3D.ReadFileFromLKPack("models/" .. fpath .. "/params.json")
@@ -386,6 +418,10 @@ function LK3D.DeclareAnimatedModel(name, fpath, flush)
 	end
 end
 
+--- Pushes the animations to an object using an animated model
+-- @tparam string index Object index tag
+-- @tparam string an_index Animated model index
+-- @usage LK3D.PushObjectAnims("worm_test", "worm")
 function LK3D.PushObjectAnims(index, an_index)
 	local object = LK3D.CurrUniv["objects"][index]
 

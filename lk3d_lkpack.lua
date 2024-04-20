@@ -1,3 +1,12 @@
+--[[--
+## LK3D Data Archive
+---
+
+Module to handle LKPack, a method to pack data into a single .ain file for workshop  
+It is highly recommended to read through the Basics of LKPack manual first before using these functions.
+]]
+-- @module lkpack
+
 LK3D = LK3D or {}
 -- LK3D LKPACK
 -- lk3d file that gets packed into .ain which can later be loaded
@@ -41,7 +50,9 @@ end
 
 
 
--- builds lkpack from lk3d dir
+--- Creates an LKPack file from a dev directory
+-- @tparam string dir Dev directory to turn into an LKPack
+-- @usage LK3D.MakeLKPack("deepdive_content")
 function LK3D.MakeLKPack(dir)
 	local exists = file.Exists("lk3d/lkpack/compile/" .. dir, "DATA")
 	if not exists then
@@ -148,7 +159,9 @@ function LK3D.MakeLKPack(dir)
 	LK3D.New_D_Print("LKPack generated for \"" .. dir .. "\"", LK3D_SEVERITY_INFO, "LKPack")
 end
 
-
+--- Loads an LKPack and sets it as the active LKPack
+-- @tparam string name Name of the LKPack to load, relative to maps/
+-- @usage LK3D.LoadLKPack("deepdive_content")
 function LK3D.LoadLKPack(name)
 	local data = file.Read("maps/" .. name .. ".lkp.ain", "GAME")
 	if not data then
@@ -293,6 +306,10 @@ function LK3D.LoadLKPack(name)
 	LK3D.New_D_Print("Loaded LKPack \"" .. name .. "\" successfully!", LK3D_SEVERITY_INFO, "LKPack")
 end
 
+--- Gets the real filepath to a LKPack file
+-- @tparam string path LKPack filepath where to get the real path
+-- @treturn string Real path to the file
+-- @usage LK3D.GetDataPathToFile("models/dd_main/items/spray_can.obj")
 function LK3D.GetDataPathToFile(path)
 	if LK3D.LKPackDevMode then
 		return "lk3d/lkpack/compile/" .. LK3D.FallbackLKPack .. "/" .. path
@@ -318,6 +335,11 @@ end
 
 LK3D.LKPackDevMode = LK3D.LKPackDevMode ~= nil and LK3D.LKPackDevMode or false
 LK3D.FallbackLKPack = LK3D.FallbackLKPack ~= nil and LK3D.FallbackLKPack or "none"
+
+--- Reads a file from LKPack
+-- @tparam string path LKPack filepath where to read the file
+-- @treturn string Contents of the file, nil if not found
+-- @usage LK3D.ReadFileFromLKPack("models/ponr_main/revolver/revolver_bakeduvs.obj")
 function LK3D.ReadFileFromLKPack(path)
 	noLKPackCheck()
 
@@ -340,7 +362,11 @@ function LK3D.ReadFileFromLKPack(path)
 	return read
 end
 
-
+--- Opens a file from LKPack
+-- @tparam string path LKPack filepath where to open the file
+-- @tparam string openMode The file open mode, ex. "rb"
+-- @treturn file_class File pointer, nil if not found
+-- @usage LK3D.OpenFileFromLKPack("ponr_keyframes/intro/camera.lkf")
 function LK3D.OpenFileFromLKPack(path, openMode)
 	noLKPackCheck()
 
@@ -373,6 +399,11 @@ local function makeFakeFile(path)
 	return path .. "_fake" .. extension
 end
 
+--- Plays a sound file from LKPack
+-- @tparam string path LKPack filepath to the sound
+-- @tparam string flags Sound flags, refer to [sound.PlayFile](https://wiki.facepunch.com/gmod/sound.PlayFile)
+-- @tparam function callback Callback to execute once loaded
+-- @usage LK3D.PlayAudioFromLKPack("sound/ponr_main/revolver/revolver_fire.wav")
 function LK3D.PlayAudioFromLKPack(path, flags, callback)
 	local realPath = LK3D.GetDataPathToFile("sound/" .. path)
 	local fakePath = makeFakeFile(realPath)

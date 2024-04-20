@@ -41,7 +41,7 @@ local function makeHell(shaded, lit, opti)
 end
 
 local function makeEmitter(lit)
-	LK3D.AddParticleEmmiter("test1", "white", {
+	LK3D.AddParticleEmitter("test1", "white", {
 		pos = Vector(0, 0, 0),
 		part_sz = .025,
 		max = 200,
@@ -134,7 +134,7 @@ local stages = {
 				LK3D.AddLight("li_test" .. i, Vector(0, -3.75 + (i / 1.4), .5), 1.65, HSVToColor(i / 8 * 360, 1, 1))
 			end
 
-			LK3D.AddParticleEmmiter("test1", "white", {
+			LK3D.AddParticleEmitter("test1", "white", {
 				pos = Vector(0, -2, .5),
 				part_sz = .035,
 				max = 200,
@@ -150,7 +150,7 @@ local stages = {
 				lit = true,
 				active = true,
 			})
-			LK3D.AddParticleEmmiter("test2", "white", {
+			LK3D.AddParticleEmitter("test2", "white", {
 				pos = Vector(0, 0, .15),
 				part_sz = .035,
 				max = 200,

@@ -1,3 +1,12 @@
+--[[--
+## Pure-lua physics engine, powered by [FPS](https://github.com/0x1ED1CE/FPS)
+---
+
+Module that simulates rigidbody physics on the client completely without using any source-engine features  
+This internally just binds to [Free Physics Solver](https://github.com/0x1ED1CE/FPS), translating GMod types into its format & viceversa    
+It also currently only simulates boxes, although convex mesh support might be added at some point  
+]]
+-- @module physics
 LK3D = LK3D or {}
 --[[
 	LK3D physics (External)
@@ -90,12 +99,6 @@ local function getBoxShape(size)
 		recalculatedFaces[i + 2] = BOX_FACES[i + 2]
 	end
 
-	--print("-verts-")
-	--PrintTable(recalculatedVertices)
-
-	--print("-faces-")
-	--PrintTable(recalculatedFaces)
-
 	return fps.shape.new(recalculatedVertices, BOX_FACES)
 end
 
@@ -108,9 +111,9 @@ local function getBoxCollider(size)
 	return coll
 end
 
-
-
-
+--- Sets the gravity of the active universe
+-- @tparam vector grav Gravity
+-- @usage LK3D.SetUnivGravity(Vector(0, 0, -100)) -- downwards gravity
 function LK3D.SetUnivGravity(grav)
 	local pUniv = getPhysicsWorld(LK3D.CurrUniv)
 	if not pUniv then
@@ -121,7 +124,10 @@ function LK3D.SetUnivGravity(grav)
 	pUniv:set_gravity(grav[1], grav[2], grav[3])
 end
 
-function LK3D.GetUnivGravity(grav)
+--- Gets the gravity of the active universe
+-- @treturn vector Gravity of the active universe, nil if the physics universe is not initialized
+-- @usage local grav = LK3D.SetUnivGravity()
+function LK3D.GetUnivGravity()
 	local pUniv = getPhysicsWorld(LK3D.CurrUniv)
 	if not pUniv then
 		pUniv = initPhysicsWorld(LK3D.CurrUniv)
@@ -132,7 +138,11 @@ function LK3D.GetUnivGravity(grav)
 	return Vector(gx, gy, gz)
 end
 
-
+--- Gets a physics body by name
+-- @internal
+-- @tparam string name Index name of the physics body
+-- @treturn table PhysicsBody, nil if not found
+-- @usage local physObj = LK3D.GetPhysicsBodyFromName("phys_lk")
 function LK3D.GetPhysicsBodyFromName(name)
 	if not LK3D.CurrUniv["physics_objects"] then
 		return
@@ -141,6 +151,11 @@ function LK3D.GetPhysicsBodyFromName(name)
 	return LK3D.CurrUniv["physics_objects"][name]
 end
 
+--- Gets the collider of the physics body by name
+-- @internal
+-- @tparam string name Index name of the physics body
+-- @treturn table PhysicsCollider, nil if not found
+-- @usage local physObj = LK3D.GetPhysicsColliderFromName("phys_lk")
 function LK3D.GetPhysicsColliderFromName(name)
 	if not LK3D.CurrUniv["physics_colliders"] then
 		return
@@ -149,8 +164,9 @@ function LK3D.GetPhysicsColliderFromName(name)
 	return LK3D.CurrUniv["physics_colliders"][name]
 end
 
-
-
+--- Adds a physics body to the active universe
+-- @tparam string name Index name of the physics body
+-- @usage LK3D.AddPhysicsBodyToUniv("phys_lk")
 function LK3D.AddPhysicsBodyToUniv(name)
 	if not getPhysicsWorld(LK3D.CurrUniv) then
 		pUniv = initPhysicsWorld(LK3D.CurrUniv)
@@ -171,16 +187,23 @@ function LK3D.AddPhysicsBodyToUniv(name)
 	addBodyToWorld(body)
 end
 
-
-function LK3D.SetPhysicsBodyStatic(name, bool)
+--- Sets whether a physics body is static or not
+-- @tparam string name Index name of the physics body
+-- @tparam bool static Whether the physics body should be static or not
+-- @usage LK3D.SetPhysicsBodyStatic("phys_lk_floor", true)
+function LK3D.SetPhysicsBodyStatic(name, static)
 	local body = LK3D.GetPhysicsBodyFromName(name)
 	if not body then
 		return
 	end
 
-	body:set_static(bool)
+	body:set_static(static)
 end
 
+--- Gets whether a physics body is static or not
+-- @tparam string name Index name of the physics body
+-- @treturn bool Whether the physics body is static or not, nil if not found
+-- @usage local static = LK3D.GetPhysicsBodyStatic("phys_lk_floor")
 function LK3D.GetPhysicsBodyStatic(name)
 	local body = LK3D.GetPhysicsBodyFromName(name)
 	if not body then
@@ -190,7 +213,10 @@ function LK3D.GetPhysicsBodyStatic(name)
 	return body.static
 end
 
-
+--- Sets the mass of the physics body
+-- @tparam string name Index name of the physics body
+-- @tparam number mass Mass to set the physics body to
+-- @usage LK3D.SetPhysicsBodyMass("phys_lk", 16)
 function LK3D.SetPhysicsBodyMass(name, mass)
 	local coll = LK3D.GetPhysicsColliderFromName(name)
 	if not coll then
@@ -200,6 +226,10 @@ function LK3D.SetPhysicsBodyMass(name, mass)
 	coll:set_density(mass)
 end
 
+--- Gets the mass of the physics body
+-- @tparam string name Index name of the physics body
+-- @treturn number Mass of the physics body, nil if not found
+-- @usage local mass = LK3D.GetPhysicsBodyMass("phys_lk")
 function LK3D.GetPhysicsBodyMass(name)
 	local body = LK3D.GetPhysicsBodyFromName(name)
 	if not body then
@@ -209,6 +239,10 @@ function LK3D.GetPhysicsBodyMass(name)
 	return body:get_mass()
 end
 
+--- Sets the position of the physics body
+-- @tparam string name Index name of the physics body
+-- @tparam vector pos Position to set the physics body to
+-- @usage LK3D.SetPhysicsBodyPos("phys_lk_floor", Vector(0, 0, -4))
 function LK3D.SetPhysicsBodyPos(name, pos)
 	local body = LK3D.GetPhysicsBodyFromName(name)
 	if not body then
@@ -219,6 +253,10 @@ function LK3D.SetPhysicsBodyPos(name, pos)
 	body:set_position(pos[1], pos[2], pos[3])
 end
 
+--- Gets the position of the physics body
+-- @tparam string name Index name of the physics body
+-- @treturn vector Position of the physics body, nil if not found
+-- @usage local bPos = LK3D.GetPhysicsBodyPos("phys_lk")
 function LK3D.GetPhysicsBodyPos(name)
 	local body = LK3D.GetPhysicsBodyFromName(name)
 	if not body then
@@ -228,6 +266,10 @@ function LK3D.GetPhysicsBodyPos(name)
 	return body:get_position()
 end
 
+--- Sets the angle of the physics body
+-- @tparam string name Index name of the physics body
+-- @tparam angle ang Angle to set the physics body to
+-- @usage LK3D.SetPhysicsBodyAng("phys_lk_floor", Angle(25, 0, 0))
 function LK3D.SetPhysicsBodyAng(name, ang)
 	local body = LK3D.GetPhysicsBodyFromName(name)
 	if not body then
@@ -236,10 +278,6 @@ function LK3D.SetPhysicsBodyAng(name, ang)
 
 	local matAng = Matrix()
 	matAng:SetAngles(ang)
-	
-
-
-
 
 	local m1x1, m2x1, m3x1, m4x1,
 		  m1x2, m2x2, m3x2, m4x2,
@@ -251,7 +289,6 @@ function LK3D.SetPhysicsBodyAng(name, ang)
 	--mat[ 8] = pY
 	--mat[12] = pZ
 
-
 	body:set_transform(
 		m1x1, m2x1, m3x1, pX,
 		m1x2, m2x2, m3x2, pY,
@@ -260,6 +297,11 @@ function LK3D.SetPhysicsBodyAng(name, ang)
 	)
 end
 
+--- Gets the angle of the physics body  
+-- @warning This function is currently unimplemented
+-- @tparam string name Index name of the physics body
+-- @treturn nil nothing, unimplemented
+-- @usage local nothing = LK3D.GetPhysicsBodyAng("phys_lk")
 function LK3D.GetPhysicsBodyAng(name)
 	local body = LK3D.GetPhysicsBodyFromName(name)
 	if not body then
@@ -269,7 +311,13 @@ function LK3D.GetPhysicsBodyAng(name)
 	return
 end
 
-
+--- Sets the transform matrix of the physics body
+-- @tparam string name Index name of the physics body
+-- @tparam matrix mat Transform [VMatrix](https://wiki.facepunch.com/gmod/VMatrix)
+-- @usage local matTransform = Matrix()
+-- matTransform:SetTranslation(Vector(0, 0, 4))
+-- matTransform:SetAngles(Angle(45, 25, 15))
+-- LK3D.SetPhysicsBodyMatrix("phys_lk", matTransform)
 function LK3D.SetPhysicsBodyMatrix(name, mat)
 	local body = LK3D.GetPhysicsBodyFromName(name)
 	if not body then
@@ -284,6 +332,10 @@ function LK3D.SetPhysicsBodyMatrix(name, mat)
 	)
 end
 
+--- Gets the transform matrix of the physics body
+-- @tparam string name Index name of the physics body
+-- @treturn matrix Transform matrix of the physics body
+-- @usage local matTransform = LK3D.GetPhysicsBodyMatrix("phys_lk")
 function LK3D.GetPhysicsBodyMatrix(name)
 	local body = LK3D.GetPhysicsBodyFromName(name)
 	if not body then
@@ -306,12 +358,20 @@ end
 
 
 
-
+--- Sets the position and angle of the physics body
+-- @tparam string name Index name of the physics body
+-- @tparam vector pos Position to set the physics body to
+-- @tparam angle ang Angle to set the physics body to
+-- @usage LK3D.SetPhysicsBodyPosAng("phys_lk", Vector(0, 0, 4), Angle(45, 25, 15))
 function LK3D.SetPhysicsBodyPosAng(name, pos, ang)
 	LK3D.SetPhysicsBodyPos(name, pos)
 	LK3D.SetPhysicsBodyAng(name, ang)
 end
 
+--- Sets the scale of the physics body
+-- @tparam string name Index name of the physics body
+-- @tparam vector scl Scale to set the physics body to
+-- @usage LK3D.SetPhysicsBodyScl("phys_lk_floor", Vector(16, 16, 1)) -- large objects are buggy on FPS, avoid this
 function LK3D.SetPhysicsBodyScl(name, scl)
 	local coll = LK3D.GetPhysicsColliderFromName(name)
 	if not coll then
@@ -335,6 +395,10 @@ function LK3D.SetPhysicsBodyScl(name, scl)
 	body._lkScale = scl
 end
 
+--- Gets the scale of the physics body
+-- @tparam string name Index name of the physics body
+-- @treturn vector Scale of the physics body
+-- @usage local scl = LK3D.GetPhysicsBodyScl("phys_lk_floor")
 function LK3D.GetPhysicsBodyScl(name)
 	local body = LK3D.GetPhysicsBodyFromName(name)
 	if not body then
@@ -345,6 +409,10 @@ function LK3D.GetPhysicsBodyScl(name)
 end
 
 
+--- Sets the velocity of the physics body
+-- @tparam string name Index name of the physics body
+-- @tparam vector vel Velocity to set the physics body to
+-- @usage LK3D.SetPhysicsBodyVel("phys_lk", Vector(0, 0, 4)) -- up
 function LK3D.SetPhysicsBodyVel(name, vel)
 	local body = LK3D.GetPhysicsBodyFromName(name)
 	if not body then
@@ -355,7 +423,12 @@ function LK3D.SetPhysicsBodyVel(name, vel)
 	body:set_velocity(vel[1], vel[2], vel[3])
 end
 
-
+--- Gets the AABB of the physics body
+-- @tparam string name Index name of the physics body
+-- @treturn table AABB table, refer to usage
+-- @usage local aabb = LK3D.GetPhysicsBodyBoundary("phys_lk")
+-- local mins = aabb[1]
+-- local maxs = aabb[2]
 function LK3D.GetPhysicsBodyBoundary(name)
 	local body = LK3D.GetPhysicsBodyFromName(name)
 	if not body then
@@ -371,7 +444,9 @@ function LK3D.GetPhysicsBodyBoundary(name)
 end
 
 
-
+--- Removes a physics body from the active universe
+-- @tparam string name Index name of the physics body
+-- @usage LK3D.RemovePhysicsBodyFromUniv("phys_lk")
 function LK3D.RemovePhysicsBodyFromUniv(name)
 	if not getPhysicsWorld(LK3D.CurrUniv) then
 		initPhysicsWorld(LK3D.CurrUniv)

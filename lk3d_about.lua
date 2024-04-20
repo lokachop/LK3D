@@ -1,8 +1,6 @@
 LK3D = LK3D or {}
 
 
-
-
 local Bcol = Color(34, 38, 40)
 local BDcol = Color(28, 31, 32)
 local BDDcol = Color(21, 23, 24)

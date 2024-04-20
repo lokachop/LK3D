@@ -178,7 +178,7 @@ local function bakeShadows(object)
 		end
 	end
 
-	local extrude_dist = LK3D.SHADOW_EXTRUDE or 10 -- this game uses close z values so we only need 10 extrude
+	local extrude_dist = LK3D.ShadowExtrude or 10 -- this game uses close z values so we only need 10 extrude
 	local extr_epsilon = -0.0001
 
 
@@ -677,7 +677,7 @@ local function renderShadows(object)
 		end
 	end
 
-	local extrude_dist = LK3D.SHADOW_EXTRUDE or 10 -- close z values, use 10
+	local extrude_dist = LK3D.ShadowExtrude or 10 -- close z values, use 10
 	local extr_epsilon = -0.0001
 	render_SetColorMaterial()
 	render_SetStencilCompareFunction(STENCIL_ALWAYS)

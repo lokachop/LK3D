@@ -1,10 +1,17 @@
+--[[--
+## Texture Module
+---
+
+This module handles textures in LK3D, which are used everywhere  
+]]
+-- @module textures
 LK3D = LK3D or {}
------------------------------
--- Textures
------------------------------
 
 LK3D.Textures = LK3D.Textures or {}
 
+--- Gets a LK3D texture by its name
+-- @tparam string index Texture name
+-- @usage local tex = LK3D.GetTextureByIndex("checker")
 function LK3D.GetTextureByIndex(index)
 	if not LK3D.Textures[index] then
 		return LK3D.Textures["fail"]
@@ -13,6 +20,7 @@ function LK3D.GetTextureByIndex(index)
 	return LK3D.Textures[index]
 end
 
+-- don't doc this, i think nothing uses this
 function LK3D.FriendlySourceTextureNTNC(matsrc)
 	local matc = CreateMaterial(matsrc .. "_friendly_ntnc_", "UnlitGeneric", {
 		["$basetexture"] = matsrc,
@@ -31,7 +39,10 @@ function LK3D.FriendlySourceTextureNTNC(matsrc)
 	return matc
 end
 
-
+--- Converts a source engine texture to a LK3D friendly material
+-- @tparam string matsrc Texture name
+-- @treturn material Friendly material
+-- @usage local f_snow = LK3D.FriendlySourceTexture("ground/snow01")
 function LK3D.FriendlySourceTexture(matsrc)
 	local matc = CreateMaterial(matsrc .. "_friendly_", "UnlitGeneric", {
 		["$basetexture"] = matsrc,
@@ -51,7 +62,15 @@ function LK3D.FriendlySourceTexture(matsrc)
 	return matc
 end
 
-
+--- Render stuff to a rendertarget
+-- @tparam rendertarget rt Rendertarget to render to
+-- @tparam function call Function that renders
+-- @usage LK3D.UpdateRtEz(rt_render, function()
+--   surface.SetDrawColor(255, 0, 0)
+--   
+--   -- ScrW() and ScrH() are the RT size
+--   surface.DrawRect(0, 0, ScrW() * .5, ScrH() * .5)
+-- end)
 function LK3D.UpdateRtEz(rt, call)
 	local ow, oh = ScrW(), ScrH()
 	render.SetViewPort(0, 0, rt:Width(), rt:Height())
@@ -117,7 +136,20 @@ local function popRT()
 	render.SetViewPort(0, 0, ow, oh)
 end
 
-
+--- Declares a LK3D texture from a func
+-- @tparam string index LK3D texture name
+-- @tparam number w Texture width
+-- @tparam number h Texture height
+-- @tparam function func Function that renders the texture
+-- @tparam bool transp Whether the texture is transparent or not
+-- @tparam bool ignorez Whether the texture ignores Z or not
+-- @usage -- extract from internal LK3D
+-- LK3D.DeclareTextureFromFunc("checker", 16, 16, function()
+--	  render.Clear(64, 64, 64, 255)
+--	  surface.SetDrawColor(96, 96, 96)
+--	  surface.DrawRect(0, 0, 8, 8)
+--	  surface.DrawRect(8, 8, 8, 8)
+-- end)
 function LK3D.DeclareTextureFromFunc(index, w, h, func, transp, ignorez)
 	LK3D.New_D_Print("Declaring texture \"" .. index .. "\" [" .. w .. "x" .. h .. "]; FUNC", LK3D_SEVERITY_DEBUG, "Textures")
 	initTex(index, w, h, transp, ignorez)
@@ -133,9 +165,16 @@ function LK3D.DeclareTextureFromFunc(index, w, h, func, transp, ignorez)
 	return LK3D.Textures[index]
 end
 
+--- Declares a LK3D texture from a source engine material name
+-- @tparam string index LK3D texture name
+-- @tparam number w Texture width
+-- @tparam number h Texture height
+-- @tparam string mat Source engine material name
+-- @tparam bool transp Whether the texture is transparent or not
+-- @usage LK3D.DeclareTextureFromSourceMat("snow_3", 64, 64, "ground/snow01")
 function LK3D.DeclareTextureFromSourceMat(index, w, h, mat, transp)
 	LK3D.New_D_Print("Declaring texture \"" .. index .. "\" [" .. w .. "x" .. h .. "]; SMAT", LK3D_SEVERITY_DEBUG, "Textures")
-	initTex(index, w, h, transp, ignorez)
+	initTex(index, w, h, transp)
 
 	local matGetWhite = LK3D.FriendlySourceTexture(mat)
 
@@ -145,9 +184,16 @@ function LK3D.DeclareTextureFromSourceMat(index, w, h, mat, transp)
 	popRT()
 end
 
+--- Declares a LK3D texture from a material object
+-- @tparam string index LK3D texture name
+-- @tparam number w Texture width
+-- @tparam number h Texture height
+-- @tparam material matobj Material object
+-- @tparam bool transp Whether the texture is transparent or not
+-- @usage LK3D.DeclareTextureFromMatObj("8_something", 64, 64, your_material)
 function LK3D.DeclareTextureFromMatObj(index, w, h, matobj, transp)
 	LK3D.New_D_Print("Declaring texture \"" .. index .. "\" [" .. w .. "x" .. h .. "]; MATOBJ", LK3D_SEVERITY_DEBUG, "Textures")
-	initTex(index, w, h, transp, ignorez)
+	initTex(index, w, h, transp)
 
 	pushRT(index, w, h, transp)
 		surface.SetDrawColor(255, 255, 255)
@@ -164,7 +210,13 @@ local function makeFakeFile(path)
 	return path .. "_fake.png"
 end
 
-
+--- Declares a LK3D texture from a LKPack PNG file
+-- @tparam string index LK3D texture name
+-- @tparam number w Texture width
+-- @tparam number h Texture height
+-- @tparam string fpath LKPack filepath to the .png
+-- @tparam bool transp Whether the texture is transparent or not
+-- @usage LK3D.DeclareTextureFromPNGFile("barrel_sheet", 256, 256, "models/room/barrel_sheet")
 function LK3D.DeclareTextureFromPNGFile(index, w, h, fpath, transp)
 	local realPath = LK3D.GetDataPathToFile("textures/" .. fpath .. ".png")
 	LK3D.New_D_Print("Loading Texture \"" .. index .. "\" (" .. fpath .. ") from LKPack!", LK3D_SEVERITY_INFO, "ModelUtils")
@@ -201,7 +253,10 @@ function LK3D.DeclareTextureFromPNGFile(index, w, h, fpath, transp)
 	end)
 end
 
-
+--- Copies a LK3D Texture's rendertarget to another LK3D texture
+-- @tparam string name LK3D texture name to copy **from**
+-- @tparam string to LK3D texture name to copy **to**
+-- @usage LK3D.CopyTextureRT("barrel_sheet", "worse_barrel_sheet")
 function LK3D.CopyTextureRT(name, to)
 	local ow, oh = ScrW(), ScrH()
 	local trrt = LK3D.GetTextureByIndex(name).rt
@@ -214,6 +269,10 @@ function LK3D.CopyTextureRT(name, to)
 	render.SetViewPort(0, 0, ow, oh)
 end
 
+--- Copies a LK3D Texture to another LK3D texture
+-- @tparam string from LK3D texture name to copy **from**
+-- @tparam string to LK3D texture name to copy **to**
+-- @usage LK3D.CopyTexture("barrel_sheet", "worse_barrel_sheet")
 function LK3D.CopyTexture(from, to)
 	local ow, oh = ScrW(), ScrH()
 	local t_mat = LK3D.GetTextureByIndex(from).rt
@@ -236,6 +295,14 @@ local mat_noz = CreateMaterial("mat_noz_lk3d", "UnlitGeneric", {
 	["$vertexalpha"] = 1
 })
 
+--- *Updates* a texture (renders stuff to it)
+-- @tparam string index LK3D texture name
+-- @tparam function func Function to render with
+-- @usage LK3D.UpdateTexture("worse_barrel_sheet", function()
+--	  -- Draw something
+--	  surface.SetDrawColor(255, 0, 0)
+--	  surface.DrawRect(64, 64, 256, 256)
+--end)
 function LK3D.UpdateTexture(index, func)
 	if not LK3D.Textures[index] then
 		return
@@ -260,6 +327,11 @@ function LK3D.UpdateTexture(index, func)
 	render.SetViewPort(0, 0, ow, oh)
 end
 
+--- Gets the size of a LK3D texture
+-- @tparam string index LK3D texture name
+-- @treturn number Texture width
+-- @treturn number Texture height
+-- @usage local tW, tH = LK3D.GetTextureSize("worse_barrel_sheet")
 function LK3D.GetTextureSize(index)
 	if not LK3D.Textures[index] then
 		LK3D.New_D_Print("no texture \"" .. index .. "\"!", LK3D_SEVERITY_ERROR, "Textures")
@@ -270,7 +342,17 @@ function LK3D.GetTextureSize(index)
 	return imgdat.rt:Width(), imgdat.rt:Height()
 end
 
-
+--- Gets an array containing the RGB values of the LK3D texture  
+-- @warning This function is horribly slow!
+-- @tparam string index LK3D texture name
+-- @tparam ?bool inline Whether to inline the table, refer to examples
+-- @treturn table Texture data
+-- @usage -- non-inlined
+-- local pixData = LK3D.GetTexturePixelArray("worse_barrel_sheet", false)
+-- local firstPixel = pixData[0][0]
+-- @usage -- inlined
+-- local pixData = LK3D.GetTexturePixelArray("worse_barrel_sheet", true)
+-- local firstPixel = pixData[0]
 function LK3D.GetTexturePixelArray(index, inline)
 	if not LK3D.Textures[index] then
 		LK3D.New_D_Print("no texture \"" .. index .. "\"!", LK3D_SEVERITY_ERROR, "Textures")
@@ -317,6 +399,17 @@ function LK3D.GetTexturePixelArray(index, inline)
 	return img_arr
 end
 
+--- Gets an array containing the RGB values of the rendertarget  
+-- @warning This function is horribly slow!
+-- @tparam rendertarget rt Rendertarget
+-- @tparam ?bool inline Whether to inline the table, refer to examples
+-- @treturn table Texture data
+-- @usage -- non-inlined
+-- local pixData = LK3D.GetTexturePixelArrayFromRT(your_rt_here, false)
+-- local firstPixel = pixData[0][0]
+-- @usage -- inlined
+-- local pixData = LK3D.GetTexturePixelArrayFromRT(your_rt_here, true)
+-- local firstPixel = pixData[0]
 function LK3D.GetTexturePixelArrayFromRT(rt, inline)
 	-- loop through every pixel :/
 	local iw, ih = rt:Width(), rt:Height()
@@ -358,9 +451,18 @@ function LK3D.GetTexturePixelArrayFromRT(rt, inline)
 end
 
 
-
-
-
+--- Applies a function to each pixel of the LK3D texture
+-- @warning This function is horribly slow!
+-- @tparam string index LK3D texture name
+-- @tparam function func Pixel function, refer to usage
+-- @usage LK3D.ApplyShaderEffect("water_bad", function(xc, yc, arr)
+--	  local cont = arr[xc][yc]
+--	  local c_data = Color(cont[1], cont[2], cont[3])
+--	  local h, s, v = ColorToHSV(c_data)
+--	  
+--	  surface.SetDrawColor(HSVToColor(h, 0, v))
+--	  surface.DrawRect(xc, yc, 1, 1) -- grayscale bad
+--end)
 function LK3D.ApplyShaderEffect(index, func)
 	if not func then
 		return
@@ -507,10 +609,11 @@ local LKTCOMP_ENCODERS = {
 }
 
 
-
-
-
--- compresses texture into base64 string which can be later loaded in
+--- Compresses a LK3D texture into a LKTComp string
+-- @tparam string name LK3D texture name
+-- @tparam string path Path to write to
+-- @tparam string actual_fname Filename to write to
+-- @usage LK3D.CompressTexture("water_bad", "lk3d/lktcomp_textures/", "water_bad")
 function LK3D.CompressTexture(name, path, actual_fname)
 	LK3D.New_D_Print("Compressing texture \"" .. name .. "\" with LKTCOMP revision " .. LKTCOMP_VER .. "....", LK3D_SEVERITY_INFO, "LKTComp")
 	if not LK3D.Textures[name] then
@@ -537,14 +640,14 @@ end
 
 
 local LKTCOMP_DECODERS = {
-	[1] = function(name, f_pointer, trasp, ignorez)
+	[1] = function(name, f_pointer, transp, ignorez)
 		local tw, th = f_pointer:ReadUShort(), f_pointer:ReadUShort()
 		LK3D.New_D_Print(name .. " is " .. tw .. "x" .. th .. "...", LK3D_SEVERITY_DEBUG, "LKTComp")
 
 
 		LK3D.DeclareTextureFromFunc(name, tw, th, function()
 			render.Clear(255, 0, 255, 255, true, true)
-		end, trasp, ignorez)
+		end, transp, ignorez)
 
 
 		local rt = LK3D.Textures[name].rt
@@ -590,8 +693,14 @@ local LKTCOMP_DECODERS = {
 	end
 }
 
-
-function LK3D.DecompressTexture(name, trasp, ignorez, data)
+--- Decompresses a LKTComp string
+-- @tparam string name LK3D texture name
+-- @tparam bool transp Whether the texture should be transparent
+-- @tparam bool ignorez Whether the texture should ignore Z
+-- @tparam string data LKTComp data
+-- @usage -- Don't do this, use LK3D.DeclareTextureFromLKTFile()
+-- LK3D.DecompressTexture("water_bad", false, false, LK3D.ReadFileFromLKPack("water_bad.lkt"))
+function LK3D.DecompressTexture(name, transp, ignorez, data)
 	LK3D.New_D_Print("Decompressing LKTCOMP \"" .. name .. "\"...", LK3D_SEVERITY_DEBUG, "LKTComp")
 	if not data then
 		return
@@ -622,7 +731,7 @@ function LK3D.DecompressTexture(name, trasp, ignorez, data)
 
 
 	if LKTCOMP_DECODERS[rev] then
-		local fine, err = pcall(LKTCOMP_DECODERS[rev], name, f_pointer, trasp, ignorez)
+		local fine, err = pcall(LKTCOMP_DECODERS[rev], name, f_pointer, transp, ignorez)
 		if not fine then
 			LK3D.New_D_Print("Error decompressing \"" .. name .. "\" with LKTC revision " .. rev .. ": \"" .. err .. "\"", LK3D_SEVERITY_FATAL, "LKTComp")
 		end
@@ -632,15 +741,23 @@ function LK3D.DecompressTexture(name, trasp, ignorez, data)
 
 	f_pointer:Close()
 end
-function LK3D.DeclareTextureFromLKTFile(name, trasp, ignorez, fpath)
+
+--- Loads a LKTComp texture from LKPack
+-- @tparam string name LK3D texture name
+-- @tparam bool transp Whether the texture should be transparent
+-- @tparam bool ignorez Whether the texture should ignore Z
+-- @tparam string fpath LKPack filepath
+-- @usage LK3D.DeclareTextureFromLKTFile("water_bad", false, false, "water_bad")
+function LK3D.DeclareTextureFromLKTFile(name, transp, ignorez, fpath)
 	local data = LK3D.ReadFileFromLKPack("textures/" .. fpath .. ".lkt")
 	LK3D.New_D_Print("Loading LKT texture \"" .. name .. "\" (" .. fpath .. ") from LKPack!", LK3D_SEVERITY_INFO, "LKTComp")
 
-	LK3D.DecompressTexture(name, trasp, ignorez, data)
+	LK3D.DecompressTexture(name, transp, ignorez, data)
 end
 
 
-
+--- Initializes the LK3D Processing texture
+-- @internal
 function LK3D.InitProcessTexture()
 	if not LK3D.AddObjectToUniverse then
 		return
@@ -683,10 +800,10 @@ function LK3D.InitProcessTexture()
 		LK3D.PushUniverse(univ_process)
 			LK3D.SetCamPos(Vector(-1, .35, .45))
 			LK3D.SetCamAng(Angle(14, -20, 0))
-			LK3D.SetOrtho(true)
+			LK3D.SetCamOrtho(true)
 
 			local orths = 0.30
-			LK3D.SetOrthoParameters({
+			LK3D.SetCamOrthoParams({
 				left = -orths,
 				right = orths,
 				top = -orths,
@@ -696,7 +813,7 @@ function LK3D.InitProcessTexture()
 			LK3D.RenderClear(0, 0, 0)
 			LK3D.RenderActiveUniverse()
 			LK3D.RenderObject("plane_face") -- avoid shadow
-			LK3D.SetOrtho(false)
+			LK3D.SetCamOrtho(false)
 		LK3D.PopUniverse()
 		LK3D.PopRenderTarget()
 
@@ -707,6 +824,8 @@ function LK3D.InitProcessTexture()
 	end, false, true)
 end
 
+--- Sets up the base LK3D materials
+-- @internal
 function LK3D.SetupBaseMaterials()
 	-- make default mats
 	LK3D.DeclareTextureFromFunc("fail", 16, 16, function()
@@ -721,6 +840,28 @@ function LK3D.SetupBaseMaterials()
 		surface.SetDrawColor(96, 96, 96)
 		surface.DrawRect(0, 0, 8, 8)
 		surface.DrawRect(8, 8, 8, 8)
+	end)
+
+	LK3D.DeclareTextureFromFunc("checker_big", 128, 128, function()
+		local w, h = ScrW(), ScrH()
+		local div = 8
+
+		local wDiv = w / div
+		local hDiv = h / div
+
+		for i = 0, (div * div) - 1 do
+			local xc = i % div
+			local yc = math.floor(i / div)
+
+			if ((xc + yc) % 2) == 0 then
+				surface.SetDrawColor(96, 96, 96)
+			else
+				surface.SetDrawColor(64, 64, 64)
+			end
+
+			surface.DrawRect(xc * wDiv, yc * hDiv, wDiv, hDiv)
+
+		end
 	end)
 
 

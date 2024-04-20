@@ -1,9 +1,15 @@
+--[[--
+## Provides informational dumps
+---
+
+Mostly-forgotten module that lets you get information about LK3Ds current state and its loaded models / textures
+]]
+-- @module dumps
 LK3D = LK3D or {}
 
--- allows dumping lk3d nfo
 
--- returns a str with the dump
--- this contains info about the current call
+--- Returns a string with information about LK3Ds current state
+-- @treturn string Formatted dump string
 function LK3D.GetDump()
     local t_concat = {}
     t_concat[#t_concat + 1] = "--==LK3D DUMP==--"
@@ -29,7 +35,7 @@ function LK3D.GetDump()
     t_concat[#t_concat + 1] = "FilterMode       : " .. tostring(LK3D.FilterMode)
     t_concat[#t_concat + 1] = "AmbientCol       : " .. tostring(LK3D.AmbientCol)
     t_concat[#t_concat + 1] = "SunDir           : " .. tostring(LK3D.SunDir)
-    t_concat[#t_concat + 1] = "ShadowExtrude    : " .. tostring(LK3D.SHADOW_EXTRUDE)
+    t_concat[#t_concat + 1] = "ShadowExtrude    : " .. tostring(LK3D.ShadowExtrude)
     t_concat[#t_concat + 1] = "ExpensiveTrace   : " .. tostring(LK3D.DoExpensiveTrace)
     t_concat[#t_concat + 1] = "TraceRetTable    : " .. tostring(LK3D.TraceReturnTable)
 
@@ -53,7 +59,7 @@ function LK3D.GetDump()
         t_concat[#t_concat + 1] = "Object Count     : " .. (LK3D.CurrUniv.objects and table.Count(LK3D.CurrUniv.objects) or "no objects")
         t_concat[#t_concat + 1] = "Light Count      : " .. (LK3D.CurrUniv.lightcount or "no lights")
         t_concat[#t_concat + 1] = "Light Count(func): " .. (LK3D.CurrUniv.lights and table.Count(LK3D.CurrUniv.lights) or "no lights")
-        t_concat[#t_concat + 1] = "Particle emmiters: " .. (LK3D.CurrUniv.particles and table.Count(LK3D.CurrUniv.particles) or "no partemitters")
+        t_concat[#t_concat + 1] = "Particle Emitters: " .. (LK3D.CurrUniv.particles and table.Count(LK3D.CurrUniv.particles) or "no partemitters")
     end
 
 
@@ -64,7 +70,8 @@ function LK3D.GetDump()
 end
 
 
--- returns dump about the models
+--- Returns a string with information about all of the declared models
+-- @treturn string Formatted dump string
 function LK3D.GetModelDump()
     local t_concat = {}
 
@@ -84,6 +91,8 @@ function LK3D.GetModelDump()
 end
 
 
+--- Returns a string with information about all of the declared textures
+-- @treturn string Formatted dump string
 function LK3D.GetTexDump()
     local t_concat = {}
 

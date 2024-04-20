@@ -1,6 +1,12 @@
+---
+-- @module modelutils
 LK3D = LK3D or {}
 
--- todo fix bonetransforms
+--- Declares a LK3D model from a source engine model
+-- @tparam string name LK3D model name
+-- @tparam string mdl Source engine model name
+-- @usage -- It's not adviced to use source models with LK3D due to polycount
+-- LK3D.DeclareModelFromSource("player_epic", "models/player.mdl")
 function LK3D.DeclareModelFromSource(name, mdl)
 	local meshes = util.GetModelMeshes(mdl, 12)
 	if not meshes then

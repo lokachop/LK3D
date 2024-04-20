@@ -114,7 +114,7 @@ local function begin3DView()
 			fov = LK3D.FOV,
 			zfar = LK3D.FAR_Z,
 			znear = LK3D.NEAR_Z,
-			ortho = LK3D.Ortho and LK3D.OrthoParameters or nil
+			ortho = LK3D.Ortho and LK3D.OrthoParams or nil
 		})
 
 end

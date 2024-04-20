@@ -1,6 +1,12 @@
+--[[--
+## Procedural models for basic shapes
+---
+
+Module that generates simple procedural models of simple shapes  
+Currently only spheres, cylinders, planes & cubemarched models are implemented   
+]]
+-- @module procmodel
 LK3D = LK3D or {}
-
-
 
 local function dec(n, deci)
 	local pow = 10 ^ deci
@@ -9,7 +15,18 @@ end
 
 local pi2 = math.pi * 2
 local pi = math.pi
-function LK3D.DeclareProcSphere(nm, coli, rowi, szx, szy, uvm, invert)
+
+
+--- Declares a procedural sphere model
+-- @tparam string name LK3D model name
+-- @tparam number coli Longitude steps
+-- @tparam number rowi Latitude steps
+-- @tparam ?number szx X Size
+-- @tparam ?number szy Y Size
+-- @tparam ?number uvm UV map scale
+-- @tparam ?bool invert whether we should invert the faces or not
+-- @usage LK3D.DeclareProcSphere("simple_ball", 8, 6, 1, 1, 1, false)
+function LK3D.DeclareProcSphere(name, coli, rowi, szx, szy, uvm, invert)
 	local mdat = {}
 	mdat["verts"] = {}
 	mdat["indices"] = {}
@@ -62,11 +79,11 @@ function LK3D.DeclareProcSphere(nm, coli, rowi, szx, szy, uvm, invert)
 			mdat["uvs"][#mdat["uvs"] + 1] = {dx * uvm, dy * uvm}
 		end
 	end
-	LK3D.Models[nm] = mdat
-	LK3D.GenerateNormals(LK3D.Models[nm], invert)
+	LK3D.Models[name] = mdat
+	LK3D.GenerateNormals(LK3D.Models[name], invert)
 
 
-	local mdldat = LK3D.Models[nm]
+	local mdldat = LK3D.Models[name]
 	local verts = mdldat.verts
 	local ind = mdldat.indices
 
@@ -113,7 +130,12 @@ function normal_calc_cyl_cap(vert_pos)
 	return vn
 end
 
-function LK3D.DeclareProcCylinder(nm, cyl_itr)
+
+--- Declares a procedural cylinder model
+-- @tparam string name LK3D model name
+-- @tparam number cyl_itr Side count
+-- @usage LK3D.DeclareProcCylinder("the_tube", 12)
+function LK3D.DeclareProcCylinder(name, cyl_itr)
 	local mdat = {}
 	mdat["verts"] = {}
 	mdat["indices"] = {}
@@ -270,11 +292,11 @@ function LK3D.DeclareProcCylinder(nm, cyl_itr)
 	--local opti_mdat = LK3D.GetOptimizedModelTable(mdat)
 
 
-	LK3D.Models[nm] = mdat
-	LK3D.GenerateNormals(LK3D.Models[nm])
+	LK3D.Models[name] = mdat
+	LK3D.GenerateNormals(LK3D.Models[name])
 
 
-	local mdldat = LK3D.Models[nm]
+	local mdldat = LK3D.Models[name]
 	local verts = mdldat.verts
 	local ind = mdldat.indices
 
@@ -310,7 +332,18 @@ end
 
 
 
-function LK3D.DeclareProcPlane(nm, psx, psy, itrx, itry, distortfunc)
+--- Declares a procedural plane model
+-- @tparam string name LK3D model name
+-- @tparam number psx X Size
+-- @tparam number psy Y Size
+-- @tparam number itrx X Vertex count
+-- @tparam number itry Y Vertex count
+-- @tparam function distortfunc Distort function for altering positions, refer to usage
+-- @usage LK3D.DeclareProcPlane("cool_terrain", 8, 8, 16, 16, function(x, y)
+--	 local spx = LK3D.Simplex2D(x, y, 5623)
+--	 return Vector(x, spx, y)
+-- end)
+function LK3D.DeclareProcPlane(name, psx, psy, itrx, itry, distortfunc)
 	local mdat = {}
 	mdat["verts"] = {}
 	mdat["indices"] = {}
@@ -406,8 +439,8 @@ function LK3D.DeclareProcPlane(nm, psx, psy, itrx, itry, distortfunc)
 		}
 	end
 
-	LK3D.Models[nm] = mdat
-	LK3D.GenerateNormals(LK3D.Models[nm])
+	LK3D.Models[name] = mdat
+	LK3D.GenerateNormals(LK3D.Models[name])
 end
 
 
@@ -421,9 +454,19 @@ local function interp_march(ev1, valv1, ev2, valv2)
 end
 
 -- (iso_val_march - valv1) * (ev2 - ev1) / (valv2 - valv1)
-
-
 -- https://polycoding.net/marching-cubes/part-1/
+
+--- Declares a [cubemarched](https://en.wikipedia.org/wiki/Marching_cubes) model
+-- @tparam string name LK3D model name
+-- @tparam number detail Detail level of the model
+-- @tparam vector sz Scale of the model
+-- @tparam function func SDF function for the model
+-- @usage -- if you don't know what an SDF is, this is a good read, https://jamie-wong.com/2016/07/15/ray-marching-signed-distance-functions/
+-- -- in this case, i used the sphere SDF from https://iquilezles.org/articles/distfunctions/
+-- -- also UVs aren't implemented properly on this
+-- LK3D.DeclareCubeMarchModel("sphere_marched", 4, Vector(1, 1, 1), function(pos)
+-- 	 return pos:Length() - .7
+-- end)
 function LK3D.DeclareCubeMarchModel(name, detail, sz, func)
 	local marchcube_lut = LK3D.GetMarchingCubeLUT()
 	local edge_connection_lut = LK3D.GetMarchingCubeEdgeLUT()
@@ -533,15 +576,15 @@ function LK3D.DeclareCubeMarchModel(name, detail, sz, func)
 
 			local id1 = #verts + 1
 			verts[id1] = vc1
-			uvs[id1] = {0, 0}
+			uvs[id1] = {vc1[1], vc1[2]}
 
 			local id2 = #verts + 1
 			verts[id2] = vc2
-			uvs[id2] = {1, 0}
+			uvs[id2] = {vc2[1], vc2[2]}
 
 			local id3 = #verts + 1
 			verts[id3] = vc3
-			uvs[id3] = {1, 1}
+			uvs[id3] = {vc3[1], vc3[2]}
 
 			indices[#indices + 1] = {
 				{id1, id1},
@@ -560,27 +603,3 @@ end
 LK3D.DeclareCubeMarchModel("march_test", 8, Vector(1, 1, 1), function(pos)
 	return pos:Length() - .8
 end)
-
-
-
-
---[[
-LK3D.DeclareProcPlane("planetest", 16, 16, 12, 12, function(x, y)
-	px = (x + .5)
-	py = (y + .5)
-
-	--local p_curr = Vector(x, 0, y)
-	--local vpoc = p_curr * 24
-	--local dist = math.max(vpoc:Distance(Vector(0, 0, 0)), .01)
-	--return Vector(x, (math.sin(dist * 0.95) / ((dist * .45) + 1)) * 2, y)
-
-	--local perlin_val = LK3D.ProcTex.Worley.worley(x * (2048 * 6), y * (2048 * 6), 436347)
-	local perlin_val0 = LK3D.ProcTex.Simplex.simplex2D(px * 2.12244, py * 2.2244, 413253) * 4
-	local perlin_val1 = LK3D.ProcTex.Simplex.simplex2D((px + 41634) * 6.231, (py + 34634) * 6.236, 413253) * 1
-	local perlin_val2 = LK3D.ProcTex.Simplex.simplex2D(px * 12.9782244, py * 12.786244, 413253) * 0.55
-
-
-	local p_f = (perlin_val0 + perlin_val1 + perlin_val2) / 3
-	return Vector(x, p_f * 1, y)
-end)
-]]--

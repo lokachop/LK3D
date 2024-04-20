@@ -1,3 +1,5 @@
+---
+-- @module modelutils
 LK3D = LK3D or {}
 
 --[[
@@ -102,7 +104,10 @@ local LKCOMP_ENCODERS = {
 }
 
 
-
+--- Compresses a model into a LKComp model
+-- @tparam string name LK3D model name
+-- @usage LK3D.CompressModelLKC("cube_nuv")
+-- -- file written to "lk3d/lkcomp_models/cube_nuv.lkc.txt"
 function LK3D.CompressModelLKC(name)
 	LK3D.New_D_Print("Compressing \"" .. name .. "\" with LKC revision " .. LKCOMP_VER .. "....", LK3D_SEVERITY_INFO, "LKCOMP")
 	file.CreateDir("lk3d/lkcomp_models")
@@ -183,6 +188,11 @@ local LKCOMP_DECODERS = {
 	end
 }
 
+--- Loads a LKComp model
+-- @tparam string name LK3D model name
+-- @tparam string data LKComp data
+-- @usage -- Don't do this, use DeclareModelFromLKCFile
+-- LK3D.AddModelLKC("crystal_bad", LK3D.ReadFileFromLKPack("models/dd_main/crystal.lkc"))
 function LK3D.AddModelLKC(name, data)
 	LK3D.New_D_Print("Decompressing LKCOMP \"" .. name .. "\"...", LK3D_SEVERITY_DEBUG, "LKCOMP")
 	if not data then
@@ -220,6 +230,10 @@ function LK3D.AddModelLKC(name, data)
 	f_pointer:Close()
 end
 
+--- Loads a LKComp model from a LKPack path
+-- @tparam string name LK3D model name
+-- @tparam string fpath LKPack path to model, without extension
+-- @usage LK3D.DeclareModelFromLKCFile("crystal_good", "models/dd_main/crystal")
 function LK3D.DeclareModelFromLKCFile(name, fpath)
 	local fcontents = LK3D.ReadFileFromLKPack("models/" .. fpath .. ".lkc")
 	LK3D.New_D_Print("Loading LKC model \"" .. name .. "\" (" .. fpath .. ") from LKPack!", LK3D_SEVERITY_INFO, "ModelUtils")

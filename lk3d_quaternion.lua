@@ -61,7 +61,7 @@ local function qlog(q)
 end
 Quaternion.log = qlog
 
---- Converts <ang> to a quaternion
+-- Converts <ang> to a quaternion
 function Quaternion.fromAngle(ang)
 	local p, y, r = ang.p, ang.y, ang.r
 	p = p*deg2rad*0.5
@@ -100,7 +100,7 @@ function Quaternion.fromVectors(forward, up)
 	return qmul(qy,qmul(qp,qr))
 end
 
---- Returns quaternion for rotation about axis <axis> by angle <ang>. If ang is left out, then it is computed as the magnitude of <axis>
+-- Returns quaternion for rotation about axis <axis> by angle <ang>. If ang is left out, then it is computed as the magnitude of <axis>
 function Quaternion.fromRotation(axis, ang)
 	if ang then
 		axis:Normalize()
@@ -177,17 +177,17 @@ function Quaternion.__eq(lhs, rhs)
 	   rvd4 <= delta and rvd4 >= -delta
 end
 
---- Returns absolute value of self
+-- Returns absolute value of self
 function Quaternion:abs()
 	return sqrt(self[1]*self[1] + self[2]*self[2] + self[3]*self[3] + self[4]*self[4])
 end
 
---- Returns the conjugate of self
+-- Returns the conjugate of self
 function Quaternion:conj()
 	return quat_new(self[1], -self[2], -self[3], -self[4])
 end
 
---- Returns the inverse of self
+-- Returns the inverse of self
 function Quaternion:inv()
 	local l = self[1]*self[1] + self[2]*self[2] + self[3]*self[3] + self[4]*self[4]
 	return quat_new( self[1]/l, -self[2]/l, -self[3]/l, -self[4]/l )
@@ -212,22 +212,22 @@ function Quaternion:normalize()
 end
 
 
---- Raises Euler's constant e to the power self
+-- Raises Euler's constant e to the power self
 function Quaternion:exp()
 	return qexp(self)
 end
 
---- Calculates natural logarithm of self
+-- Calculates natural logarithm of self
 function Quaternion:log()
 	return qlog(self)
 end
 
---- Changes quaternion <self> so that the represented rotation is by an angle between 0 and 180 degrees (by coder0xff)
+-- Changes quaternion <self> so that the represented rotation is by an angle between 0 and 180 degrees (by coder0xff)
 function Quaternion:mod()
 	if self[1]<0 then return quat_new(-self[1], -self[2], -self[3], -self[4]) else return quat_new(self[1], self[2], self[3], self[4]) end
 end
 
---- Performs spherical linear interpolation between <q0> and <q1>. Returns <q0> for <t>=0, <q1> for <t>=1
+-- Performs spherical linear interpolation between <q0> and <q1>. Returns <q0> for <t>=0, <q1> for <t>=1
 function Quaternion.slerp(q0, q1, t)
 	local dot = q0[1]*q1[1] + q0[2]*q1[2] + q0[3]*q1[3] + q0[4]*q1[4]
 	local q11
@@ -245,7 +245,7 @@ function Quaternion.slerp(q0, q1, t)
 	return qmul(q0,q)
 end
 
---- Returns vector pointing forward for <self>
+-- Returns vector pointing forward for <self>
 function Quaternion:forward()
 	local this1, this2, this3, this4 = self[1], self[2], self[3], self[4]
 	local t2, t3, t4 = this2 * 2, this3 * 2, this4 * 2
@@ -256,7 +256,7 @@ function Quaternion:forward()
 	}
 end
 
---- Returns vector pointing right for <self>
+-- Returns vector pointing right for <self>
 function Quaternion:right()
 	local this1, this2, this3, this4 = self[1], self[2], self[3], self[4]
 	local t2, t3, t4 = this2 * 2, this3 * 2, this4 * 2
@@ -267,7 +267,7 @@ function Quaternion:right()
 	)
 end
 
---- Returns vector pointing up for <self>
+-- Returns vector pointing up for <self>
 function Quaternion:up()
 	local this1, this2, this3, this4 = self[1], self[2], self[3], self[4]
 	local t2, t3, t4 = this2 * 2, this3 * 2, this4 * 2
@@ -278,7 +278,7 @@ function Quaternion:up()
 	)
 end
 
---- Returns the angle of rotation in degrees
+-- Returns the angle of rotation in degrees
 function Quaternion:rotationAngle()
 	local l2 = self[1]*self[1] + self[2]*self[2] + self[3]*self[3] + self[4]*self[4]
 	if l2 == 0 then return 0 end
@@ -288,7 +288,7 @@ function Quaternion:rotationAngle()
 	return ang
 end
 
---- Returns the axis of rotation
+-- Returns the axis of rotation
 function Quaternion:rotationAxis()
 	local m2 = self[2] * self[2] + self[3] * self[3] + self[4] * self[4]
 	if m2 == 0 then return Vector( 0, 0, 1 ) end
@@ -296,7 +296,7 @@ function Quaternion:rotationAxis()
 	return Vector( self[2] / m, self[3] / m, self[4] / m)
 end
 
---- Returns angle represented by <self>
+-- Returns angle represented by <self>
 function Quaternion:toAngle()
 	local l = sqrt(self[1]*self[1]+self[2]*self[2]+self[3]*self[3]+self[4]*self[4])
 	local q1, q2, q3, q4 = self[1]/l, self[2]/l, self[3]/l, self[4]/l

@@ -1,6 +1,13 @@
+---
+-- @module modelutils
 LK3D = LK3D or {}
 
--- makes a compressed ver. of model with x name in ur data folder under "lk3d"
+--- Compresses a model into LKComp Legacy
+-- @deprecated
+-- @tparam string name LK3D model name
+-- @usage -- THIS IS DEPRECATED!!!
+-- LK3D.CompressModel("cube_nuv")
+-- -- Model written to "lk3d/compmodels/cube_nuv.txt"
 function LK3D.CompressModel(name)
 	LK3D.New_D_Print("This ModelFormat is deprecated, use LK3D.CompressModelLKC(name) instead...", LK3D_SEVERITY_WARN, "LKComp_Legacy")
 	file.CreateDir("lk3d/compmodels")
@@ -45,6 +52,12 @@ function LK3D.CompressModel(name)
 end
 
 local tn = tonumber
+---Loads a LKComp Legacy model
+-- @deprecated
+-- @tparam string name LK3D model name
+-- @tparam string str LKComp Legacy model data
+-- @usage -- THIS IS DEPRECATED!!!
+-- LK3D.AddModelCompStr("bad_deprecated", LK3D.ReadFileFromLKPack("models/bad.kcl"))
 function LK3D.AddModelCompStr(name, str)
 	local dstr = util.Decompress(util.Base64Decode(str))
 	if not dstr then

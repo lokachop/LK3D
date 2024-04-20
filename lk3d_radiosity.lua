@@ -1,46 +1,46 @@
+--[[--
+## Lightmapping / Radiosity
+---
+
+Module that generates calculates lightmaps on objects using radiosity  
+Will probably soon be rewritten due to lots flaws and unmantainable code  
+This module is basically a GLua implementation of [this radiosity article](https://www.jmeiners.com/Hugo-Elias-Radiosity/)  
+[Reading the manual entry on the lightmapper is recommended!](../manual/lightmapper-radiosity.md.html)
+]]
+-- @module radiosity
 LK3D = LK3D or {}
+
+--- Parameters
+-- @section parameters
+
+--- To-compute lightmap resolution
 LK3D.LIGHTMAP_RES = (256 + 64 + 16) * 1.75 --2.5 -- .75
+--- Triangle size multiplier
 LK3D.LIGHTMAP_TRISZ = 10 * 1.75 --1.75 -- .5
+--- Triangle pixel pad count
 LK3D.LIGHTMAP_TRIPAD = 5
+--- Automatically export lightmaps
 LK3D.LIGHTMAP_AUTO_EXPORT = true -- auto export when done
 
--- idea for future:
--- mostly from: https://www.jmeiners.com/Hugo-Elias-Radiosity/
---
--- make 3 different universes (lol)
--- each univ can pack 16581375 diff values per pixel (255 * 255 * 255) [we can't use alpha sadly]
--- objectID univ
--- patchX univ
--- patchY univ
--- those universes are plenty to have 16581375 diff objects with a max lightmap resolution of 16581375x16581375 allowing table references for overbright
--- AWESOME
--- each object has a tbl for radiosity data
--- STRUCT
--- {
---		emmision = {r, g, b},
---		reflectance = 0,
--- 		incident = {, -- (sum of all light that a patch can see)
---				[1] = red,
---				[2] = green,
---				[3] = blue
---		}
---		excident = {
---				(incident_light[1] * reflectance) + emmision,
---				(incident_light[2] * reflectance) + emmision,
---				(incident_light[3] * reflectance) + emmision
---		}
--- }
--- also use hemicubes
--- lit objects can be just 1 single ptr for cheap
--- test new
+--- Raytrace lighting rather than radiosity (broken)
 LK3D.RADIOSITY_DO_RT = false
+--- Radiosity step count
 LK3D.RADIOSITY_STEPS = 1
+--- Radiosity internal capture buffer size
 LK3D.RADIOSITY_BUFFER_SZ = 96
+--- Radiosity camera FOV, leave at 90
 LK3D.RADIOSITY_FOV = 90
+--- Radiosity light object scale division constant
 LK3D.RADIOSITY_LIGHTSCL_DIV = 12
+--- Radiosity patch reflectance
 LK3D.RADIOSITY_REFLECTANCE = .9
+--- Radiosity emmisive surface multiplier
 LK3D.RADIOSITY_MUL_EMMISIVE_START = .75
+--- Radiosity end-lighting multiplier
 LK3D.RADIOSITY_MUL_RENDER = 96
+
+--- End
+-- @section end
 
 -- prolly unused
 LK3D.RADIOSITY_SPACING = 4
@@ -986,7 +986,7 @@ local function renderHemicube(pos, dir)
 	local old_dbg = LK3D.Debug
 	LK3D.Debug = false
 	LK3D.SetCamPos(pos)
-	LK3D.SetFOV(LK3D.RADIOSITY_FOV)
+	LK3D.SetCamFOV(LK3D.RADIOSITY_FOV)
 	-- up
 	LK3D.PushRenderTarget(radios_rt_up)
 		LK3D.RenderClear(0, 0, 0)
@@ -1727,13 +1727,24 @@ local function lightmapFinalize()
 end
 
 
-
+--- Marks an object to be lightmapped
+-- @tparam string object Index tag of the object
+-- @usage LK3D.SetLightmapped("sub_lower")
 function LK3D.SetLightmapped(object)
 	objects_to_lightmap[object] = true
 end
 
 
--- lightmaps all of the objects with radiosity
+--- Runs the lightmapper  
+-- @warning This function is horribly slow!
+-- @usage -- mark a few things to lightmap
+-- LK3D.SetLightmapped("sub_lower")
+-- LK3D.SetLightmapped("sub_stairs")
+-- LK3D.SetLightmapped("sub_upper")
+-- LK3D.SetLightmapped("sub_engine")
+-- 
+-- -- now run the lightmapper
+-- LK3D.CommitLightmapping()
 function LK3D.CommitLightmapping()
 	if LK3D.RADIOSITY_DO_RT then
 		lightmapInit()
@@ -1923,6 +1934,8 @@ local function recursiveClearCache(base)
 	end
 end
 
+--- Clears the PNG lightmap cache  
+-- @usage LK3D.ClearLightmapCache()
 function LK3D.ClearLightmapCache()
 	if LK3D_LIGHTMAP_HAVE_WE_CLEARED_GLOBAL then
 		return
@@ -1936,6 +1949,9 @@ function LK3D.ClearLightmapCache()
 	LK3D.New_D_Print("Cleared lightmap PNG cache successfully!", LK3D_SEVERITY_DEBUG, "Radiosity")
 end
 
+--- Loads a lightmap of an object from a file in LKPack
+-- @tparam string obj_idx Index tag of the object
+-- @usage LK3D.LoadLightmapFromFile("sub_lower")
 function LK3D.LoadLightmapFromFile(obj_idx)
 	LK3D.ClearLightmapCache() -- attempt to clear cache first
 
@@ -2077,6 +2093,9 @@ end
 -- exports all of the lightmaps from the curr univ along with their object lightmap uvs
 file.CreateDir("lk3d/lightmap_export")
 file.CreateDir("lk3d/lightmap_export/" .. engine.ActiveGamemode())
+
+--- Exports all of the lightmaps on the active universe
+-- @usage LK3D.ExportLightmaps()
 function LK3D.ExportLightmaps()
 	if not LK3D.CurrUniv["tag"] then
 		LK3D.New_D_Print("Attempting to export lightmaps for a universe without a tag!", LK3D_SEVERITY_ERROR, "Radiosity")

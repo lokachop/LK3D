@@ -1,3 +1,13 @@
+--[[--
+## Base LK3D functions
+---
+
+This holds all of the other stuff that doesn't really fit into anything else  
+]]
+-- @module lk3d
+
+
+
 --[[
 	lk3d.lua
 
@@ -8,7 +18,6 @@
 	please contact at lokachop (formerly Lokachop#5862) or lokachop@gmail.com
 	repo is available at https://github.com/lokachop/LK3D
 ]]--
-
 LK3D = LK3D or {}
 LK3D.Debug = true
 concommand.Add("lk3d_toggledebug", function()
@@ -40,52 +49,79 @@ LK3D.DEF_UNIVERSE = {["lk3d"] = true, ["objects"] = {}, ["lights"] = {}, ["light
 LK3D.DEF_RT = GetRenderTarget("lk3d_fallback_rt", 800, 600)
 
 
-LK3D.CamPos = Vector(0, 0, 0)
-LK3D.CamAng = Angle(0, 0, 0)
+-- non custom params
+
+LK3D.Ortho = false
 LK3D.WireFrame = false
-LK3D.FOV = 90
+-- Sun
+LK3D.DoDirLighting = (LK3D.DoDirLighting ~= nil) and LK3D.DoDirLighting or true
 LK3D.SunDir = Vector(0.75, 1, 1)
 LK3D.SunDir:Normalize()
 
-LK3D.DoDirLighting = true
-LK3D.Ortho = false
 
-LK3D.FAR_Z = 200
-LK3D.NEAR_Z = .05
+-- custom params
 
-LK3D.SHADOW_EXTRUDE = 20
+--- Parameters
+-- @section parameters
 
-LK3D.DoExpensiveTrace = false
-LK3D.TraceReturnTable = false
-LK3D.TraceOverrideNoTrace = false
-
+--- Texture filter mode
 LK3D.FilterMode = LK3D.FilterMode or TEXFILTER.POINT
 
+--- Lightmap upscale filter mode
 LK3D.LightmapFilterMode = LK3D.LightmapFilterMode or TEXFILTER.POINT
+--- Lightmap upscale amount
 LK3D.LightmapUpscale = LK3D.LightmapUpscale or 1
 
-LK3D.ShadowAlpha = LK3D.ShadowAlpha or 196
+--- Whether to divide animation frame rate by frame count
+LK3D.AnimFrameDiv = (LK3D.AnimFrameDiv ~= nil) and LK3D.AnimFrameDiv or false
 
-LK3D.AnimFrameDiv = LK3D.AnimFrameDiv ~= nil and LK3D.AnimFrameDiv or false
+--- Shadow volume alpha value (Hardware1 renderer only)
+LK3D.ShadowAlpha = LK3D.ShadowAlpha or 196
+--- Distance to extrude shadow volumes (Hardware1 renderer only)
+LK3D.ShadowExtrude = LK3D.ShadowExtrude or 20
+
+--- End
+-- @section end
+
 
 LK3D.AmbientCol = Color(0, 0, 0)
-LK3D.OrthoParameters = {
-	left = 1,
-	right = -1,
-	top = 1,
-	bottom = -1
-}
-
 LK3D.ActiveRenderer = 2 -- this should always be the hardware renderer
-
 LK3D.Renderers = LK3D.Renderers or {}
 local lastRendererID = 0
+
+--- Declares a new renderer
+-- @internal
+-- @tparam table renderer Renderer data
 function LK3D.DeclareRenderer(renderer)
 	lastRendererID = lastRendererID + 1
 	LK3D.Renderers[lastRendererID] = renderer
 
 	return lastRendererID
 end
+
+-- Universes
+include("lk3d_universes.lua")
+
+
+-- Lighting
+include("lk3d_lights.lua")
+
+
+-- RenderTarget
+include("lk3d_rendertarget.lua")
+
+
+-- Camera
+include("lk3d_camera.lua")
+
+
+-- RT Utils
+include("lk3d_rt_utils.lua")
+
+
+-- Objects
+include("lk3d_objects.lua")
+
 
 include("renderers/renderer_soft/lk3d_renderer_soft.lua")
 include("renderers/renderer_hard/lk3d_renderer_hard.lua")
@@ -94,7 +130,9 @@ include("renderers/renderer_soft2/lk3d_renderer_soft2.lua")
 
 LK3D.ActiveRenderer = LK3D_RENDER_HARD or LK3D.ActiveRenderer
 
-
+--- Sets the active renderer
+-- @tparam number rid Renderer ID
+-- @usage LK3D.SetRenderer(LK3D_RENDER_HARD) -- sets to hw renderer
 function LK3D.SetRenderer(rid)
 	if not LK3D.Renderers[rid] then
 		LK3D.New_D_Print("No renderer with id " .. rid .. "!", LK3D_SERVERITY_ERROR, "LK3D")
@@ -104,86 +142,49 @@ function LK3D.SetRenderer(rid)
 	LK3D.ActiveRenderer = rid
 end
 
-function LK3D.SetWireFrame(flag)
-	LK3D.WireFrame = flag
+function LK3D.SetWireFrame(doWireframe)
+	LK3D.WireFrame = doWireframe
 end
 
-function LK3D.SetFOV(num)
-	LK3D.FOV = num
+--- Sets whether to render in wireframe mode
+-- @tparam bool doWireframe Whether or not to render in wireframe
+-- @usage LK3D.SetWireframe(true) -- render wireframe
+function LK3D.SetWireframe(doWireframe)
+	LK3D.WireFrame = doWireframe
 end
 
+--- Sets the ambient color
+-- @tparam color col Ambient color
+-- @usage LK3D.SetAmbientCol(Color(255, 0, 0)) -- ugly preset
 function LK3D.SetAmbientCol(col)
 	LK3D.AmbientCol = col
 end
 
+--- Sets the direction of the sun, for shading
+-- @tparam vector vec Direction the sun should point at
+-- @usage LK3D.SetSunDir(Vector(0.75, 1, 1)) -- this is normalized internally
 function LK3D.SetSunDir(vec)
 	LK3D.SunDir = vec
 	LK3D.SunDir:Normalize()
 end
 
+--- Sets whether or not we should do directional shading
+-- @tparam bool flag Whether or not we should do directional shading
+-- @usage LK3D.SetDoDirLighting(false) -- no weird shading by default
 function LK3D.SetDoDirLighting(flag)
 	LK3D.DoDirLighting = flag
 end
 
-function LK3D.SetOrtho(flag)
-	LK3D.Ortho = flag
-end
-
-function LK3D.SetOrthoParameters(tbl)
-	LK3D.OrthoParameters = tbl
-end
-
-function LK3D.SetExpensiveTrace(bool)
-	LK3D.DoExpensiveTrace = bool
-end
-
-function LK3D.SetTraceReturnTable(bool)
-	LK3D.TraceReturnTable = bool
-end
-
-function LK3D.SetTraceOverrideNoTrace(bool)
-	LK3D.TraceOverrideNoTrace = bool
-end
-
-
+--- Sets the texture filter mode
+-- @tparam number filtermode [Texture filter mode constant](https://wiki.facepunch.com/gmod/Enums/TEXFILTER)
+-- @usage LK3D.SetFilterMode(TEXFILTER.POINT)
 function LK3D.SetFilterMode(filtermode)
 	LK3D.FilterMode = filtermode
 end
 
------------------------------
--- Universes
------------------------------
-include("lk3d_universes.lua")
 
------------------------------
--- Lighting
------------------------------
-include("lk3d_lights.lua")
-
------------------------------
--- RenderTarget
------------------------------
-include("lk3d_rendertarget.lua")
-
------------------------------
--- Camera
------------------------------
-include("lk3d_camera.lua")
-
------------------------------
--- RT Utils
------------------------------
-include("lk3d_rt_utils.lua")
-
------------------------------
--- Objects
------------------------------
-include("lk3d_objects.lua")
-
-
-
-
--- renderer should draw the whole scene, z sorted
+--- Renders the active universe to the active RT
+-- @usage LK3D.RenderActiveUniverse()
 function LK3D.RenderActiveUniverse()
 	local fine, err = pcall(LK3D.Renderers[LK3D.ActiveRenderer].Render)
 	if not fine then
@@ -191,7 +192,10 @@ function LK3D.RenderActiveUniverse()
 	end
 end
 
--- renderer should return a table with depth on screen
+--- Renders the depth buffer of the active universe and returns it
+-- @treturn table Depth array, as a sequential table **starting at 0**
+-- @usage local depthArray = LK3D.RenderActiveDepthArray()
+-- local depthTopLeft = depthArray[0]
 function LK3D.RenderActiveDepthArray()
 	local fine, arr = pcall(LK3D.Renderers[LK3D.ActiveRenderer].RenderDepth)
 	if not fine then
@@ -202,8 +206,9 @@ function LK3D.RenderActiveDepthArray()
 	return arr
 end
 
-
--- renderer should render an object alone without clearing
+--- Renders a single object from the active universe
+-- @tparam string obj Index tag of the object
+-- @usage LK3D.RenderObject("loka_pc")
 function LK3D.RenderObject(obj)
 	local fine, err = pcall(LK3D.Renderers[LK3D.ActiveRenderer].RenderObjectAlone, obj)
 	if not fine then
@@ -229,11 +234,16 @@ local function startToScreenView()
 		fov = LK3D.FOV,
 		zfar = LK3D.FAR_Z,
 		znear = LK3D.NEAR_Z,
-		ortho = LK3D.Ortho and LK3D.OrthoParameters or nil
+		ortho = LK3D.Ortho and LK3D.OrthoParams or nil
 	})
 
 end
 
+--- Converts a position to screen coords
+-- @tparam vector pos Pos to convert to screen coords
+-- @treturn table The [ToScreenData](https://wiki.facepunch.com/gmod/Structures/ToScreenData)
+-- @usage local scrData = LK3D.ToScreen(Vector(0, 16, 0))
+-- print(scrData.x, scrData.y)
 function LK3D.ToScreen(pos)
 	startToScreenView()
 		local data = pos:ToScreen()
@@ -242,6 +252,12 @@ function LK3D.ToScreen(pos)
 	return data
 end
 
+--- Converts a list of positions to screen coords
+-- @tparam table positions Sequential table of positions
+-- @treturn table A table of [ToScreenData](https://wiki.facepunch.com/gmod/Structures/ToScreenData)
+-- @usage local scrDataArray = LK3D.ToScreen({Vector(0, 16, 0), Vector(4, 16, 0)})
+-- print(scrDataArray[1].x, scrDataArray[1].y)
+-- print(scrDataArray[2].x, scrDataArray[2].y)
 function LK3D.ToScreenArray(positions)
 	local dataRet = {}
 
@@ -257,6 +273,16 @@ end
 -- this uses render.Spin() to render a helpful message over how we're processing sutff
 local rt_nfo = GetRenderTarget("lk3d_processing_rt2", ScrW(), ScrH())
 local REAL_W, REAL_H = ScrW(), ScrH()
+
+
+--- Renders a informational processing message, to avoid the game freezing  
+-- **Only use this when computing a lot of stuff**
+-- @tparam string message Message to write at the top left
+-- @tparam number prog Progress processing, 0 - 100
+-- @tparam ?function xtrarender Extra rendering function to render more stuff ontop
+-- @usage for i = 1, 51200000 do
+--   LK3D.RenderProcessingMessage("doing stuff", (i / 51200000) * 100)
+-- end
 function LK3D.RenderProcessingMessage(message, prog, xtrarender)
 	local last_rt = nil
 	if render.GetRenderTarget() ~= nil then
@@ -373,5 +399,8 @@ include("lk3d_skeleton.lua")
 include("lk3d_intro.lua")
 include("lk3d_changelog.lua")
 include("lk3d_about.lua")
+
+include("lk3d_docs_utils.lua") -- for docs
+
 -- todo surface2d (3d mesh. based 2d lib for lk3d)
 LK3D.New_D_Print("LK3D fully loaded!", LK3D_SEVERITY_INFO, "LK3D")
