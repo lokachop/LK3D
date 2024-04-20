@@ -138,6 +138,8 @@ local function getMaterialForShader(shader)
 end
 
 
+-- ???
+
 local function doShaderPreviewStitched(mdl, mat, shader)
 	renderShaderPreview(mdl, mat, false, shader, rtRender)
 	renderShaderPreview(mdl, mat, true, shader, rtRenderSmooth)
