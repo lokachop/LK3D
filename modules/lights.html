@@ -1,0 +1,476 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+<head>
+    <title>LK3D Docs</title>
+    <link rel="stylesheet" href="../ldoc.css" type="text/css" />
+</head>
+<body>
+
+<div id="container">
+
+<div id="product">
+	<div id="product_logo"></div>
+	<div id="product_name"><big><b></b></big></div>
+	<div id="product_description"></div>
+</div> <!-- id="product" -->
+
+
+<div id="main">
+
+
+<!-- Menu -->
+
+<div id="navigation">
+<br/>
+<h1>LK3D</h1>
+
+
+<ul>
+  <li><a href="../index.html">Index</a></li>
+</ul>
+
+<h2>Contents</h2>
+<ul>
+<li><a href="#Functions">Functions</a></li>
+</ul>
+
+
+<h2>Modules</h2>
+<ul class="nowrap">
+  <li><a href="../modules/baseshaders.html">baseshaders</a></li>
+  <li><a href="../modules/camera.html">camera</a></li>
+  <li><a href="../modules/debugutils.html">debugutils</a></li>
+  <li><a href="../modules/dumps.html">dumps</a></li>
+  <li><strong>lights</strong></li>
+  <li><a href="../modules/lk3d.html">lk3d</a></li>
+  <li><a href="../modules/lkpack.html">lkpack</a></li>
+  <li><a href="../modules/modelutils.html">modelutils</a></li>
+  <li><a href="../modules/noise.html">noise</a></li>
+  <li><a href="../modules/notiflogger.html">notiflogger</a></li>
+  <li><a href="../modules/objects.html">objects</a></li>
+  <li><a href="../modules/particles.html">particles</a></li>
+  <li><a href="../modules/physics.html">physics</a></li>
+  <li><a href="../modules/procmodel.html">procmodel</a></li>
+  <li><a href="../modules/proctex.html">proctex</a></li>
+  <li><a href="../modules/radiosity.html">radiosity</a></li>
+  <li><a href="../modules/rendertarget.html">rendertarget</a></li>
+  <li><a href="../modules/textures.html">textures</a></li>
+  <li><a href="../modules/trace.html">trace</a></li>
+  <li><a href="../modules/universes.html">universes</a></li>
+</ul>
+<h2>Manual</h2>
+<ul class="nowrap">
+  <li><a href="../manual/animated-models.md.html">Animated Models</a></li>
+  <li><a href="../manual/base-shaders.md.html">Base Shaders</a></li>
+  <li><a href="../manual/concommand-list.md.html">ConCommand List</a></li>
+  <li><a href="../manual/lightmapper-radiosity.md.html">Lightmapping: Radiosity</a></li>
+  <li><a href="../manual/lkpack-basics.md.html">Basics of LKPack</a></li>
+  <li><a href="../manual/loading-lk3d.md.html">Loading LK3D</a></li>
+  <li><a href="../manual/object-flags.md.html">Object Flags</a></li>
+</ul>
+
+</div>
+
+<div id="content">
+
+<h1>Module <code>lights</code></h1>
+<p>
+<h2>Lets you manage lights</h2>
+<hr/>
+</p>
+<p>Module to create / update / delete lights on the active universe <br/>
+It also allows you to get the light intensity at a position on the universe</p>
+
+
+<h2><a href="#Functions">Functions</a></h2>
+<table class="function_list">
+	<tr>
+	<td class="name" nowrap><a href="#LK3D.AddLight">LK3D.AddLight(index, pos, intensity, col, smooth)</a></td>
+	<td class="summary">Adds a light to the active universe</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#LK3D.RemoveLight">LK3D.RemoveLight(index)</a></td>
+	<td class="summary">Removes a light from the active universe</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#LK3D.UpdateLightPos">LK3D.UpdateLightPos(index, pos)</a></td>
+	<td class="summary">Updates the position of a light</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#LK3D.UpdateLightIntensity">LK3D.UpdateLightIntensity(index, intensity)</a></td>
+	<td class="summary">Updates the intensity of a light</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#LK3D.UpdateLightColour">LK3D.UpdateLightColour(index, col)</a></td>
+	<td class="summary">Updates the colour of a light</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#LK3D.UpdateLightSmooth">LK3D.UpdateLightSmooth(index, smooth)</a></td>
+	<td class="summary">Updates the smoothness of a light</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#LK3D.UpdateLight">LK3D.UpdateLight(index, pos, intensity, col, smooth)</a></td>
+	<td class="summary">Updates all of the parameters of a light</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#LK3D.GetLightIntensity">LK3D.GetLightIntensity(pos, norm)</a></td>
+	<td class="summary">Gets the light intensity at a pos on the active universe</td>
+	</tr>
+</table>
+
+<br/>
+<br/>
+
+
+    <h2 class="section-header "><a name="Functions"></a>Functions</h2>
+
+    <dl class="function">
+    <dt>
+    <a name = "LK3D.AddLight"></a>
+    <strong>LK3D.AddLight(index, pos, intensity, col, smooth)</strong>
+    </dt>
+    <dd>
+
+<!-- Added here by loka, im so shit at HTML & CSS :( -->
+
+
+
+    Adds a light to the active universe
+
+    </ul>
+    </ul>
+    </ul>
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">index</span>
+            <span class="types"><span class="type">string</span></span>
+         Index name of the light
+        </li>
+        <li><span class="parameter">pos</span>
+            <span class="types"><span class="type">vector</span></span>
+         Position of the light
+        </li>
+        <li><span class="parameter">intensity</span>
+            <span class="types"><span class="type">number</span></span>
+         Intensity of the light
+        </li>
+        <li><span class="parameter">col</span>
+            <span class="types"><span class="type">color</span></span>
+         Colour of the light
+        </li>
+        <li><span class="parameter">smooth</span>
+            <span class="types"><span class="type">bool</span></span>
+         Sets the distance to linear rather than exponential
+        </li>
+    </ul>
+
+
+
+
+    <h3>Usage:</h3>
+    <ul>
+        <li><pre class="example"><span class="comment">-- adds a green light at the center of the universe
+</span> LK3D.AddLight(<span class="string">"loka_light_green"</span>, Vector(<span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>), <span class="number">2</span>, Color(<span class="number">0</span>, <span class="number">255</span>, <span class="number">0</span>), <span class="keyword">false</span>)</pre></li>
+        <li><pre class="example"><span class="comment">-- adds a huge smooth blue light at the center of the universe
+</span> LK3D.AddLight(<span class="string">"loka_light_blue"</span>, Vector(<span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>), <span class="number">3.5</span>, Color(<span class="number">0</span>, <span class="number">0</span>, <span class="number">255</span>), <span class="keyword">true</span>)</pre></li>
+    </ul>
+
+</dd>
+    <dt>
+    <a name = "LK3D.RemoveLight"></a>
+    <strong>LK3D.RemoveLight(index)</strong>
+    </dt>
+    <dd>
+
+<!-- Added here by loka, im so shit at HTML & CSS :( -->
+
+
+
+    Removes a light from the active universe
+
+    </ul>
+    </ul>
+    </ul>
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">index</span>
+            <span class="types"><span class="type">string</span></span>
+         Index name of the light
+        </li>
+    </ul>
+
+
+
+
+    <h3>Usage:</h3>
+    <ul>
+        <pre class="example">LK3D.RemoveLight(<span class="string">"loka_light_green"</span>)</pre>
+    </ul>
+
+</dd>
+    <dt>
+    <a name = "LK3D.UpdateLightPos"></a>
+    <strong>LK3D.UpdateLightPos(index, pos)</strong>
+    </dt>
+    <dd>
+
+<!-- Added here by loka, im so shit at HTML & CSS :( -->
+
+
+
+    Updates the position of a light
+
+    </ul>
+    </ul>
+    </ul>
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">index</span>
+            <span class="types"><span class="type">string</span></span>
+         Index name of the light
+        </li>
+        <li><span class="parameter">pos</span>
+            <span class="types"><span class="type">vector</span></span>
+         New position of the light
+        </li>
+    </ul>
+
+
+
+
+    <h3>Usage:</h3>
+    <ul>
+        <pre class="example">LK3D.UpdateLightPos(<span class="string">"loka_light_blue"</span>, Vector(<span class="number">0</span>, <span class="number">2</span>, <span class="number">0</span>))</pre>
+    </ul>
+
+</dd>
+    <dt>
+    <a name = "LK3D.UpdateLightIntensity"></a>
+    <strong>LK3D.UpdateLightIntensity(index, intensity)</strong>
+    </dt>
+    <dd>
+
+<!-- Added here by loka, im so shit at HTML & CSS :( -->
+
+
+
+    Updates the intensity of a light
+
+    </ul>
+    </ul>
+    </ul>
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">index</span>
+            <span class="types"><span class="type">string</span></span>
+         Index name of the light
+        </li>
+        <li><span class="parameter">intensity</span>
+            <span class="types"><span class="type">number</span></span>
+         New intensity of the light
+        </li>
+    </ul>
+
+
+
+
+    <h3>Usage:</h3>
+    <ul>
+        <pre class="example">LK3D.UpdateLightIntensity(<span class="string">"loka_light_blue"</span>, <span class="number">3.75</span>)</pre>
+    </ul>
+
+</dd>
+    <dt>
+    <a name = "LK3D.UpdateLightColour"></a>
+    <strong>LK3D.UpdateLightColour(index, col)</strong>
+    </dt>
+    <dd>
+
+<!-- Added here by loka, im so shit at HTML & CSS :( -->
+
+
+
+    Updates the colour of a light
+
+    </ul>
+    </ul>
+    </ul>
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">index</span>
+            <span class="types"><span class="type">string</span></span>
+         Index name of the light
+        </li>
+        <li><span class="parameter">col</span>
+            <span class="types"><span class="type">color</span></span>
+         New colour of the light
+        </li>
+    </ul>
+
+
+
+
+    <h3>Usage:</h3>
+    <ul>
+        <pre class="example">LK3D.UpdateLightColour(<span class="string">"loka_light_blue"</span>, Color(<span class="number">64</span>, <span class="number">128</span>, <span class="number">255</span>))</pre>
+    </ul>
+
+</dd>
+    <dt>
+    <a name = "LK3D.UpdateLightSmooth"></a>
+    <strong>LK3D.UpdateLightSmooth(index, smooth)</strong>
+    </dt>
+    <dd>
+
+<!-- Added here by loka, im so shit at HTML & CSS :( -->
+
+
+
+    Updates the smoothness of a light
+
+    </ul>
+    </ul>
+    </ul>
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">index</span>
+            <span class="types"><span class="type">string</span></span>
+         Index name of the light
+        </li>
+        <li><span class="parameter">smooth</span>
+            <span class="types"><span class="type">bool</span></span>
+         New smoothness of the light
+        </li>
+    </ul>
+
+
+
+
+    <h3>Usage:</h3>
+    <ul>
+        <pre class="example">LK3D.UpdateLightSmooth(<span class="string">"loka_light_blue"</span>, <span class="keyword">false</span>)</pre>
+    </ul>
+
+</dd>
+    <dt>
+    <a name = "LK3D.UpdateLight"></a>
+    <strong>LK3D.UpdateLight(index, pos, intensity, col, smooth)</strong>
+    </dt>
+    <dd>
+
+<!-- Added here by loka, im so shit at HTML & CSS :( -->
+
+
+
+    Updates all of the parameters of a light
+
+    </ul>
+    </ul>
+    </ul>
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">index</span>
+            <span class="types"><span class="type">string</span></span>
+         Index name of the light
+        </li>
+        <li><span class="parameter">pos</span>
+            <span class="types">optional <span class="type">vector</span></span>
+         New position of the light
+        </li>
+        <li><span class="parameter">intensity</span>
+            <span class="types">optional <span class="type">number</span></span>
+         New intensity of the light
+        </li>
+        <li><span class="parameter">col</span>
+            <span class="types">optional <span class="type">color</span></span>
+         New colour of the light
+        </li>
+        <li><span class="parameter">smooth</span>
+            <span class="types">optional <span class="type">bool</span></span>
+         New smoothness of the light
+        </li>
+    </ul>
+
+
+
+
+    <h3>Usage:</h3>
+    <ul>
+        <pre class="example">LK3D.UpdateLight(<span class="string">"loka_light_blue"</span>, Vector(<span class="number">0</span>, <span class="number">2</span>, <span class="number">0</span>), <span class="number">3.75</span>, Color(<span class="number">64</span>, <span class="number">128</span>, <span class="number">255</span>), <span class="keyword">false</span>)</pre>
+    </ul>
+
+</dd>
+    <dt>
+    <a name = "LK3D.GetLightIntensity"></a>
+    <strong>LK3D.GetLightIntensity(pos, norm)</strong>
+    </dt>
+    <dd>
+
+<!-- Added here by loka, im so shit at HTML & CSS :( -->
+
+
+
+    Gets the light intensity at a pos on the active universe
+
+    </ul>
+    </ul>
+    </ul>
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">pos</span>
+            <span class="types"><span class="type">vector</span></span>
+         Position to get the light intensity from
+        </li>
+        <li><span class="parameter">norm</span>
+            <span class="types">optional <span class="type">vector</span></span>
+         Normal to use to calculate intensity
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+        <li>
+           <span class="types"><span class="type">number</span></span>
+        intR Red channel intensity between 0-1</li>
+        <li>
+           <span class="types"><span class="type">number</span></span>
+        intG Green channel intensity between 0-1</li>
+        <li>
+           <span class="types"><span class="type">number</span></span>
+        intB Blue channel intensity between 0-1</li>
+    </ol>
+
+
+
+    <h3>Usage:</h3>
+    <ul>
+        <li><pre class="example"><span class="comment">-- Gets light values at Vector(0, 0, 0)
+</span> LK3D.GetLightIntensity(Vector(<span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>))</pre></li>
+        <li><pre class="example"><span class="comment">-- Gets light values at Vector(0, 0, 0) of a flat plane aiming up
+</span> LK3D.GetLightIntensity(Vector(<span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>), Vector(<span class="number">0</span>, <span class="number">0</span>, <span class="number">1</span>))</pre></li>
+    </ul>
+
+</dd>
+</dl>
+
+
+</div> <!-- id="content" -->
+</div> <!-- id="main" -->
+<div id="about">
+<i>generated by <a href="http://github.com/lunarmodules/LDoc">LDoc 1.4.6</a></i>
+<i style="float:right;">Last updated 2024-04-20 11:40:03 </i>
+</div> <!-- id="about" -->
+</div> <!-- id="container" -->
+</body>
+</html>
+

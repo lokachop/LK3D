@@ -1,0 +1,210 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+<head>
+    <title>LK3D Docs</title>
+    <link rel="stylesheet" href="../ldoc.css" type="text/css" />
+</head>
+<body>
+
+<div id="container">
+
+<div id="product">
+	<div id="product_logo"></div>
+	<div id="product_name"><big><b></b></big></div>
+	<div id="product_description"></div>
+</div> <!-- id="product" -->
+
+
+<div id="main">
+
+
+<!-- Menu -->
+
+<div id="navigation">
+<br/>
+<h1>LK3D</h1>
+
+
+<ul>
+  <li><a href="../index.html">Index</a></li>
+</ul>
+
+
+
+<h2>Manual</h2>
+<ul class="nowrap">
+  <li><a href="../manual/animated-models.md.html">Animated Models</a></li>
+  <li><strong>Base Shaders</strong></li>
+  <li><a href="../manual/concommand-list.md.html">ConCommand List</a></li>
+  <li><a href="../manual/lightmapper-radiosity.md.html">Lightmapping: Radiosity</a></li>
+  <li><a href="../manual/lkpack-basics.md.html">Basics of LKPack</a></li>
+  <li><a href="../manual/loading-lk3d.md.html">Loading LK3D</a></li>
+  <li><a href="../manual/object-flags.md.html">Object Flags</a></li>
+</ul>
+<h2>Modules</h2>
+<ul class="nowrap">
+  <li><a href="../modules/baseshaders.html">baseshaders</a></li>
+  <li><a href="../modules/camera.html">camera</a></li>
+  <li><a href="../modules/debugutils.html">debugutils</a></li>
+  <li><a href="../modules/dumps.html">dumps</a></li>
+  <li><a href="../modules/lights.html">lights</a></li>
+  <li><a href="../modules/lk3d.html">lk3d</a></li>
+  <li><a href="../modules/lkpack.html">lkpack</a></li>
+  <li><a href="../modules/modelutils.html">modelutils</a></li>
+  <li><a href="../modules/noise.html">noise</a></li>
+  <li><a href="../modules/notiflogger.html">notiflogger</a></li>
+  <li><a href="../modules/objects.html">objects</a></li>
+  <li><a href="../modules/particles.html">particles</a></li>
+  <li><a href="../modules/physics.html">physics</a></li>
+  <li><a href="../modules/procmodel.html">procmodel</a></li>
+  <li><a href="../modules/proctex.html">proctex</a></li>
+  <li><a href="../modules/radiosity.html">radiosity</a></li>
+  <li><a href="../modules/rendertarget.html">rendertarget</a></li>
+  <li><a href="../modules/textures.html">textures</a></li>
+  <li><a href="../modules/trace.html">trace</a></li>
+  <li><a href="../modules/universes.html">universes</a></li>
+</ul>
+
+</div>
+
+<div id="content">
+
+
+<h1>Base Shaders</h1>
+<p>This is a list of all of the built-in LK3D base shaders, with screenshots. <br/>
+Most of these only work when the models are non-cached, as they need to be updated constantly.  </p>
+
+<hr/>
+
+<p><font size="6"> <code>reflective</code></font>  </p>
+
+<p>Spheremap shader, maps a 2D sphere map onto a 3D model, used to make shiny <em>metallic</em> objects <br/>
+<strong>This shader is really expensive! Its advised to use</strong> <code>reflective_screen_rot</code> <strong>if your model has smooth normals!</strong></p>
+
+<p><img src="../images/shader_captures/reflective/cube_nuv.png" alt="image"/>
+<img src="../images/shader_captures/reflective/barrel.png" alt="image"/>
+<img src="../images/shader_captures/reflective/suzanne.png" alt="image"/></p>
+
+<hr/>
+
+<p><font size="6"> <code>reflective_simple</code></font>  </p>
+
+<p>Faster, lazier and horribly broken version of <code>reflective</code> <br/>
+This shader is mostly phased out by <code>reflective_screen_rot</code> <br/>
+<strong>Breaks with non-smooth normals</strong> <br/>
+<img src="../images/shader_captures/reflective_simple/cube_nuv.png" alt="image"/>
+<img src="../images/shader_captures/reflective_simple/barrel.png" alt="image"/>
+<img src="../images/shader_captures/reflective_simple/suzanne.png" alt="image"/></p>
+
+<hr/>
+
+<p><font size="6"> <code>reflective_screen_rot</code></font>  </p>
+
+<p>Maps a spheremap to a model using the screenspace instead <br/>
+<strong>Breaks with non-smooth normals</strong> <br/>
+<img src="../images/shader_captures/reflective_screen_rot/cube_nuv.png" alt="image"/>
+<img src="../images/shader_captures/reflective_screen_rot/barrel.png" alt="image"/>
+<img src="../images/shader_captures/reflective_screen_rot/suzanne.png" alt="image"/></p>
+
+<hr/>
+
+<p><font size="6"> <code>specular</code></font>  </p>
+
+<p>Hacky specular shader, looks horrible and runs horrible too! <br/>
+<img src="../images/shader_captures/specular/cube_nuv.png" alt="image"/>
+<img src="../images/shader_captures/specular/barrel.png" alt="image"/>
+<img src="../images/shader_captures/specular/suzanne.png" alt="image"/></p>
+
+<hr/>
+
+<p><font size="6"> <code>norm_vis</code></font>  </p>
+
+<p>Shows the <strong>rotated</strong> normals as the vertex colours <br/>
+<img src="../images/shader_captures/norm_vis/cube_nuv.png" alt="image"/>
+<img src="../images/shader_captures/norm_vis/barrel.png" alt="image"/>
+<img src="../images/shader_captures/norm_vis/suzanne.png" alt="image"/></p>
+
+<hr/>
+
+<p><font size="6"> <code>norm_vis_rot</code></font>  </p>
+
+<p>Unlike what it name implies, shows the <strong>non-rotated</strong> normals as the vertex colours <br/>
+<img src="../images/shader_captures/norm_vis_rot/cube_nuv.png" alt="image"/>
+<img src="../images/shader_captures/norm_vis_rot/barrel.png" alt="image"/>
+<img src="../images/shader_captures/norm_vis_rot/suzanne.png" alt="image"/></p>
+
+<hr/>
+
+<p><font size="6"> <code>norm_screenspace</code></font>  </p>
+
+<p>Deprecated  </p>
+
+<p><img src="../images/shader_captures/norm_screenspace/cube_nuv.png" alt="image"/>
+<img src="../images/shader_captures/norm_screenspace/barrel.png" alt="image"/>
+<img src="../images/shader_captures/norm_screenspace/suzanne.png" alt="image"/></p>
+
+<hr/>
+
+<p><font size="6"> <code>norm_screenspace_rot</code></font>  </p>
+
+<p>Shows <strong>screen-space</strong> normals as the vertex colours  </p>
+
+<p><img src="../images/shader_captures/norm_screenspace_rot/cube_nuv.png" alt="image"/>
+<img src="../images/shader_captures/norm_screenspace_rot/barrel.png" alt="image"/>
+<img src="../images/shader_captures/norm_screenspace_rot/suzanne.png" alt="image"/></p>
+
+<hr/>
+
+<p><font size="6"> <code>world_pos</code></font>  </p>
+
+<p>Shows the world position of each vertex as the vertex colours <br/>
+<strong>Only works in positions between Vector(-8, -8, -8) &amp; Vector(8, 8, 8)</strong>  </p>
+
+<p><img src="../images/shader_captures/world_pos/cube_nuv.png" alt="image"/>
+<img src="../images/shader_captures/world_pos/barrel.png" alt="image"/>
+<img src="../images/shader_captures/world_pos/suzanne.png" alt="image"/></p>
+
+
+<hr/>
+
+<p><font size="6"> <code>world_pos_local</code></font>  </p>
+
+<p>Shows the position local to the camera of each vertex as the vertex colours  </p>
+
+<p><img src="../images/shader_captures/world_pos_local/cube_nuv.png" alt="image"/>
+<img src="../images/shader_captures/world_pos_local/barrel.png" alt="image"/>
+<img src="../images/shader_captures/world_pos_local/suzanne.png" alt="image"/></p>
+
+<hr/>
+
+<p><font size="6"> <code>vert_col</code></font>  </p>
+
+<p>Sets the vertex colour of each vertex to the hue of their index  </p>
+
+<p><img src="../images/shader_captures/vert_col/cube_nuv.png" alt="image"/>
+<img src="../images/shader_captures/vert_col/barrel.png" alt="image"/>
+<img src="../images/shader_captures/vert_col/suzanne.png" alt="image"/></p>
+
+<hr/>
+
+<p><font size="6"> <code>ps1</code></font>  </p>
+
+<p>PS1-Like vertex wobble shader, effectively floors vertex positions  </p>
+
+<p><img src="../images/shader_captures/ps1/cube_nuv.png" alt="image"/>
+<img src="../images/shader_captures/ps1/barrel.png" alt="image"/>
+<img src="../images/shader_captures/ps1/suzanne.png" alt="image"/></p>
+
+
+</div> <!-- id="content" -->
+</div> <!-- id="main" -->
+<div id="about">
+<i>generated by <a href="http://github.com/lunarmodules/LDoc">LDoc 1.4.6</a></i>
+<i style="float:right;">Last updated 2024-04-20 11:40:03 </i>
+</div> <!-- id="about" -->
+</div> <!-- id="container" -->
+</body>
+</html>
+

@@ -1,0 +1,522 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+<head>
+    <title>LK3D Docs</title>
+    <link rel="stylesheet" href="../ldoc.css" type="text/css" />
+</head>
+<body>
+
+<div id="container">
+
+<div id="product">
+	<div id="product_logo"></div>
+	<div id="product_name"><big><b></b></big></div>
+	<div id="product_description"></div>
+</div> <!-- id="product" -->
+
+
+<div id="main">
+
+
+<!-- Menu -->
+
+<div id="navigation">
+<br/>
+<h1>LK3D</h1>
+
+
+<ul>
+  <li><a href="../index.html">Index</a></li>
+</ul>
+
+<h2>Contents</h2>
+<ul>
+<li><a href="#Functions">Functions</a></li>
+<li><a href="#Fields">Fields</a></li>
+</ul>
+
+
+<h2>Modules</h2>
+<ul class="nowrap">
+  <li><a href="../modules/baseshaders.html">baseshaders</a></li>
+  <li><a href="../modules/camera.html">camera</a></li>
+  <li><a href="../modules/debugutils.html">debugutils</a></li>
+  <li><a href="../modules/dumps.html">dumps</a></li>
+  <li><a href="../modules/lights.html">lights</a></li>
+  <li><a href="../modules/lk3d.html">lk3d</a></li>
+  <li><a href="../modules/lkpack.html">lkpack</a></li>
+  <li><a href="../modules/modelutils.html">modelutils</a></li>
+  <li><a href="../modules/noise.html">noise</a></li>
+  <li><a href="../modules/notiflogger.html">notiflogger</a></li>
+  <li><a href="../modules/objects.html">objects</a></li>
+  <li><a href="../modules/particles.html">particles</a></li>
+  <li><a href="../modules/physics.html">physics</a></li>
+  <li><a href="../modules/procmodel.html">procmodel</a></li>
+  <li><a href="../modules/proctex.html">proctex</a></li>
+  <li><a href="../modules/radiosity.html">radiosity</a></li>
+  <li><a href="../modules/rendertarget.html">rendertarget</a></li>
+  <li><a href="../modules/textures.html">textures</a></li>
+  <li><strong>trace</strong></li>
+  <li><a href="../modules/universes.html">universes</a></li>
+</ul>
+<h2>Manual</h2>
+<ul class="nowrap">
+  <li><a href="../manual/animated-models.md.html">Animated Models</a></li>
+  <li><a href="../manual/base-shaders.md.html">Base Shaders</a></li>
+  <li><a href="../manual/concommand-list.md.html">ConCommand List</a></li>
+  <li><a href="../manual/lightmapper-radiosity.md.html">Lightmapping: Radiosity</a></li>
+  <li><a href="../manual/lkpack-basics.md.html">Basics of LKPack</a></li>
+  <li><a href="../manual/loading-lk3d.md.html">Loading LK3D</a></li>
+  <li><a href="../manual/object-flags.md.html">Object Flags</a></li>
+</ul>
+
+</div>
+
+<div id="content">
+
+<h1>Module <code>trace</code></h1>
+<p>
+<h2>Trace (Raycast) Module</h2>
+<hr/>
+</p>
+<p>This module handles traces in LK3D, Which allow you to perform raycasts <br/>
+It currently only supports rays</p>
+
+
+<h2><a href="#Functions">Functions</a></h2>
+<table class="function_list">
+	<tr>
+	<td class="name" nowrap><a href="#LK3D.SetExpensiveTrace">LK3D.SetExpensiveTrace(flag)</a></td>
+	<td class="summary">Sets whether or not we should return UVs on the trace <br/>
+ <strong>This makes traces somewhat slower</strong></td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#LK3D.SetTraceReturnTable">LK3D.SetTraceReturnTable(flag)</a></td>
+	<td class="summary">Sets whether or not the trace should return a table with data rather than variables
+ <strong>This makes traces very lightly slower</strong></td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#LK3D.SetTraceOverrideNoTrace">LK3D.SetTraceOverrideNoTrace(bool)</a></td>
+	<td class="summary">Internal <br/>
+ <strong>Don't use this</strong></td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#LK3D.GenTrList">LK3D.GenTrList(k)</a></td>
+	<td class="summary">Generates the triangle list necessary for raycasting</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#LK3D.GenAABB">LK3D.GenAABB(k)</a></td>
+	<td class="summary">Generates the AABB for the model</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#LK3D.GetRecalcAABB">LK3D.GetRecalcAABB(obj)</a></td>
+	<td class="summary">Gets the AABB for an object on the active universe</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#LK3D.TraceRayObject">LK3D.TraceRayObject(pos, dir, name, bfcull)</a></td>
+	<td class="summary">Traces a ray to a specific object</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#LK3D.TraceRayScene">LK3D.TraceRayScene(pos, dir, bfcull, dist)</a></td>
+	<td class="summary">Traces the entire scene</td>
+	</tr>
+</table>
+<h2><a href="#Fields">Fields</a></h2>
+<table class="function_list">
+	<tr>
+	<td class="name" nowrap><a href="#LK3D.SUPER_OPTI_TR">LK3D.SUPER_OPTI_TR</a></td>
+	<td class="summary">Super-hacky unethical evil optimization, use at own risk!</td>
+	</tr>
+</table>
+
+<br/>
+<br/>
+
+
+    <h2 class="section-header "><a name="Functions"></a>Functions</h2>
+
+    <dl class="function">
+    <dt>
+    <a name = "LK3D.SetExpensiveTrace"></a>
+    <strong>LK3D.SetExpensiveTrace(flag)</strong>
+    </dt>
+    <dd>
+
+<!-- Added here by loka, im so shit at HTML & CSS :( -->
+
+
+
+    Sets whether or not we should return UVs on the trace <br/>
+ <strong>This makes traces somewhat slower</strong>
+
+    </ul>
+    </ul>
+    </ul>
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">flag</span>
+            <span class="types"><span class="type">bool</span></span>
+         Whether or not we should return the UVs
+        </li>
+    </ul>
+
+
+
+
+    <h3>Usage:</h3>
+    <ul>
+        <pre class="example">LK3D.SetExpensiveTrace(<span class="keyword">true</span>)</pre>
+    </ul>
+
+</dd>
+    <dt>
+    <a name = "LK3D.SetTraceReturnTable"></a>
+    <strong>LK3D.SetTraceReturnTable(flag)</strong>
+    </dt>
+    <dd>
+
+<!-- Added here by loka, im so shit at HTML & CSS :( -->
+
+
+
+    Sets whether or not the trace should return a table with data rather than variables
+ <strong>This makes traces very lightly slower</strong>
+
+    </ul>
+    </ul>
+    </ul>
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">flag</span>
+            <span class="types"><span class="type">bool</span></span>
+         Whether or not we should return a table
+        </li>
+    </ul>
+
+
+
+
+    <h3>Usage:</h3>
+    <ul>
+        <pre class="example">LK3D.SetTraceReturnTable(<span class="keyword">true</span>)</pre>
+    </ul>
+
+</dd>
+    <dt>
+    <a name = "LK3D.SetTraceOverrideNoTrace"></a>
+    <strong>LK3D.SetTraceOverrideNoTrace(bool)</strong>
+    </dt>
+    <dd>
+
+<!-- Added here by loka, im so shit at HTML & CSS :( -->
+        <div style="border:4px dotted rgb(153, 153, 153); background-color: rgb(233, 233, 233); padding-bottom:1em;">
+            <div style="text-align:left; text-indent:1em;"> <h2> INTERNAL </h2> </div>
+            <div style="text-align:left; text-indent:1em;"> This function is used internally, so you shouldn't use it unless you know what you're doing! </div>
+        </div> <br>
+
+
+
+    Internal <br/>
+ <strong>Don't use this</strong>
+
+    </ul>
+    </ul>
+    </ul>
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">bool</span>
+            <span class="types"><span class="type">bool</span></span>
+
+
+
+        </li>
+    </ul>
+
+
+
+
+    <h3>Usage:</h3>
+    <ul>
+        <pre class="example">LK3D.SetTraceOverrideNoTrace(<span class="keyword">true</span>)</pre>
+    </ul>
+
+</dd>
+    <dt>
+    <a name = "LK3D.GenTrList"></a>
+    <strong>LK3D.GenTrList(k)</strong>
+    </dt>
+    <dd>
+
+<!-- Added here by loka, im so shit at HTML & CSS :( -->
+        <div style="border:4px dotted rgb(153, 153, 153); background-color: rgb(233, 233, 233); padding-bottom:1em;">
+            <div style="text-align:left; text-indent:1em;"> <h2> INTERNAL </h2> </div>
+            <div style="text-align:left; text-indent:1em;"> This function is used internally, so you shouldn't use it unless you know what you're doing! </div>
+        </div> <br>
+
+
+
+    Generates the triangle list necessary for raycasting
+
+    </ul>
+    </ul>
+    </ul>
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">k</span>
+            <span class="types"><span class="type">string</span></span>
+         Model name
+        </li>
+    </ul>
+
+
+
+
+    <h3>Usage:</h3>
+    <ul>
+        <pre class="example">LK3D.GenTrList(<span class="string">"cube_nuv"</span>)</pre>
+    </ul>
+
+</dd>
+    <dt>
+    <a name = "LK3D.GenAABB"></a>
+    <strong>LK3D.GenAABB(k)</strong>
+    </dt>
+    <dd>
+
+<!-- Added here by loka, im so shit at HTML & CSS :( -->
+        <div style="border:4px dotted rgb(153, 153, 153); background-color: rgb(233, 233, 233); padding-bottom:1em;">
+            <div style="text-align:left; text-indent:1em;"> <h2> INTERNAL </h2> </div>
+            <div style="text-align:left; text-indent:1em;"> This function is used internally, so you shouldn't use it unless you know what you're doing! </div>
+        </div> <br>
+
+
+
+    Generates the AABB for the model
+
+    </ul>
+    </ul>
+    </ul>
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">k</span>
+            <span class="types"><span class="type">string</span></span>
+         Model name
+        </li>
+    </ul>
+
+
+
+
+    <h3>Usage:</h3>
+    <ul>
+        <pre class="example">LK3D.GenAABB(<span class="string">"cube_nuv"</span>)</pre>
+    </ul>
+
+</dd>
+    <dt>
+    <a name = "LK3D.GetRecalcAABB"></a>
+    <strong>LK3D.GetRecalcAABB(obj)</strong>
+    </dt>
+    <dd>
+
+<!-- Added here by loka, im so shit at HTML & CSS :( -->
+
+
+
+    Gets the AABB for an object on the active universe
+
+    </ul>
+    </ul>
+    </ul>
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">obj</span>
+            <span class="types"><span class="type">string</span></span>
+         Object name
+        </li>
+    </ul>
+
+
+
+
+    <h3>Usage:</h3>
+    <ul>
+        <pre class="example"><span class="keyword">local</span> aabb = LK3D.GetRecalcAABB(<span class="string">"cube_nuv"</span>)
+<span class="keyword">local</span> mins = aabb[<span class="number">1</span>]
+<span class="keyword">local</span> maxs = aabb[<span class="number">2</span>]</pre>
+    </ul>
+
+</dd>
+    <dt>
+    <a name = "LK3D.TraceRayObject"></a>
+    <strong>LK3D.TraceRayObject(pos, dir, name, bfcull)</strong>
+    </dt>
+    <dd>
+
+<!-- Added here by loka, im so shit at HTML & CSS :( -->
+
+
+
+    Traces a ray to a specific object
+
+    </ul>
+    </ul>
+    </ul>
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">pos</span>
+            <span class="types"><span class="type">vector</span></span>
+         Ray origin
+        </li>
+        <li><span class="parameter">dir</span>
+            <span class="types"><span class="type">vector</span></span>
+         Ray direction
+        </li>
+        <li><span class="parameter">name</span>
+            <span class="types"><span class="type">string</span></span>
+         LK3D Object index tag to raycast
+        </li>
+        <li><span class="parameter">bfcull</span>
+            <span class="types">optional <span class="type">bool</span></span>
+         Whether we should cull backfaces
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+        <li>
+           <span class="types"><span class="type">vector</span></span>
+        Hit position</li>
+        <li>
+           <span class="types"><span class="type">vector</span></span>
+        Hit normal</li>
+        <li>
+           <span class="types"><span class="type">vector</span></span>
+        Distance</li>
+        <li>
+           <span class="types"><span class="type">table</span></span>
+        UV coords</li>
+        <li>
+           <span class="types"><span class="type">number</span></span>
+        Triangle index</li>
+    </ol>
+
+
+
+    <h3>Usage:</h3>
+    <ul>
+        <pre class="example"><span class="keyword">local</span> pos, norm, dist = LK3D.TraceRayObject(Vector(<span class="number">0</span>, <span class="number">0</span>, <span class="number">4</span>), Vector(<span class="number">0</span>, <span class="number">0</span>, -<span class="number">1</span>), <span class="string">"cube_center"</span>, <span class="keyword">true</span>)</pre>
+    </ul>
+
+</dd>
+    <dt>
+    <a name = "LK3D.TraceRayScene"></a>
+    <strong>LK3D.TraceRayScene(pos, dir, bfcull, dist)</strong>
+    </dt>
+    <dd>
+
+<!-- Added here by loka, im so shit at HTML & CSS :( -->
+
+
+
+    Traces the entire scene
+
+    </ul>
+    </ul>
+    </ul>
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">pos</span>
+            <span class="types"><span class="type">vector</span></span>
+         Ray origin
+        </li>
+        <li><span class="parameter">dir</span>
+            <span class="types"><span class="type">vector</span></span>
+         Ray direction
+        </li>
+        <li><span class="parameter">bfcull</span>
+            <span class="types">optional <span class="type">bool</span></span>
+         Whether we should cull backfaces
+        </li>
+        <li><span class="parameter">dist</span>
+            <span class="types">optional <span class="type">number</span></span>
+         Ray distance
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+        <li>
+           <span class="types"><span class="type">vector</span></span>
+        Hit position or table if LK3D.TraceReturnTable is true</li>
+        <li>
+           <span class="types"><span class="type">vector</span></span>
+        Hit normal</li>
+        <li>
+           <span class="types"><span class="type">vector</span></span>
+        Distance</li>
+        <li>
+           <span class="types"><span class="type">table</span></span>
+        UV coords</li>
+        <li>
+           <span class="types"><span class="type">number</span></span>
+        Triangle index</li>
+    </ol>
+
+
+
+    <h3>Usage:</h3>
+    <ul>
+        <pre class="example"><span class="keyword">local</span> pos, norm, dist = LK3D.TraceRayScene(Vector(<span class="number">0</span>, <span class="number">0</span>, <span class="number">4</span>), Vector(<span class="number">0</span>, <span class="number">0</span>, -<span class="number">1</span>), <span class="keyword">true</span>, <span class="number">512000</span>)</pre>
+    </ul>
+
+</dd>
+</dl>
+    <h2 class="section-header "><a name="Fields"></a>Fields</h2>
+
+    <dl class="function">
+    <dt>
+    <a name = "LK3D.SUPER_OPTI_TR"></a>
+    <strong>LK3D.SUPER_OPTI_TR</strong>
+    </dt>
+    <dd>
+
+<!-- Added here by loka, im so shit at HTML & CSS :( -->
+
+
+
+    Super-hacky unethical evil optimization, use at own risk!
+
+    </ul>
+    </ul>
+    </ul>
+
+
+
+
+
+
+</dd>
+</dl>
+
+
+</div> <!-- id="content" -->
+</div> <!-- id="main" -->
+<div id="about">
+<i>generated by <a href="http://github.com/lunarmodules/LDoc">LDoc 1.4.6</a></i>
+<i style="float:right;">Last updated 2024-04-20 11:40:03 </i>
+</div> <!-- id="about" -->
+</div> <!-- id="container" -->
+</body>
+</html>
+

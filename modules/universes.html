@@ -1,0 +1,257 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+<head>
+    <title>LK3D Docs</title>
+    <link rel="stylesheet" href="../ldoc.css" type="text/css" />
+</head>
+<body>
+
+<div id="container">
+
+<div id="product">
+	<div id="product_logo"></div>
+	<div id="product_name"><big><b></b></big></div>
+	<div id="product_description"></div>
+</div> <!-- id="product" -->
+
+
+<div id="main">
+
+
+<!-- Menu -->
+
+<div id="navigation">
+<br/>
+<h1>LK3D</h1>
+
+
+<ul>
+  <li><a href="../index.html">Index</a></li>
+</ul>
+
+<h2>Contents</h2>
+<ul>
+<li><a href="#Functions">Functions</a></li>
+</ul>
+
+
+<h2>Modules</h2>
+<ul class="nowrap">
+  <li><a href="../modules/baseshaders.html">baseshaders</a></li>
+  <li><a href="../modules/camera.html">camera</a></li>
+  <li><a href="../modules/debugutils.html">debugutils</a></li>
+  <li><a href="../modules/dumps.html">dumps</a></li>
+  <li><a href="../modules/lights.html">lights</a></li>
+  <li><a href="../modules/lk3d.html">lk3d</a></li>
+  <li><a href="../modules/lkpack.html">lkpack</a></li>
+  <li><a href="../modules/modelutils.html">modelutils</a></li>
+  <li><a href="../modules/noise.html">noise</a></li>
+  <li><a href="../modules/notiflogger.html">notiflogger</a></li>
+  <li><a href="../modules/objects.html">objects</a></li>
+  <li><a href="../modules/particles.html">particles</a></li>
+  <li><a href="../modules/physics.html">physics</a></li>
+  <li><a href="../modules/procmodel.html">procmodel</a></li>
+  <li><a href="../modules/proctex.html">proctex</a></li>
+  <li><a href="../modules/radiosity.html">radiosity</a></li>
+  <li><a href="../modules/rendertarget.html">rendertarget</a></li>
+  <li><a href="../modules/textures.html">textures</a></li>
+  <li><a href="../modules/trace.html">trace</a></li>
+  <li><strong>universes</strong></li>
+</ul>
+<h2>Manual</h2>
+<ul class="nowrap">
+  <li><a href="../manual/animated-models.md.html">Animated Models</a></li>
+  <li><a href="../manual/base-shaders.md.html">Base Shaders</a></li>
+  <li><a href="../manual/concommand-list.md.html">ConCommand List</a></li>
+  <li><a href="../manual/lightmapper-radiosity.md.html">Lightmapping: Radiosity</a></li>
+  <li><a href="../manual/lkpack-basics.md.html">Basics of LKPack</a></li>
+  <li><a href="../manual/loading-lk3d.md.html">Loading LK3D</a></li>
+  <li><a href="../manual/object-flags.md.html">Object Flags</a></li>
+</ul>
+
+</div>
+
+<div id="content">
+
+<h1>Module <code>universes</code></h1>
+<p>
+<h2>Universe Module</h2>
+<hr/>
+</p>
+<p>This module handles the universe system in LK3D <br/>
+Universes are where all of the objects, lights, particles and physics bodies live in LK3D</p>
+
+
+<h2><a href="#Functions">Functions</a></h2>
+<table class="function_list">
+	<tr>
+	<td class="name" nowrap><a href="#LK3D.NewUniverse">LK3D.NewUniverse(tag)</a></td>
+	<td class="summary">Creates a new universe</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#LK3D.PushUniverse">LK3D.PushUniverse(univ)</a></td>
+	<td class="summary">Pushes a new active universe to the stack</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#LK3D.PopUniverse">LK3D.PopUniverse()</a></td>
+	<td class="summary">Restores the last active universe from the stack</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#LK3D.WipeUniverse">LK3D.WipeUniverse(univ)</a></td>
+	<td class="summary">Clears the active universe of all of its contents</td>
+	</tr>
+</table>
+
+<br/>
+<br/>
+
+
+    <h2 class="section-header "><a name="Functions"></a>Functions</h2>
+
+    <dl class="function">
+    <dt>
+    <a name = "LK3D.NewUniverse"></a>
+    <strong>LK3D.NewUniverse(tag)</strong>
+    </dt>
+    <dd>
+
+<!-- Added here by loka, im so shit at HTML & CSS :( -->
+
+
+
+    Creates a new universe
+
+    </ul>
+    </ul>
+    </ul>
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">tag</span>
+            <span class="types"><span class="type">string</span></span>
+         Universe tag
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><span class="type">table</span></span>
+        LK3D universe
+    </ol>
+
+
+
+    <h3>Usage:</h3>
+    <ul>
+        <pre class="example"><span class="keyword">local</span> univGame = LK3D.NewUniverse(<span class="string">"universe_game"</span>)</pre>
+    </ul>
+
+</dd>
+    <dt>
+    <a name = "LK3D.PushUniverse"></a>
+    <strong>LK3D.PushUniverse(univ)</strong>
+    </dt>
+    <dd>
+
+<!-- Added here by loka, im so shit at HTML & CSS :( -->
+
+
+
+    Pushes a new active universe to the stack
+
+    </ul>
+    </ul>
+    </ul>
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">univ</span>
+            <span class="types"><span class="type">table</span></span>
+         Universe to push
+        </li>
+    </ul>
+
+
+
+
+    <h3>Usage:</h3>
+    <ul>
+        <pre class="example">LK3D.PushUniverse(univGame)</pre>
+    </ul>
+
+</dd>
+    <dt>
+    <a name = "LK3D.PopUniverse"></a>
+    <strong>LK3D.PopUniverse()</strong>
+    </dt>
+    <dd>
+
+<!-- Added here by loka, im so shit at HTML & CSS :( -->
+
+
+
+    Restores the last active universe from the stack
+
+    </ul>
+    </ul>
+    </ul>
+
+
+
+
+
+    <h3>Usage:</h3>
+    <ul>
+        <pre class="example">LK3D.PopRenderTarget()</pre>
+    </ul>
+
+</dd>
+    <dt>
+    <a name = "LK3D.WipeUniverse"></a>
+    <strong>LK3D.WipeUniverse(univ)</strong>
+    </dt>
+    <dd>
+
+<!-- Added here by loka, im so shit at HTML & CSS :( -->
+
+
+
+    Clears the active universe of all of its contents
+
+    </ul>
+    </ul>
+    </ul>
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">univ</span>
+            <span class="types">optional <span class="type">table</span></span>
+         Universe to clear, defaults to active one
+        </li>
+    </ul>
+
+
+
+
+    <h3>Usage:</h3>
+    <ul>
+        <pre class="example">LK3D.WipeUniverse()</pre>
+    </ul>
+
+</dd>
+</dl>
+
+
+</div> <!-- id="content" -->
+</div> <!-- id="main" -->
+<div id="about">
+<i>generated by <a href="http://github.com/lunarmodules/LDoc">LDoc 1.4.6</a></i>
+<i style="float:right;">Last updated 2024-04-20 11:40:03 </i>
+</div> <!-- id="about" -->
+</div> <!-- id="container" -->
+</body>
+</html>
+

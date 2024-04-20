@@ -1,0 +1,455 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+<head>
+    <title>LK3D Docs</title>
+    <link rel="stylesheet" href="../ldoc.css" type="text/css" />
+</head>
+<body>
+
+<div id="container">
+
+<div id="product">
+	<div id="product_logo"></div>
+	<div id="product_name"><big><b></b></big></div>
+	<div id="product_description"></div>
+</div> <!-- id="product" -->
+
+
+<div id="main">
+
+
+<!-- Menu -->
+
+<div id="navigation">
+<br/>
+<h1>LK3D</h1>
+
+
+<ul>
+  <li><a href="../index.html">Index</a></li>
+</ul>
+
+<h2>Contents</h2>
+<ul>
+<li><a href="#Functions">Functions</a></li>
+</ul>
+
+
+<h2>Modules</h2>
+<ul class="nowrap">
+  <li><a href="../modules/baseshaders.html">baseshaders</a></li>
+  <li><strong>camera</strong></li>
+  <li><a href="../modules/debugutils.html">debugutils</a></li>
+  <li><a href="../modules/dumps.html">dumps</a></li>
+  <li><a href="../modules/lights.html">lights</a></li>
+  <li><a href="../modules/lk3d.html">lk3d</a></li>
+  <li><a href="../modules/lkpack.html">lkpack</a></li>
+  <li><a href="../modules/modelutils.html">modelutils</a></li>
+  <li><a href="../modules/noise.html">noise</a></li>
+  <li><a href="../modules/notiflogger.html">notiflogger</a></li>
+  <li><a href="../modules/objects.html">objects</a></li>
+  <li><a href="../modules/particles.html">particles</a></li>
+  <li><a href="../modules/physics.html">physics</a></li>
+  <li><a href="../modules/procmodel.html">procmodel</a></li>
+  <li><a href="../modules/proctex.html">proctex</a></li>
+  <li><a href="../modules/radiosity.html">radiosity</a></li>
+  <li><a href="../modules/rendertarget.html">rendertarget</a></li>
+  <li><a href="../modules/textures.html">textures</a></li>
+  <li><a href="../modules/trace.html">trace</a></li>
+  <li><a href="../modules/universes.html">universes</a></li>
+</ul>
+<h2>Manual</h2>
+<ul class="nowrap">
+  <li><a href="../manual/animated-models.md.html">Animated Models</a></li>
+  <li><a href="../manual/base-shaders.md.html">Base Shaders</a></li>
+  <li><a href="../manual/concommand-list.md.html">ConCommand List</a></li>
+  <li><a href="../manual/lightmapper-radiosity.md.html">Lightmapping: Radiosity</a></li>
+  <li><a href="../manual/lkpack-basics.md.html">Basics of LKPack</a></li>
+  <li><a href="../manual/loading-lk3d.md.html">Loading LK3D</a></li>
+  <li><a href="../manual/object-flags.md.html">Object Flags</a></li>
+</ul>
+
+</div>
+
+<div id="content">
+
+<h1>Module <code>camera</code></h1>
+<p>
+<h2>Camera control functions</h2>
+<hr/>
+</p>
+<p>These functions handle moving / rotating the camera</p>
+
+
+<h2><a href="#Functions">Functions</a></h2>
+<table class="function_list">
+	<tr>
+	<td class="name" nowrap><a href="#LK3D.SetCamPos">LK3D.SetCamPos(pos)</a></td>
+	<td class="summary">Sets the position of the camera</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#LK3D.SetCamAng">LK3D.SetCamAng(ang)</a></td>
+	<td class="summary">Sets the angle of the camera</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#LK3D.SetCamPosAng">LK3D.SetCamPosAng(pos, ang)</a></td>
+	<td class="summary">Sets the position and the angle of the camera</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#LK3D.SetCamFOV">LK3D.SetCamFOV(fov)</a></td>
+	<td class="summary">Sets the FOV of the camera</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#LK3D.SetCamFarZ">LK3D.SetCamFarZ(farZ)</a></td>
+	<td class="summary">Sets the far z distance of the camera</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#LK3D.SetCamNearZ">LK3D.SetCamNearZ(nearZ)</a></td>
+	<td class="summary">Sets the near z distance of the camera</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#LK3D.SetCamZDistances">LK3D.SetCamZDistances(nearZ, farZ)</a></td>
+	<td class="summary">Sets the far z and near z distance of the camera</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#LK3D.SetCamOrtho">LK3D.SetCamOrtho(ortho)</a></td>
+	<td class="summary">Enables / disables <a href="https://en.wikipedia.org/wiki/Orthographic_projection">Orthographic Projection</a></td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#LK3D.SetCamOrthoParams">LK3D.SetCamOrthoParams(params)</a></td>
+	<td class="summary">Sets the ortho parameters of the render</td>
+	</tr>
+</table>
+
+<br/>
+<br/>
+
+
+    <h2 class="section-header "><a name="Functions"></a>Functions</h2>
+
+    <dl class="function">
+    <dt>
+    <a name = "LK3D.SetCamPos"></a>
+    <strong>LK3D.SetCamPos(pos)</strong>
+    </dt>
+    <dd>
+
+<!-- Added here by loka, im so shit at HTML & CSS :( -->
+
+
+
+    Sets the position of the camera
+
+    </ul>
+    </ul>
+    </ul>
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">pos</span>
+            <span class="types"><span class="type">vector</span></span>
+         The new position we want to set the camera to
+        </li>
+    </ul>
+
+
+
+
+    <h3>Usage:</h3>
+    <ul>
+        <pre class="example">LK3D.SetCamPos(Vector(<span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>))</pre>
+    </ul>
+
+</dd>
+    <dt>
+    <a name = "LK3D.SetCamAng"></a>
+    <strong>LK3D.SetCamAng(ang)</strong>
+    </dt>
+    <dd>
+
+<!-- Added here by loka, im so shit at HTML & CSS :( -->
+
+
+
+    Sets the angle of the camera
+
+    </ul>
+    </ul>
+    </ul>
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">ang</span>
+            <span class="types"><span class="type">angle</span></span>
+         The new angle we want to set the camera to
+        </li>
+    </ul>
+
+
+
+
+    <h3>Usage:</h3>
+    <ul>
+        <pre class="example">LK3D.SetCamAng(Angle(<span class="number">90</span>, <span class="number">0</span>, <span class="number">0</span>))</pre>
+    </ul>
+
+</dd>
+    <dt>
+    <a name = "LK3D.SetCamPosAng"></a>
+    <strong>LK3D.SetCamPosAng(pos, ang)</strong>
+    </dt>
+    <dd>
+
+<!-- Added here by loka, im so shit at HTML & CSS :( -->
+
+
+
+    Sets the position and the angle of the camera
+
+    </ul>
+    </ul>
+    </ul>
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">pos</span>
+            <span class="types"><span class="type">vector</span></span>
+         The new position we want to set the camera to
+        </li>
+        <li><span class="parameter">ang</span>
+            <span class="types"><span class="type">angle</span></span>
+         The new angle we want to set the camera to
+        </li>
+    </ul>
+
+
+
+
+    <h3>Usage:</h3>
+    <ul>
+        <pre class="example">LK3D.SetCamPosAng(Vector(<span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>), Angle(<span class="number">90</span>, <span class="number">0</span>, <span class="number">0</span>))</pre>
+    </ul>
+
+</dd>
+    <dt>
+    <a name = "LK3D.SetCamFOV"></a>
+    <strong>LK3D.SetCamFOV(fov)</strong>
+    </dt>
+    <dd>
+
+<!-- Added here by loka, im so shit at HTML & CSS :( -->
+
+
+
+    Sets the FOV of the camera
+
+    </ul>
+    </ul>
+    </ul>
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">fov</span>
+            <span class="types"><span class="type">number</span></span>
+         The new FOV we want to set
+        </li>
+    </ul>
+
+
+
+
+    <h3>Usage:</h3>
+    <ul>
+        <pre class="example">LK3D.SetCamFOV(<span class="number">65</span>) <span class="comment">-- cinematic :)</span></pre>
+    </ul>
+
+</dd>
+    <dt>
+    <a name = "LK3D.SetCamFarZ"></a>
+    <strong>LK3D.SetCamFarZ(farZ)</strong>
+    </dt>
+    <dd>
+
+<!-- Added here by loka, im so shit at HTML & CSS :( -->
+
+
+
+    Sets the far z distance of the camera
+
+    </ul>
+    </ul>
+    </ul>
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">farZ</span>
+            <span class="types"><span class="type">number</span></span>
+         The new far z we want to set
+        </li>
+    </ul>
+
+
+
+
+    <h3>Usage:</h3>
+    <ul>
+        <pre class="example">LK3D.SetCamFarZ(<span class="number">800</span>)</pre>
+    </ul>
+
+</dd>
+    <dt>
+    <a name = "LK3D.SetCamNearZ"></a>
+    <strong>LK3D.SetCamNearZ(nearZ)</strong>
+    </dt>
+    <dd>
+
+<!-- Added here by loka, im so shit at HTML & CSS :( -->
+
+
+
+    Sets the near z distance of the camera
+
+    </ul>
+    </ul>
+    </ul>
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">nearZ</span>
+            <span class="types"><span class="type">number</span></span>
+         The new near z we want to set
+        </li>
+    </ul>
+
+
+
+
+    <h3>Usage:</h3>
+    <ul>
+        <pre class="example">LK3D.SetCamNearZ(.<span class="number">1</span>)</pre>
+    </ul>
+
+</dd>
+    <dt>
+    <a name = "LK3D.SetCamZDistances"></a>
+    <strong>LK3D.SetCamZDistances(nearZ, farZ)</strong>
+    </dt>
+    <dd>
+
+<!-- Added here by loka, im so shit at HTML & CSS :( -->
+
+
+
+    Sets the far z and near z distance of the camera
+
+    </ul>
+    </ul>
+    </ul>
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">nearZ</span>
+            <span class="types">optional <span class="type">number</span></span>
+         The new near z we want to set
+        </li>
+        <li><span class="parameter">farZ</span>
+            <span class="types">optional <span class="type">number</span></span>
+         The new far z we want to set
+        </li>
+    </ul>
+
+
+
+
+    <h3>Usage:</h3>
+    <ul>
+        <pre class="example">LK3D.SetCamZDistances(.<span class="number">1</span>, <span class="number">800</span>)</pre>
+    </ul>
+
+</dd>
+    <dt>
+    <a name = "LK3D.SetCamOrtho"></a>
+    <strong>LK3D.SetCamOrtho(ortho)</strong>
+    </dt>
+    <dd>
+
+<!-- Added here by loka, im so shit at HTML & CSS :( -->
+
+
+
+    Enables / disables <a href="https://en.wikipedia.org/wiki/Orthographic_projection">Orthographic Projection</a>
+
+    </ul>
+    </ul>
+    </ul>
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">ortho</span>
+            <span class="types"><span class="type">bool</span></span>
+         Enable / disable orthographic projection
+        </li>
+    </ul>
+
+
+
+
+    <h3>Usage:</h3>
+    <ul>
+        <pre class="example">LK3D.SetCamOrtho(<span class="keyword">true</span>)</pre>
+    </ul>
+
+</dd>
+    <dt>
+    <a name = "LK3D.SetCamOrthoParams"></a>
+    <strong>LK3D.SetCamOrthoParams(params)</strong>
+    </dt>
+    <dd>
+
+<!-- Added here by loka, im so shit at HTML & CSS :( -->
+
+
+
+    Sets the ortho parameters of the render
+
+    </ul>
+    </ul>
+    </ul>
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">params</span>
+            <span class="types"><span class="type">table</span></span>
+         Ortho parameters, refer to <a href="https://wiki.facepunch.com/gmod/Structures/RenderCamData#ortho">GLua RenderCamData</a>
+        </li>
+    </ul>
+
+
+
+
+    <h3>Usage:</h3>
+    <ul>
+        <pre class="example">LK3D.SetCamOrthoParams({
+ left   = -.<span class="number">5</span>,
+ right  =  .<span class="number">5</span>,
+ top    = -.<span class="number">5</span>,
+ bottom =  .<span class="number">5</span>,
+})</pre>
+    </ul>
+
+</dd>
+</dl>
+
+
+</div> <!-- id="content" -->
+</div> <!-- id="main" -->
+<div id="about">
+<i>generated by <a href="http://github.com/lunarmodules/LDoc">LDoc 1.4.6</a></i>
+<i style="float:right;">Last updated 2024-04-20 11:40:03 </i>
+</div> <!-- id="about" -->
+</div> <!-- id="container" -->
+</body>
+</html>
+

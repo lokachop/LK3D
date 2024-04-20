@@ -1,0 +1,326 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+<head>
+    <title>LK3D Docs</title>
+    <link rel="stylesheet" href="../ldoc.css" type="text/css" />
+</head>
+<body>
+
+<div id="container">
+
+<div id="product">
+	<div id="product_logo"></div>
+	<div id="product_name"><big><b></b></big></div>
+	<div id="product_description"></div>
+</div> <!-- id="product" -->
+
+
+<div id="main">
+
+
+<!-- Menu -->
+
+<div id="navigation">
+<br/>
+<h1>LK3D</h1>
+
+
+<ul>
+  <li><a href="../index.html">Index</a></li>
+</ul>
+
+<h2>Contents</h2>
+<ul>
+<li><a href="#Functions">Functions</a></li>
+</ul>
+
+
+<h2>Modules</h2>
+<ul class="nowrap">
+  <li><a href="../modules/baseshaders.html">baseshaders</a></li>
+  <li><a href="../modules/camera.html">camera</a></li>
+  <li><a href="../modules/debugutils.html">debugutils</a></li>
+  <li><a href="../modules/dumps.html">dumps</a></li>
+  <li><a href="../modules/lights.html">lights</a></li>
+  <li><a href="../modules/lk3d.html">lk3d</a></li>
+  <li><a href="../modules/lkpack.html">lkpack</a></li>
+  <li><a href="../modules/modelutils.html">modelutils</a></li>
+  <li><a href="../modules/noise.html">noise</a></li>
+  <li><a href="../modules/notiflogger.html">notiflogger</a></li>
+  <li><a href="../modules/objects.html">objects</a></li>
+  <li><a href="../modules/particles.html">particles</a></li>
+  <li><a href="../modules/physics.html">physics</a></li>
+  <li><strong>procmodel</strong></li>
+  <li><a href="../modules/proctex.html">proctex</a></li>
+  <li><a href="../modules/radiosity.html">radiosity</a></li>
+  <li><a href="../modules/rendertarget.html">rendertarget</a></li>
+  <li><a href="../modules/textures.html">textures</a></li>
+  <li><a href="../modules/trace.html">trace</a></li>
+  <li><a href="../modules/universes.html">universes</a></li>
+</ul>
+<h2>Manual</h2>
+<ul class="nowrap">
+  <li><a href="../manual/animated-models.md.html">Animated Models</a></li>
+  <li><a href="../manual/base-shaders.md.html">Base Shaders</a></li>
+  <li><a href="../manual/concommand-list.md.html">ConCommand List</a></li>
+  <li><a href="../manual/lightmapper-radiosity.md.html">Lightmapping: Radiosity</a></li>
+  <li><a href="../manual/lkpack-basics.md.html">Basics of LKPack</a></li>
+  <li><a href="../manual/loading-lk3d.md.html">Loading LK3D</a></li>
+  <li><a href="../manual/object-flags.md.html">Object Flags</a></li>
+</ul>
+
+</div>
+
+<div id="content">
+
+<h1>Module <code>procmodel</code></h1>
+<p>
+<h2>Procedural models for basic shapes</h2>
+<hr/>
+</p>
+<p>Module that generates simple procedural models of simple shapes <br/>
+Currently only spheres, cylinders, planes &amp; cubemarched models are implemented   </p>
+
+
+<h2><a href="#Functions">Functions</a></h2>
+<table class="function_list">
+	<tr>
+	<td class="name" nowrap><a href="#LK3D.DeclareProcSphere">LK3D.DeclareProcSphere(name, coli, rowi, szx, szy, uvm, invert)</a></td>
+	<td class="summary">Declares a procedural sphere model</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#LK3D.DeclareProcCylinder">LK3D.DeclareProcCylinder(name, cyl_itr)</a></td>
+	<td class="summary">Declares a procedural cylinder model</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#LK3D.DeclareProcPlane">LK3D.DeclareProcPlane(name, psx, psy, itrx, itry, distortfunc)</a></td>
+	<td class="summary">Declares a procedural plane model</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#LK3D.DeclareCubeMarchModel">LK3D.DeclareCubeMarchModel(name, detail, sz, func)</a></td>
+	<td class="summary">Declares a <a href="https://en.wikipedia.org/wiki/Marching_cubes">cubemarched</a> model</td>
+	</tr>
+</table>
+
+<br/>
+<br/>
+
+
+    <h2 class="section-header "><a name="Functions"></a>Functions</h2>
+
+    <dl class="function">
+    <dt>
+    <a name = "LK3D.DeclareProcSphere"></a>
+    <strong>LK3D.DeclareProcSphere(name, coli, rowi, szx, szy, uvm, invert)</strong>
+    </dt>
+    <dd>
+
+<!-- Added here by loka, im so shit at HTML & CSS :( -->
+
+
+
+    Declares a procedural sphere model
+
+    </ul>
+    </ul>
+    </ul>
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">name</span>
+            <span class="types"><span class="type">string</span></span>
+         LK3D model name
+        </li>
+        <li><span class="parameter">coli</span>
+            <span class="types"><span class="type">number</span></span>
+         Longitude steps
+        </li>
+        <li><span class="parameter">rowi</span>
+            <span class="types"><span class="type">number</span></span>
+         Latitude steps
+        </li>
+        <li><span class="parameter">szx</span>
+            <span class="types">optional <span class="type">number</span></span>
+         X Size
+        </li>
+        <li><span class="parameter">szy</span>
+            <span class="types">optional <span class="type">number</span></span>
+         Y Size
+        </li>
+        <li><span class="parameter">uvm</span>
+            <span class="types">optional <span class="type">number</span></span>
+         UV map scale
+        </li>
+        <li><span class="parameter">invert</span>
+            <span class="types">optional <span class="type">bool</span></span>
+         whether we should invert the faces or not
+        </li>
+    </ul>
+
+
+
+
+    <h3>Usage:</h3>
+    <ul>
+        <pre class="example">LK3D.DeclareProcSphere(<span class="string">"simple_ball"</span>, <span class="number">8</span>, <span class="number">6</span>, <span class="number">1</span>, <span class="number">1</span>, <span class="number">1</span>, <span class="keyword">false</span>)</pre>
+    </ul>
+
+</dd>
+    <dt>
+    <a name = "LK3D.DeclareProcCylinder"></a>
+    <strong>LK3D.DeclareProcCylinder(name, cyl_itr)</strong>
+    </dt>
+    <dd>
+
+<!-- Added here by loka, im so shit at HTML & CSS :( -->
+
+
+
+    Declares a procedural cylinder model
+
+    </ul>
+    </ul>
+    </ul>
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">name</span>
+            <span class="types"><span class="type">string</span></span>
+         LK3D model name
+        </li>
+        <li><span class="parameter">cyl_itr</span>
+            <span class="types"><span class="type">number</span></span>
+         Side count
+        </li>
+    </ul>
+
+
+
+
+    <h3>Usage:</h3>
+    <ul>
+        <pre class="example">LK3D.DeclareProcCylinder(<span class="string">"the_tube"</span>, <span class="number">12</span>)</pre>
+    </ul>
+
+</dd>
+    <dt>
+    <a name = "LK3D.DeclareProcPlane"></a>
+    <strong>LK3D.DeclareProcPlane(name, psx, psy, itrx, itry, distortfunc)</strong>
+    </dt>
+    <dd>
+
+<!-- Added here by loka, im so shit at HTML & CSS :( -->
+
+
+
+    Declares a procedural plane model
+
+    </ul>
+    </ul>
+    </ul>
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">name</span>
+            <span class="types"><span class="type">string</span></span>
+         LK3D model name
+        </li>
+        <li><span class="parameter">psx</span>
+            <span class="types"><span class="type">number</span></span>
+         X Size
+        </li>
+        <li><span class="parameter">psy</span>
+            <span class="types"><span class="type">number</span></span>
+         Y Size
+        </li>
+        <li><span class="parameter">itrx</span>
+            <span class="types"><span class="type">number</span></span>
+         X Vertex count
+        </li>
+        <li><span class="parameter">itry</span>
+            <span class="types"><span class="type">number</span></span>
+         Y Vertex count
+        </li>
+        <li><span class="parameter">distortfunc</span>
+            <span class="types"><span class="type">function</span></span>
+         Distort function for altering positions, refer to usage
+        </li>
+    </ul>
+
+
+
+
+    <h3>Usage:</h3>
+    <ul>
+        <pre class="example">LK3D.DeclareProcPlane(<span class="string">"cool_terrain"</span>, <span class="number">8</span>, <span class="number">8</span>, <span class="number">16</span>, <span class="number">16</span>, <span class="keyword">function</span>(x, y)
+ <span class="keyword">local</span> spx = LK3D.Simplex2D(x, y, <span class="number">5623</span>)
+ <span class="keyword">return</span> Vector(x, spx, y)
+<span class="keyword">end</span>)</pre>
+    </ul>
+
+</dd>
+    <dt>
+    <a name = "LK3D.DeclareCubeMarchModel"></a>
+    <strong>LK3D.DeclareCubeMarchModel(name, detail, sz, func)</strong>
+    </dt>
+    <dd>
+
+<!-- Added here by loka, im so shit at HTML & CSS :( -->
+
+
+
+    Declares a <a href="https://en.wikipedia.org/wiki/Marching_cubes">cubemarched</a> model
+
+    </ul>
+    </ul>
+    </ul>
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">name</span>
+            <span class="types"><span class="type">string</span></span>
+         LK3D model name
+        </li>
+        <li><span class="parameter">detail</span>
+            <span class="types"><span class="type">number</span></span>
+         Detail level of the model
+        </li>
+        <li><span class="parameter">sz</span>
+            <span class="types"><span class="type">vector</span></span>
+         Scale of the model
+        </li>
+        <li><span class="parameter">func</span>
+            <span class="types"><span class="type">function</span></span>
+         SDF function for the model
+        </li>
+    </ul>
+
+
+
+
+    <h3>Usage:</h3>
+    <ul>
+        <pre class="example"><span class="comment">-- if you don't know what an SDF is, this is a good read, https://jamie-wong.com/2016/07/15/ray-marching-signed-distance-functions/
+</span><span class="comment">-- in this case, i used the sphere SDF from https://iquilezles.org/articles/distfunctions/
+</span><span class="comment">-- also UVs aren't implemented properly on this
+</span>LK3D.DeclareCubeMarchModel(<span class="string">"sphere_marched"</span>, <span class="number">4</span>, Vector(<span class="number">1</span>, <span class="number">1</span>, <span class="number">1</span>), <span class="keyword">function</span>(pos)
+	 <span class="keyword">return</span> pos:Length() - .<span class="number">7</span>
+<span class="keyword">end</span>)</pre>
+    </ul>
+
+</dd>
+</dl>
+
+
+</div> <!-- id="content" -->
+</div> <!-- id="main" -->
+<div id="about">
+<i>generated by <a href="http://github.com/lunarmodules/LDoc">LDoc 1.4.6</a></i>
+<i style="float:right;">Last updated 2024-04-20 11:40:03 </i>
+</div> <!-- id="about" -->
+</div> <!-- id="container" -->
+</body>
+</html>
+

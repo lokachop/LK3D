@@ -1,0 +1,998 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+<head>
+    <title>LK3D Docs</title>
+    <link rel="stylesheet" href="../ldoc.css" type="text/css" />
+</head>
+<body>
+
+<div id="container">
+
+<div id="product">
+	<div id="product_logo"></div>
+	<div id="product_name"><big><b></b></big></div>
+	<div id="product_description"></div>
+</div> <!-- id="product" -->
+
+
+<div id="main">
+
+
+<!-- Menu -->
+
+<div id="navigation">
+<br/>
+<h1>LK3D</h1>
+
+
+<ul>
+  <li><a href="../index.html">Index</a></li>
+</ul>
+
+<h2>Contents</h2>
+<ul>
+<li><a href="#Functions">Functions</a></li>
+</ul>
+
+
+<h2>Modules</h2>
+<ul class="nowrap">
+  <li><a href="../modules/baseshaders.html">baseshaders</a></li>
+  <li><a href="../modules/camera.html">camera</a></li>
+  <li><a href="../modules/debugutils.html">debugutils</a></li>
+  <li><a href="../modules/dumps.html">dumps</a></li>
+  <li><a href="../modules/lights.html">lights</a></li>
+  <li><a href="../modules/lk3d.html">lk3d</a></li>
+  <li><a href="../modules/lkpack.html">lkpack</a></li>
+  <li><a href="../modules/modelutils.html">modelutils</a></li>
+  <li><a href="../modules/noise.html">noise</a></li>
+  <li><a href="../modules/notiflogger.html">notiflogger</a></li>
+  <li><a href="../modules/objects.html">objects</a></li>
+  <li><a href="../modules/particles.html">particles</a></li>
+  <li><a href="../modules/physics.html">physics</a></li>
+  <li><a href="../modules/procmodel.html">procmodel</a></li>
+  <li><a href="../modules/proctex.html">proctex</a></li>
+  <li><a href="../modules/radiosity.html">radiosity</a></li>
+  <li><a href="../modules/rendertarget.html">rendertarget</a></li>
+  <li><strong>textures</strong></li>
+  <li><a href="../modules/trace.html">trace</a></li>
+  <li><a href="../modules/universes.html">universes</a></li>
+</ul>
+<h2>Manual</h2>
+<ul class="nowrap">
+  <li><a href="../manual/animated-models.md.html">Animated Models</a></li>
+  <li><a href="../manual/base-shaders.md.html">Base Shaders</a></li>
+  <li><a href="../manual/concommand-list.md.html">ConCommand List</a></li>
+  <li><a href="../manual/lightmapper-radiosity.md.html">Lightmapping: Radiosity</a></li>
+  <li><a href="../manual/lkpack-basics.md.html">Basics of LKPack</a></li>
+  <li><a href="../manual/loading-lk3d.md.html">Loading LK3D</a></li>
+  <li><a href="../manual/object-flags.md.html">Object Flags</a></li>
+</ul>
+
+</div>
+
+<div id="content">
+
+<h1>Module <code>textures</code></h1>
+<p>
+<h2>Texture Module</h2>
+<hr/>
+</p>
+<p>This module handles textures in LK3D, which are used everywhere  </p>
+
+
+<h2><a href="#Functions">Functions</a></h2>
+<table class="function_list">
+	<tr>
+	<td class="name" nowrap><a href="#LK3D.GetTextureByIndex">LK3D.GetTextureByIndex(index)</a></td>
+	<td class="summary">Gets a LK3D texture by its name</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#LK3D.FriendlySourceTexture">LK3D.FriendlySourceTexture(matsrc)</a></td>
+	<td class="summary">Converts a source engine texture to a LK3D friendly material</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#LK3D.UpdateRtEz">LK3D.UpdateRtEz(rt, call)</a></td>
+	<td class="summary">Render stuff to a rendertarget</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#LK3D.DeclareTextureFromFunc">LK3D.DeclareTextureFromFunc(index, w, h, func, transp, ignorez)</a></td>
+	<td class="summary">Declares a LK3D texture from a func</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#LK3D.DeclareTextureFromSourceMat">LK3D.DeclareTextureFromSourceMat(index, w, h, mat, transp)</a></td>
+	<td class="summary">Declares a LK3D texture from a source engine material name</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#LK3D.DeclareTextureFromMatObj">LK3D.DeclareTextureFromMatObj(index, w, h, matobj, transp)</a></td>
+	<td class="summary">Declares a LK3D texture from a material object</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#LK3D.DeclareTextureFromPNGFile">LK3D.DeclareTextureFromPNGFile(index, w, h, fpath, transp)</a></td>
+	<td class="summary">Declares a LK3D texture from a LKPack PNG file</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#LK3D.CopyTextureRT">LK3D.CopyTextureRT(name, to)</a></td>
+	<td class="summary">Copies a LK3D Texture's rendertarget to another LK3D texture</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#LK3D.CopyTexture">LK3D.CopyTexture(from, to)</a></td>
+	<td class="summary">Copies a LK3D Texture to another LK3D texture</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#LK3D.UpdateTexture">LK3D.UpdateTexture(index, func)</a></td>
+	<td class="summary"><em>Updates</em> a texture (renders stuff to it)</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#LK3D.GetTextureSize">LK3D.GetTextureSize(index)</a></td>
+	<td class="summary">Gets the size of a LK3D texture</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#LK3D.GetTexturePixelArray">LK3D.GetTexturePixelArray(index, inline)</a></td>
+	<td class="summary">Gets an array containing the RGB values of the LK3D texture</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#LK3D.GetTexturePixelArrayFromRT">LK3D.GetTexturePixelArrayFromRT(rt, inline)</a></td>
+	<td class="summary">Gets an array containing the RGB values of the rendertarget</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#LK3D.ApplyShaderEffect">LK3D.ApplyShaderEffect(index, func)</a></td>
+	<td class="summary">Applies a function to each pixel of the LK3D texture</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#LK3D.CompressTexture">LK3D.CompressTexture(name, path, actual_fname)</a></td>
+	<td class="summary">Compresses a LK3D texture into a LKTComp string</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#LK3D.DecompressTexture">LK3D.DecompressTexture(name, transp, ignorez, data)</a></td>
+	<td class="summary">Decompresses a LKTComp string</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#LK3D.DeclareTextureFromLKTFile">LK3D.DeclareTextureFromLKTFile(name, transp, ignorez, fpath)</a></td>
+	<td class="summary">Loads a LKTComp texture from LKPack</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#LK3D.InitProcessTexture">LK3D.InitProcessTexture()</a></td>
+	<td class="summary">Initializes the LK3D Processing texture</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#LK3D.SetupBaseMaterials">LK3D.SetupBaseMaterials()</a></td>
+	<td class="summary">Sets up the base LK3D materials</td>
+	</tr>
+</table>
+
+<br/>
+<br/>
+
+
+    <h2 class="section-header "><a name="Functions"></a>Functions</h2>
+
+    <dl class="function">
+    <dt>
+    <a name = "LK3D.GetTextureByIndex"></a>
+    <strong>LK3D.GetTextureByIndex(index)</strong>
+    </dt>
+    <dd>
+
+<!-- Added here by loka, im so shit at HTML & CSS :( -->
+
+
+
+    Gets a LK3D texture by its name
+
+    </ul>
+    </ul>
+    </ul>
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">index</span>
+            <span class="types"><span class="type">string</span></span>
+         Texture name
+        </li>
+    </ul>
+
+
+
+
+    <h3>Usage:</h3>
+    <ul>
+        <pre class="example"><span class="keyword">local</span> tex = LK3D.GetTextureByIndex(<span class="string">"checker"</span>)</pre>
+    </ul>
+
+</dd>
+    <dt>
+    <a name = "LK3D.FriendlySourceTexture"></a>
+    <strong>LK3D.FriendlySourceTexture(matsrc)</strong>
+    </dt>
+    <dd>
+
+<!-- Added here by loka, im so shit at HTML & CSS :( -->
+
+
+
+    Converts a source engine texture to a LK3D friendly material
+
+    </ul>
+    </ul>
+    </ul>
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">matsrc</span>
+            <span class="types"><span class="type">string</span></span>
+         Texture name
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><span class="type">material</span></span>
+        Friendly material
+    </ol>
+
+
+
+    <h3>Usage:</h3>
+    <ul>
+        <pre class="example"><span class="keyword">local</span> f_snow = LK3D.FriendlySourceTexture(<span class="string">"ground/snow01"</span>)</pre>
+    </ul>
+
+</dd>
+    <dt>
+    <a name = "LK3D.UpdateRtEz"></a>
+    <strong>LK3D.UpdateRtEz(rt, call)</strong>
+    </dt>
+    <dd>
+
+<!-- Added here by loka, im so shit at HTML & CSS :( -->
+
+
+
+    Render stuff to a rendertarget
+
+    </ul>
+    </ul>
+    </ul>
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">rt</span>
+            <span class="types"><span class="type">rendertarget</span></span>
+         Rendertarget to render to
+        </li>
+        <li><span class="parameter">call</span>
+            <span class="types"><span class="type">function</span></span>
+         Function that renders
+        </li>
+    </ul>
+
+
+
+
+    <h3>Usage:</h3>
+    <ul>
+        <pre class="example">LK3D.UpdateRtEz(rt_render, <span class="keyword">function</span>()
+  surface.SetDrawColor(<span class="number">255</span>, <span class="number">0</span>, <span class="number">0</span>)
+
+  <span class="comment">-- ScrW() and ScrH() are the RT size
+</span>  surface.DrawRect(<span class="number">0</span>, <span class="number">0</span>, ScrW() * .<span class="number">5</span>, ScrH() * .<span class="number">5</span>)
+<span class="keyword">end</span>)</pre>
+    </ul>
+
+</dd>
+    <dt>
+    <a name = "LK3D.DeclareTextureFromFunc"></a>
+    <strong>LK3D.DeclareTextureFromFunc(index, w, h, func, transp, ignorez)</strong>
+    </dt>
+    <dd>
+
+<!-- Added here by loka, im so shit at HTML & CSS :( -->
+
+
+
+    Declares a LK3D texture from a func
+
+    </ul>
+    </ul>
+    </ul>
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">index</span>
+            <span class="types"><span class="type">string</span></span>
+         LK3D texture name
+        </li>
+        <li><span class="parameter">w</span>
+            <span class="types"><span class="type">number</span></span>
+         Texture width
+        </li>
+        <li><span class="parameter">h</span>
+            <span class="types"><span class="type">number</span></span>
+         Texture height
+        </li>
+        <li><span class="parameter">func</span>
+            <span class="types"><span class="type">function</span></span>
+         Function that renders the texture
+        </li>
+        <li><span class="parameter">transp</span>
+            <span class="types"><span class="type">bool</span></span>
+         Whether the texture is transparent or not
+        </li>
+        <li><span class="parameter">ignorez</span>
+            <span class="types"><span class="type">bool</span></span>
+         Whether the texture ignores Z or not
+        </li>
+    </ul>
+
+
+
+
+    <h3>Usage:</h3>
+    <ul>
+        <pre class="example"><span class="comment">-- extract from internal LK3D
+</span>LK3D.DeclareTextureFromFunc(<span class="string">"checker"</span>, <span class="number">16</span>, <span class="number">16</span>, <span class="keyword">function</span>()
+  render.Clear(<span class="number">64</span>, <span class="number">64</span>, <span class="number">64</span>, <span class="number">255</span>)
+  surface.SetDrawColor(<span class="number">96</span>, <span class="number">96</span>, <span class="number">96</span>)
+  surface.DrawRect(<span class="number">0</span>, <span class="number">0</span>, <span class="number">8</span>, <span class="number">8</span>)
+  surface.DrawRect(<span class="number">8</span>, <span class="number">8</span>, <span class="number">8</span>, <span class="number">8</span>)
+<span class="keyword">end</span>)</pre>
+    </ul>
+
+</dd>
+    <dt>
+    <a name = "LK3D.DeclareTextureFromSourceMat"></a>
+    <strong>LK3D.DeclareTextureFromSourceMat(index, w, h, mat, transp)</strong>
+    </dt>
+    <dd>
+
+<!-- Added here by loka, im so shit at HTML & CSS :( -->
+
+
+
+    Declares a LK3D texture from a source engine material name
+
+    </ul>
+    </ul>
+    </ul>
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">index</span>
+            <span class="types"><span class="type">string</span></span>
+         LK3D texture name
+        </li>
+        <li><span class="parameter">w</span>
+            <span class="types"><span class="type">number</span></span>
+         Texture width
+        </li>
+        <li><span class="parameter">h</span>
+            <span class="types"><span class="type">number</span></span>
+         Texture height
+        </li>
+        <li><span class="parameter">mat</span>
+            <span class="types"><span class="type">string</span></span>
+         Source engine material name
+        </li>
+        <li><span class="parameter">transp</span>
+            <span class="types"><span class="type">bool</span></span>
+         Whether the texture is transparent or not
+        </li>
+    </ul>
+
+
+
+
+    <h3>Usage:</h3>
+    <ul>
+        <pre class="example">LK3D.DeclareTextureFromSourceMat(<span class="string">"snow_3"</span>, <span class="number">64</span>, <span class="number">64</span>, <span class="string">"ground/snow01"</span>)</pre>
+    </ul>
+
+</dd>
+    <dt>
+    <a name = "LK3D.DeclareTextureFromMatObj"></a>
+    <strong>LK3D.DeclareTextureFromMatObj(index, w, h, matobj, transp)</strong>
+    </dt>
+    <dd>
+
+<!-- Added here by loka, im so shit at HTML & CSS :( -->
+
+
+
+    Declares a LK3D texture from a material object
+
+    </ul>
+    </ul>
+    </ul>
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">index</span>
+            <span class="types"><span class="type">string</span></span>
+         LK3D texture name
+        </li>
+        <li><span class="parameter">w</span>
+            <span class="types"><span class="type">number</span></span>
+         Texture width
+        </li>
+        <li><span class="parameter">h</span>
+            <span class="types"><span class="type">number</span></span>
+         Texture height
+        </li>
+        <li><span class="parameter">matobj</span>
+            <span class="types"><span class="type">material</span></span>
+         Material object
+        </li>
+        <li><span class="parameter">transp</span>
+            <span class="types"><span class="type">bool</span></span>
+         Whether the texture is transparent or not
+        </li>
+    </ul>
+
+
+
+
+    <h3>Usage:</h3>
+    <ul>
+        <pre class="example">LK3D.DeclareTextureFromMatObj(<span class="string">"8_something"</span>, <span class="number">64</span>, <span class="number">64</span>, your_material)</pre>
+    </ul>
+
+</dd>
+    <dt>
+    <a name = "LK3D.DeclareTextureFromPNGFile"></a>
+    <strong>LK3D.DeclareTextureFromPNGFile(index, w, h, fpath, transp)</strong>
+    </dt>
+    <dd>
+
+<!-- Added here by loka, im so shit at HTML & CSS :( -->
+
+
+
+    Declares a LK3D texture from a LKPack PNG file
+
+    </ul>
+    </ul>
+    </ul>
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">index</span>
+            <span class="types"><span class="type">string</span></span>
+         LK3D texture name
+        </li>
+        <li><span class="parameter">w</span>
+            <span class="types"><span class="type">number</span></span>
+         Texture width
+        </li>
+        <li><span class="parameter">h</span>
+            <span class="types"><span class="type">number</span></span>
+         Texture height
+        </li>
+        <li><span class="parameter">fpath</span>
+            <span class="types"><span class="type">string</span></span>
+         LKPack filepath to the .png
+        </li>
+        <li><span class="parameter">transp</span>
+            <span class="types"><span class="type">bool</span></span>
+         Whether the texture is transparent or not
+        </li>
+    </ul>
+
+
+
+
+    <h3>Usage:</h3>
+    <ul>
+        <pre class="example">LK3D.DeclareTextureFromPNGFile(<span class="string">"barrel_sheet"</span>, <span class="number">256</span>, <span class="number">256</span>, <span class="string">"models/room/barrel_sheet"</span>)</pre>
+    </ul>
+
+</dd>
+    <dt>
+    <a name = "LK3D.CopyTextureRT"></a>
+    <strong>LK3D.CopyTextureRT(name, to)</strong>
+    </dt>
+    <dd>
+
+<!-- Added here by loka, im so shit at HTML & CSS :( -->
+
+
+
+    Copies a LK3D Texture's rendertarget to another LK3D texture
+
+    </ul>
+    </ul>
+    </ul>
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">name</span>
+            <span class="types"><span class="type">string</span></span>
+         LK3D texture name to copy <strong>from</strong>
+        </li>
+        <li><span class="parameter">to</span>
+            <span class="types"><span class="type">string</span></span>
+         LK3D texture name to copy <strong>to</strong>
+        </li>
+    </ul>
+
+
+
+
+    <h3>Usage:</h3>
+    <ul>
+        <pre class="example">LK3D.CopyTextureRT(<span class="string">"barrel_sheet"</span>, <span class="string">"worse_barrel_sheet"</span>)</pre>
+    </ul>
+
+</dd>
+    <dt>
+    <a name = "LK3D.CopyTexture"></a>
+    <strong>LK3D.CopyTexture(from, to)</strong>
+    </dt>
+    <dd>
+
+<!-- Added here by loka, im so shit at HTML & CSS :( -->
+
+
+
+    Copies a LK3D Texture to another LK3D texture
+
+    </ul>
+    </ul>
+    </ul>
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">from</span>
+            <span class="types"><span class="type">string</span></span>
+         LK3D texture name to copy <strong>from</strong>
+        </li>
+        <li><span class="parameter">to</span>
+            <span class="types"><span class="type">string</span></span>
+         LK3D texture name to copy <strong>to</strong>
+        </li>
+    </ul>
+
+
+
+
+    <h3>Usage:</h3>
+    <ul>
+        <pre class="example">LK3D.CopyTexture(<span class="string">"barrel_sheet"</span>, <span class="string">"worse_barrel_sheet"</span>)</pre>
+    </ul>
+
+</dd>
+    <dt>
+    <a name = "LK3D.UpdateTexture"></a>
+    <strong>LK3D.UpdateTexture(index, func)</strong>
+    </dt>
+    <dd>
+
+<!-- Added here by loka, im so shit at HTML & CSS :( -->
+
+
+
+    <em>Updates</em> a texture (renders stuff to it)
+
+    </ul>
+    </ul>
+    </ul>
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">index</span>
+            <span class="types"><span class="type">string</span></span>
+         LK3D texture name
+        </li>
+        <li><span class="parameter">func</span>
+            <span class="types"><span class="type">function</span></span>
+         Function to render with
+        </li>
+    </ul>
+
+
+
+
+    <h3>Usage:</h3>
+    <ul>
+        <pre class="example"> LK3D.UpdateTexture(<span class="string">"worse_barrel_sheet"</span>, <span class="keyword">function</span>()
+	  <span class="comment">-- Draw something
+</span>	  surface.SetDrawColor(<span class="number">255</span>, <span class="number">0</span>, <span class="number">0</span>)
+	  surface.DrawRect(<span class="number">64</span>, <span class="number">64</span>, <span class="number">256</span>, <span class="number">256</span>)
+<span class="keyword">end</span>)</pre>
+    </ul>
+
+</dd>
+    <dt>
+    <a name = "LK3D.GetTextureSize"></a>
+    <strong>LK3D.GetTextureSize(index)</strong>
+    </dt>
+    <dd>
+
+<!-- Added here by loka, im so shit at HTML & CSS :( -->
+
+
+
+    Gets the size of a LK3D texture
+
+    </ul>
+    </ul>
+    </ul>
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">index</span>
+            <span class="types"><span class="type">string</span></span>
+         LK3D texture name
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+        <li>
+           <span class="types"><span class="type">number</span></span>
+        Texture width</li>
+        <li>
+           <span class="types"><span class="type">number</span></span>
+        Texture height</li>
+    </ol>
+
+
+
+    <h3>Usage:</h3>
+    <ul>
+        <pre class="example"><span class="keyword">local</span> tW, tH = LK3D.GetTextureSize(<span class="string">"worse_barrel_sheet"</span>)</pre>
+    </ul>
+
+</dd>
+    <dt>
+    <a name = "LK3D.GetTexturePixelArray"></a>
+    <strong>LK3D.GetTexturePixelArray(index, inline)</strong>
+    </dt>
+    <dd>
+
+<!-- Added here by loka, im so shit at HTML & CSS :( -->
+
+
+        <div style="border:4px dotted rgb(209, 143, 143); background-color: rgb(255, 173, 173); padding-bottom:1em;">
+            <div style="text-align:left; text-indent:1em;"> <h2> WARNING </h2> </div>
+            <div style="text-align:left; text-indent:1em;"> This function is horribly slow! </div>
+        </div> <br>
+
+    Gets an array containing the RGB values of the LK3D texture
+
+    </ul>
+    </ul>
+    </ul>
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">index</span>
+            <span class="types"><span class="type">string</span></span>
+         LK3D texture name
+        </li>
+        <li><span class="parameter">inline</span>
+            <span class="types">optional <span class="type">bool</span></span>
+         Whether to inline the table, refer to examples
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><span class="type">table</span></span>
+        Texture data
+    </ol>
+
+
+
+    <h3>Usage:</h3>
+    <ul>
+        <li><pre class="example"><span class="comment">-- non-inlined
+</span><span class="keyword">local</span> pixData = LK3D.GetTexturePixelArray(<span class="string">"worse_barrel_sheet"</span>, <span class="keyword">false</span>)
+<span class="keyword">local</span> firstPixel = pixData[<span class="number">0</span>][<span class="number">0</span>]</pre></li>
+        <li><pre class="example"><span class="comment">-- inlined
+</span><span class="keyword">local</span> pixData = LK3D.GetTexturePixelArray(<span class="string">"worse_barrel_sheet"</span>, <span class="keyword">true</span>)
+<span class="keyword">local</span> firstPixel = pixData[<span class="number">0</span>]</pre></li>
+    </ul>
+
+</dd>
+    <dt>
+    <a name = "LK3D.GetTexturePixelArrayFromRT"></a>
+    <strong>LK3D.GetTexturePixelArrayFromRT(rt, inline)</strong>
+    </dt>
+    <dd>
+
+<!-- Added here by loka, im so shit at HTML & CSS :( -->
+
+
+        <div style="border:4px dotted rgb(209, 143, 143); background-color: rgb(255, 173, 173); padding-bottom:1em;">
+            <div style="text-align:left; text-indent:1em;"> <h2> WARNING </h2> </div>
+            <div style="text-align:left; text-indent:1em;"> This function is horribly slow! </div>
+        </div> <br>
+
+    Gets an array containing the RGB values of the rendertarget
+
+    </ul>
+    </ul>
+    </ul>
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">rt</span>
+            <span class="types"><span class="type">rendertarget</span></span>
+         Rendertarget
+        </li>
+        <li><span class="parameter">inline</span>
+            <span class="types">optional <span class="type">bool</span></span>
+         Whether to inline the table, refer to examples
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><span class="type">table</span></span>
+        Texture data
+    </ol>
+
+
+
+    <h3>Usage:</h3>
+    <ul>
+        <li><pre class="example"><span class="comment">-- non-inlined
+</span><span class="keyword">local</span> pixData = LK3D.GetTexturePixelArrayFromRT(your_rt_here, <span class="keyword">false</span>)
+<span class="keyword">local</span> firstPixel = pixData[<span class="number">0</span>][<span class="number">0</span>]</pre></li>
+        <li><pre class="example"><span class="comment">-- inlined
+</span><span class="keyword">local</span> pixData = LK3D.GetTexturePixelArrayFromRT(your_rt_here, <span class="keyword">true</span>)
+<span class="keyword">local</span> firstPixel = pixData[<span class="number">0</span>]</pre></li>
+    </ul>
+
+</dd>
+    <dt>
+    <a name = "LK3D.ApplyShaderEffect"></a>
+    <strong>LK3D.ApplyShaderEffect(index, func)</strong>
+    </dt>
+    <dd>
+
+<!-- Added here by loka, im so shit at HTML & CSS :( -->
+
+
+        <div style="border:4px dotted rgb(209, 143, 143); background-color: rgb(255, 173, 173); padding-bottom:1em;">
+            <div style="text-align:left; text-indent:1em;"> <h2> WARNING </h2> </div>
+            <div style="text-align:left; text-indent:1em;"> This function is horribly slow! </div>
+        </div> <br>
+
+    Applies a function to each pixel of the LK3D texture
+
+    </ul>
+    </ul>
+    </ul>
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">index</span>
+            <span class="types"><span class="type">string</span></span>
+         LK3D texture name
+        </li>
+        <li><span class="parameter">func</span>
+            <span class="types"><span class="type">function</span></span>
+         Pixel function, refer to usage
+        </li>
+    </ul>
+
+
+
+
+    <h3>Usage:</h3>
+    <ul>
+        <pre class="example"> LK3D.ApplyShaderEffect(<span class="string">"water_bad"</span>, <span class="keyword">function</span>(xc, yc, arr)
+	  <span class="keyword">local</span> cont = arr[xc][yc]
+	  <span class="keyword">local</span> c_data = Color(cont[<span class="number">1</span>], cont[<span class="number">2</span>], cont[<span class="number">3</span>])
+	  <span class="keyword">local</span> h, s, v = ColorToHSV(c_data)
+
+	  surface.SetDrawColor(HSVToColor(h, <span class="number">0</span>, v))
+	  surface.DrawRect(xc, yc, <span class="number">1</span>, <span class="number">1</span>) <span class="comment">-- grayscale bad
+</span><span class="keyword">end</span>)</pre>
+    </ul>
+
+</dd>
+    <dt>
+    <a name = "LK3D.CompressTexture"></a>
+    <strong>LK3D.CompressTexture(name, path, actual_fname)</strong>
+    </dt>
+    <dd>
+
+<!-- Added here by loka, im so shit at HTML & CSS :( -->
+
+
+
+    Compresses a LK3D texture into a LKTComp string
+
+    </ul>
+    </ul>
+    </ul>
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">name</span>
+            <span class="types"><span class="type">string</span></span>
+         LK3D texture name
+        </li>
+        <li><span class="parameter">path</span>
+            <span class="types"><span class="type">string</span></span>
+         Path to write to
+        </li>
+        <li><span class="parameter">actual_fname</span>
+            <span class="types"><span class="type">string</span></span>
+         Filename to write to
+        </li>
+    </ul>
+
+
+
+
+    <h3>Usage:</h3>
+    <ul>
+        <pre class="example">LK3D.CompressTexture(<span class="string">"water_bad"</span>, <span class="string">"lk3d/lktcomp_textures/"</span>, <span class="string">"water_bad"</span>)</pre>
+    </ul>
+
+</dd>
+    <dt>
+    <a name = "LK3D.DecompressTexture"></a>
+    <strong>LK3D.DecompressTexture(name, transp, ignorez, data)</strong>
+    </dt>
+    <dd>
+
+<!-- Added here by loka, im so shit at HTML & CSS :( -->
+
+
+
+    Decompresses a LKTComp string
+
+    </ul>
+    </ul>
+    </ul>
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">name</span>
+            <span class="types"><span class="type">string</span></span>
+         LK3D texture name
+        </li>
+        <li><span class="parameter">transp</span>
+            <span class="types"><span class="type">bool</span></span>
+         Whether the texture should be transparent
+        </li>
+        <li><span class="parameter">ignorez</span>
+            <span class="types"><span class="type">bool</span></span>
+         Whether the texture should ignore Z
+        </li>
+        <li><span class="parameter">data</span>
+            <span class="types"><span class="type">string</span></span>
+         LKTComp data
+        </li>
+    </ul>
+
+
+
+
+    <h3>Usage:</h3>
+    <ul>
+        <pre class="example"><span class="comment">-- Don't do this, use LK3D.DeclareTextureFromLKTFile()
+</span> LK3D.DecompressTexture(<span class="string">"water_bad"</span>, <span class="keyword">false</span>, <span class="keyword">false</span>, LK3D.ReadFileFromLKPack(<span class="string">"water_bad.lkt"</span>))</pre>
+    </ul>
+
+</dd>
+    <dt>
+    <a name = "LK3D.DeclareTextureFromLKTFile"></a>
+    <strong>LK3D.DeclareTextureFromLKTFile(name, transp, ignorez, fpath)</strong>
+    </dt>
+    <dd>
+
+<!-- Added here by loka, im so shit at HTML & CSS :( -->
+
+
+
+    Loads a LKTComp texture from LKPack
+
+    </ul>
+    </ul>
+    </ul>
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">name</span>
+            <span class="types"><span class="type">string</span></span>
+         LK3D texture name
+        </li>
+        <li><span class="parameter">transp</span>
+            <span class="types"><span class="type">bool</span></span>
+         Whether the texture should be transparent
+        </li>
+        <li><span class="parameter">ignorez</span>
+            <span class="types"><span class="type">bool</span></span>
+         Whether the texture should ignore Z
+        </li>
+        <li><span class="parameter">fpath</span>
+            <span class="types"><span class="type">string</span></span>
+         LKPack filepath
+        </li>
+    </ul>
+
+
+
+
+    <h3>Usage:</h3>
+    <ul>
+        <pre class="example">LK3D.DeclareTextureFromLKTFile(<span class="string">"water_bad"</span>, <span class="keyword">false</span>, <span class="keyword">false</span>, <span class="string">"water_bad"</span>)</pre>
+    </ul>
+
+</dd>
+    <dt>
+    <a name = "LK3D.InitProcessTexture"></a>
+    <strong>LK3D.InitProcessTexture()</strong>
+    </dt>
+    <dd>
+
+<!-- Added here by loka, im so shit at HTML & CSS :( -->
+        <div style="border:4px dotted rgb(153, 153, 153); background-color: rgb(233, 233, 233); padding-bottom:1em;">
+            <div style="text-align:left; text-indent:1em;"> <h2> INTERNAL </h2> </div>
+            <div style="text-align:left; text-indent:1em;"> This function is used internally, so you shouldn't use it unless you know what you're doing! </div>
+        </div> <br>
+
+
+
+    Initializes the LK3D Processing texture
+
+    </ul>
+    </ul>
+    </ul>
+
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "LK3D.SetupBaseMaterials"></a>
+    <strong>LK3D.SetupBaseMaterials()</strong>
+    </dt>
+    <dd>
+
+<!-- Added here by loka, im so shit at HTML & CSS :( -->
+        <div style="border:4px dotted rgb(153, 153, 153); background-color: rgb(233, 233, 233); padding-bottom:1em;">
+            <div style="text-align:left; text-indent:1em;"> <h2> INTERNAL </h2> </div>
+            <div style="text-align:left; text-indent:1em;"> This function is used internally, so you shouldn't use it unless you know what you're doing! </div>
+        </div> <br>
+
+
+
+    Sets up the base LK3D materials
+
+    </ul>
+    </ul>
+    </ul>
+
+
+
+
+
+
+</dd>
+</dl>
+
+
+</div> <!-- id="content" -->
+</div> <!-- id="main" -->
+<div id="about">
+<i>generated by <a href="http://github.com/lunarmodules/LDoc">LDoc 1.4.6</a></i>
+<i style="float:right;">Last updated 2024-04-20 11:40:03 </i>
+</div> <!-- id="about" -->
+</div> <!-- id="container" -->
+</body>
+</html>
+

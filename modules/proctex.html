@@ -1,0 +1,907 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+<head>
+    <title>LK3D Docs</title>
+    <link rel="stylesheet" href="../ldoc.css" type="text/css" />
+</head>
+<body>
+
+<div id="container">
+
+<div id="product">
+	<div id="product_logo"></div>
+	<div id="product_name"><big><b></b></big></div>
+	<div id="product_description"></div>
+</div> <!-- id="product" -->
+
+
+<div id="main">
+
+
+<!-- Menu -->
+
+<div id="navigation">
+<br/>
+<h1>LK3D</h1>
+
+
+<ul>
+  <li><a href="../index.html">Index</a></li>
+</ul>
+
+<h2>Contents</h2>
+<ul>
+<li><a href="#Functions">Functions</a></li>
+</ul>
+
+
+<h2>Modules</h2>
+<ul class="nowrap">
+  <li><a href="../modules/baseshaders.html">baseshaders</a></li>
+  <li><a href="../modules/camera.html">camera</a></li>
+  <li><a href="../modules/debugutils.html">debugutils</a></li>
+  <li><a href="../modules/dumps.html">dumps</a></li>
+  <li><a href="../modules/lights.html">lights</a></li>
+  <li><a href="../modules/lk3d.html">lk3d</a></li>
+  <li><a href="../modules/lkpack.html">lkpack</a></li>
+  <li><a href="../modules/modelutils.html">modelutils</a></li>
+  <li><a href="../modules/noise.html">noise</a></li>
+  <li><a href="../modules/notiflogger.html">notiflogger</a></li>
+  <li><a href="../modules/objects.html">objects</a></li>
+  <li><a href="../modules/particles.html">particles</a></li>
+  <li><a href="../modules/physics.html">physics</a></li>
+  <li><a href="../modules/procmodel.html">procmodel</a></li>
+  <li><strong>proctex</strong></li>
+  <li><a href="../modules/radiosity.html">radiosity</a></li>
+  <li><a href="../modules/rendertarget.html">rendertarget</a></li>
+  <li><a href="../modules/textures.html">textures</a></li>
+  <li><a href="../modules/trace.html">trace</a></li>
+  <li><a href="../modules/universes.html">universes</a></li>
+</ul>
+<h2>Manual</h2>
+<ul class="nowrap">
+  <li><a href="../manual/animated-models.md.html">Animated Models</a></li>
+  <li><a href="../manual/base-shaders.md.html">Base Shaders</a></li>
+  <li><a href="../manual/concommand-list.md.html">ConCommand List</a></li>
+  <li><a href="../manual/lightmapper-radiosity.md.html">Lightmapping: Radiosity</a></li>
+  <li><a href="../manual/lkpack-basics.md.html">Basics of LKPack</a></li>
+  <li><a href="../manual/loading-lk3d.md.html">Loading LK3D</a></li>
+  <li><a href="../manual/object-flags.md.html">Object Flags</a></li>
+</ul>
+
+</div>
+
+<div id="content">
+
+<h1>Module <code>proctex</code></h1>
+<p>
+<h2>Procedural texturing</h2>
+<hr/>
+</p>
+<p>Module that generates simple procedural textures <br/>
+Currently its very primitive and not good at all, it hasn't been touched in a while <br/>
+The ProcTex table will probably be deprecated soon aswell</p>
+
+
+<h2><a href="#Functions">Functions</a></h2>
+<table class="function_list">
+	<tr>
+	<td class="name" nowrap><a href="#LK3D.ProcTex.New">LK3D.ProcTex.New(name, w, h)</a></td>
+	<td class="summary">Declares a new procedural texture <br/>
+ Secretly an alias to LK3D.DeclareTextureFromFunc</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#LK3D.ProcTex.ApplySolid">LK3D.ProcTex.ApplySolid(name, col_r, g, b)</a></td>
+	<td class="summary">Applies a solid colour to a procedural texture</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#LK3D.ProcTex.ApplySource">LK3D.ProcTex.ApplySource(name, tex)</a></td>
+	<td class="summary">Applies a source engine texture to a procedural texture</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#LK3D.ProcTex.ApplySimplexBase">LK3D.ProcTex.ApplySimplexBase(name, sx, sy, mul, seed)</a></td>
+	<td class="summary">Applies a simplex noise base colour</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#LK3D.ProcTex.SimplexAdditive">LK3D.ProcTex.SimplexAdditive(name, sx, sy, seed)</a></td>
+	<td class="summary">Additively applies simplex noise</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#LK3D.ProcTex.ApplyPerlinBase">LK3D.ProcTex.ApplyPerlinBase(name, sx, sy, mul, seed)</a></td>
+	<td class="summary">Applies a perlin noise base colour</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#LK3D.ProcTex.PerlinAdditive">LK3D.ProcTex.PerlinAdditive(name, sx, sy, seed)</a></td>
+	<td class="summary">Additively applies perlin noise</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#LK3D.ProcTex.ApplyWorleyBase">LK3D.ProcTex.ApplyWorleyBase(name, sx, sy, invert, seed)</a></td>
+	<td class="summary">Applies a worley noise base colour</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#LK3D.ProcTex.WorleyAdditive">LK3D.ProcTex.WorleyAdditive(name, sx, sy, sub, seed)</a></td>
+	<td class="summary">Additively applies worley noise</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#LK3D.ProcTex.Operator">LK3D.ProcTex.Operator(name, call)</a></td>
+	<td class="summary">Sets the colour of each pixel based on a lua function</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#LK3D.ProcTex.ApplyValueBase">LK3D.ProcTex.ApplyValueBase(name, sx, sy, seed)</a></td>
+	<td class="summary">Applies a value noise base colour</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#LK3D.ProcTex.ValueAdditive">LK3D.ProcTex.ValueAdditive(name, sx, sy, sub, seed)</a></td>
+	<td class="summary">Additively a value noise base colour</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#LK3D.ProcTex.PerlinMask">LK3D.ProcTex.PerlinMask(from, to, sx, sy, treshold, seed)</a></td>
+	<td class="summary">Masks a texture onto the texture using perlin noise</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#LK3D.ProcTex.WorleyMask">LK3D.ProcTex.WorleyMask(from, to, sx, sy, treshold, seed)</a></td>
+	<td class="summary">Masks a texture onto the texture using worley noise</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#LK3D.ProcTex.SimplexMask">LK3D.ProcTex.SimplexMask(from, to, sx, sy, treshold, seed)</a></td>
+	<td class="summary">Masks a texture onto the texture using simplex noise</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#LK3D.ProcTex.TextureGenThink">LK3D.ProcTex.TextureGenThink()</a></td>
+	<td class="summary">Handles the procedural texture generation, call on think</td>
+	</tr>
+</table>
+
+<br/>
+<br/>
+
+
+    <h2 class="section-header "><a name="Functions"></a>Functions</h2>
+
+    <dl class="function">
+    <dt>
+    <a name = "LK3D.ProcTex.New"></a>
+    <strong>LK3D.ProcTex.New(name, w, h)</strong>
+    </dt>
+    <dd>
+
+<!-- Added here by loka, im so shit at HTML & CSS :( -->
+
+
+
+    Declares a new procedural texture <br/>
+ Secretly an alias to LK3D.DeclareTextureFromFunc
+
+    </ul>
+    </ul>
+    </ul>
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">name</span>
+            <span class="types"><span class="type">string</span></span>
+         LK3D texture name
+        </li>
+        <li><span class="parameter">w</span>
+            <span class="types"><span class="type">number</span></span>
+         Texture width
+        </li>
+        <li><span class="parameter">h</span>
+            <span class="types"><span class="type">number</span></span>
+         Texture height
+        </li>
+    </ul>
+
+
+
+
+    <h3>Usage:</h3>
+    <ul>
+        <pre class="example">LK3D.ProcTex.New(<span class="string">"proc_something"</span>, <span class="number">256</span>, <span class="number">256</span>)</pre>
+    </ul>
+
+</dd>
+    <dt>
+    <a name = "LK3D.ProcTex.ApplySolid"></a>
+    <strong>LK3D.ProcTex.ApplySolid(name, col_r, g, b)</strong>
+    </dt>
+    <dd>
+
+<!-- Added here by loka, im so shit at HTML & CSS :( -->
+
+
+
+    Applies a solid colour to a procedural texture
+
+    </ul>
+    </ul>
+    </ul>
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">name</span>
+            <span class="types"><span class="type">string</span></span>
+         LK3D texture name
+        </li>
+        <li><span class="parameter">col_r</span>
+            <span class="types"><span class="type">color</span></span>
+         Color object or red channel value
+        </li>
+        <li><span class="parameter">g</span>
+            <span class="types"><span class="type">number</span></span>
+         Green channel value
+        </li>
+        <li><span class="parameter">b</span>
+            <span class="types"><span class="type">number</span></span>
+         Blue channel value
+        </li>
+    </ul>
+
+
+
+
+    <h3>Usage:</h3>
+    <ul>
+        <li><pre class="example"><span class="comment">-- with colour object
+</span> LK3D.ProcTex.ApplySolid(<span class="string">"proc_something"</span>, Color(<span class="number">128</span>, <span class="number">255</span>, <span class="number">128</span>))</pre></li>
+        <li><pre class="example"><span class="comment">-- with RGB value
+</span> LK3D.ProcTex.ApplySolid(<span class="string">"proc_something"</span>, <span class="number">32</span>, <span class="number">64</span>, <span class="number">96</span>)</pre></li>
+    </ul>
+
+</dd>
+    <dt>
+    <a name = "LK3D.ProcTex.ApplySource"></a>
+    <strong>LK3D.ProcTex.ApplySource(name, tex)</strong>
+    </dt>
+    <dd>
+
+<!-- Added here by loka, im so shit at HTML & CSS :( -->
+
+
+
+    Applies a source engine texture to a procedural texture
+
+    </ul>
+    </ul>
+    </ul>
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">name</span>
+            <span class="types"><span class="type">string</span></span>
+         LK3D texture name
+        </li>
+        <li><span class="parameter">tex</span>
+            <span class="types"><span class="type">string</span></span>
+         Source engine texture name
+        </li>
+    </ul>
+
+
+
+
+    <h3>Usage:</h3>
+    <ul>
+        <pre class="example">LK3D.ProcTex.ApplySource(<span class="string">"proc_something2"</span>, <span class="string">"metal/metalpipe010a"</span>)</pre>
+    </ul>
+
+</dd>
+    <dt>
+    <a name = "LK3D.ProcTex.ApplySimplexBase"></a>
+    <strong>LK3D.ProcTex.ApplySimplexBase(name, sx, sy, mul, seed)</strong>
+    </dt>
+    <dd>
+
+<!-- Added here by loka, im so shit at HTML & CSS :( -->
+
+
+
+    Applies a simplex noise base colour
+
+    </ul>
+    </ul>
+    </ul>
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">name</span>
+            <span class="types"><span class="type">string</span></span>
+         LK3D texture name
+        </li>
+        <li><span class="parameter">sx</span>
+            <span class="types"><span class="type">number</span></span>
+         X scale of the simplex noise
+        </li>
+        <li><span class="parameter">sy</span>
+            <span class="types"><span class="type">number</span></span>
+         Y scale of the simplex noise
+        </li>
+        <li><span class="parameter">mul</span>
+            <span class="types"><span class="type">number</span></span>
+         Colour intensity multiplier
+        </li>
+        <li><span class="parameter">seed</span>
+            <span class="types"><span class="type">number</span></span>
+         Seed for simplex
+        </li>
+    </ul>
+
+
+
+
+    <h3>Usage:</h3>
+    <ul>
+        <pre class="example">LK3D.ProcTex.ApplySimplexBase(<span class="string">"proc_something"</span>, <span class="number">16</span>, <span class="number">16</span>, <span class="number">1</span>, <span class="number">243634</span>)</pre>
+    </ul>
+
+</dd>
+    <dt>
+    <a name = "LK3D.ProcTex.SimplexAdditive"></a>
+    <strong>LK3D.ProcTex.SimplexAdditive(name, sx, sy, seed)</strong>
+    </dt>
+    <dd>
+
+<!-- Added here by loka, im so shit at HTML & CSS :( -->
+
+
+
+    Additively applies simplex noise
+
+    </ul>
+    </ul>
+    </ul>
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">name</span>
+            <span class="types"><span class="type">string</span></span>
+         LK3D texture name
+        </li>
+        <li><span class="parameter">sx</span>
+            <span class="types"><span class="type">number</span></span>
+         X scale of the simplex noise
+        </li>
+        <li><span class="parameter">sy</span>
+            <span class="types"><span class="type">number</span></span>
+         Y scale of the simplex noise
+        </li>
+        <li><span class="parameter">seed</span>
+            <span class="types"><span class="type">number</span></span>
+         Seed for simplex
+        </li>
+    </ul>
+
+
+
+
+    <h3>Usage:</h3>
+    <ul>
+        <pre class="example">LK3D.ProcTex.SimplexAdditive(<span class="string">"proc_something"</span>, <span class="number">16</span>, <span class="number">16</span>, <span class="number">14325</span>)</pre>
+    </ul>
+
+</dd>
+    <dt>
+    <a name = "LK3D.ProcTex.ApplyPerlinBase"></a>
+    <strong>LK3D.ProcTex.ApplyPerlinBase(name, sx, sy, mul, seed)</strong>
+    </dt>
+    <dd>
+
+<!-- Added here by loka, im so shit at HTML & CSS :( -->
+
+
+
+    Applies a perlin noise base colour
+
+    </ul>
+    </ul>
+    </ul>
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">name</span>
+            <span class="types"><span class="type">string</span></span>
+         LK3D texture name
+        </li>
+        <li><span class="parameter">sx</span>
+            <span class="types"><span class="type">number</span></span>
+         X scale of the perlin noise
+        </li>
+        <li><span class="parameter">sy</span>
+            <span class="types"><span class="type">number</span></span>
+         Y scale of the perlin noise
+        </li>
+        <li><span class="parameter">mul</span>
+            <span class="types"><span class="type">number</span></span>
+         Colour intensity multiplier
+        </li>
+        <li><span class="parameter">seed</span>
+            <span class="types"><span class="type">number</span></span>
+         Seed for perlin
+        </li>
+    </ul>
+
+
+
+
+    <h3>Usage:</h3>
+    <ul>
+        <pre class="example">LK3D.ProcTex.ApplyPerlinBase(<span class="string">"proc_something"</span>, <span class="number">16</span>, <span class="number">16</span>, <span class="number">1</span>, <span class="number">243634</span>)</pre>
+    </ul>
+
+</dd>
+    <dt>
+    <a name = "LK3D.ProcTex.PerlinAdditive"></a>
+    <strong>LK3D.ProcTex.PerlinAdditive(name, sx, sy, seed)</strong>
+    </dt>
+    <dd>
+
+<!-- Added here by loka, im so shit at HTML & CSS :( -->
+
+
+
+    Additively applies perlin noise
+
+    </ul>
+    </ul>
+    </ul>
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">name</span>
+            <span class="types"><span class="type">string</span></span>
+         LK3D texture name
+        </li>
+        <li><span class="parameter">sx</span>
+            <span class="types"><span class="type">number</span></span>
+         X scale of the perlin noise
+        </li>
+        <li><span class="parameter">sy</span>
+            <span class="types"><span class="type">number</span></span>
+         Y scale of the perlin noise
+        </li>
+        <li><span class="parameter">seed</span>
+            <span class="types"><span class="type">number</span></span>
+         Seed for perlin
+        </li>
+    </ul>
+
+
+
+
+    <h3>Usage:</h3>
+    <ul>
+        <pre class="example">LK3D.ProcTex.PerlinAdditive(<span class="string">"proc_something"</span>, <span class="number">16</span>, <span class="number">16</span>, <span class="number">14325</span>)</pre>
+    </ul>
+
+</dd>
+    <dt>
+    <a name = "LK3D.ProcTex.ApplyWorleyBase"></a>
+    <strong>LK3D.ProcTex.ApplyWorleyBase(name, sx, sy, invert, seed)</strong>
+    </dt>
+    <dd>
+
+<!-- Added here by loka, im so shit at HTML & CSS :( -->
+
+
+
+    Applies a worley noise base colour
+
+    </ul>
+    </ul>
+    </ul>
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">name</span>
+            <span class="types"><span class="type">string</span></span>
+         LK3D texture name
+        </li>
+        <li><span class="parameter">sx</span>
+            <span class="types"><span class="type">number</span></span>
+         X scale of the worley noise
+        </li>
+        <li><span class="parameter">sy</span>
+            <span class="types"><span class="type">number</span></span>
+         Y scale of the worley noise
+        </li>
+        <li><span class="parameter">invert</span>
+            <span class="types"><span class="type">bool</span></span>
+         Whether to invert the colour (255 - col)
+        </li>
+        <li><span class="parameter">seed</span>
+            <span class="types"><span class="type">number</span></span>
+         Seed for worley
+        </li>
+    </ul>
+
+
+
+
+    <h3>Usage:</h3>
+    <ul>
+        <pre class="example">LK3D.ProcTex.ApplyWorleyBase(<span class="string">"proc_something"</span>, <span class="number">16</span>, <span class="number">16</span>, <span class="keyword">true</span>, <span class="number">243634</span>)</pre>
+    </ul>
+
+</dd>
+    <dt>
+    <a name = "LK3D.ProcTex.WorleyAdditive"></a>
+    <strong>LK3D.ProcTex.WorleyAdditive(name, sx, sy, sub, seed)</strong>
+    </dt>
+    <dd>
+
+<!-- Added here by loka, im so shit at HTML & CSS :( -->
+
+
+
+    Additively applies worley noise
+
+    </ul>
+    </ul>
+    </ul>
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">name</span>
+            <span class="types"><span class="type">string</span></span>
+         LK3D texture name
+        </li>
+        <li><span class="parameter">sx</span>
+            <span class="types"><span class="type">number</span></span>
+         X scale of the worley noise
+        </li>
+        <li><span class="parameter">sy</span>
+            <span class="types"><span class="type">number</span></span>
+         Y scale of the worley noise
+        </li>
+        <li><span class="parameter">sub</span>
+            <span class="types"><span class="type">bool</span></span>
+         Whether to invert the added colour (255 - col)
+        </li>
+        <li><span class="parameter">seed</span>
+            <span class="types"><span class="type">number</span></span>
+         Seed for worley
+        </li>
+    </ul>
+
+
+
+
+    <h3>Usage:</h3>
+    <ul>
+        <pre class="example">LK3D.ProcTex.WorleyAdditive(<span class="string">"proc_something"</span>, <span class="number">16</span>, <span class="number">16</span>, <span class="keyword">true</span>, <span class="number">243634</span>)</pre>
+    </ul>
+
+</dd>
+    <dt>
+    <a name = "LK3D.ProcTex.Operator"></a>
+    <strong>LK3D.ProcTex.Operator(name, call)</strong>
+    </dt>
+    <dd>
+
+<!-- Added here by loka, im so shit at HTML & CSS :( -->
+
+
+
+    Sets the colour of each pixel based on a lua function
+
+    </ul>
+    </ul>
+    </ul>
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">name</span>
+            <span class="types"><span class="type">string</span></span>
+         LK3D texture name
+        </li>
+        <li><span class="parameter">call</span>
+            <span class="types"><span class="type">function</span></span>
+         Function to use, refer to usage
+        </li>
+    </ul>
+
+
+
+
+    <h3>Usage:</h3>
+    <ul>
+        <pre class="example">LK3D.ProcTex.Operator(<span class="string">"proc_something"</span>, <span class="keyword">function</span>(xc, yc, w, h) <span class="comment">-- generic gradient
+</span>  <span class="keyword">return</span> Color((xc / w) * <span class="number">255</span>, (yc / h) * <span class="number">255</span>, <span class="number">0</span>)
+<span class="keyword">end</span>)</pre>
+    </ul>
+
+</dd>
+    <dt>
+    <a name = "LK3D.ProcTex.ApplyValueBase"></a>
+    <strong>LK3D.ProcTex.ApplyValueBase(name, sx, sy, seed)</strong>
+    </dt>
+    <dd>
+
+<!-- Added here by loka, im so shit at HTML & CSS :( -->
+
+
+
+    Applies a value noise base colour
+
+    </ul>
+    </ul>
+    </ul>
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">name</span>
+            <span class="types"><span class="type">string</span></span>
+         LK3D texture name
+        </li>
+        <li><span class="parameter">sx</span>
+            <span class="types"><span class="type">number</span></span>
+         X scale of the value noise
+        </li>
+        <li><span class="parameter">sy</span>
+            <span class="types"><span class="type">number</span></span>
+         Y scale of the value noise
+        </li>
+        <li><span class="parameter">seed</span>
+            <span class="types"><span class="type">number</span></span>
+         Seed for value noise
+        </li>
+    </ul>
+
+
+
+
+    <h3>Usage:</h3>
+    <ul>
+        <pre class="example">LK3D.ProcTex.ApplyValueBase(<span class="string">"proc_something"</span>, <span class="number">16</span>, <span class="number">16</span>, <span class="number">243634</span>)</pre>
+    </ul>
+
+</dd>
+    <dt>
+    <a name = "LK3D.ProcTex.ValueAdditive"></a>
+    <strong>LK3D.ProcTex.ValueAdditive(name, sx, sy, sub, seed)</strong>
+    </dt>
+    <dd>
+
+<!-- Added here by loka, im so shit at HTML & CSS :( -->
+
+
+
+    Additively a value noise base colour
+
+    </ul>
+    </ul>
+    </ul>
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">name</span>
+            <span class="types"><span class="type">string</span></span>
+         LK3D texture name
+        </li>
+        <li><span class="parameter">sx</span>
+            <span class="types"><span class="type">number</span></span>
+         X scale of the value noise
+        </li>
+        <li><span class="parameter">sy</span>
+            <span class="types"><span class="type">number</span></span>
+         Y scale of the value noise
+        </li>
+        <li><span class="parameter">sub</span>
+            <span class="types"><span class="type">bool</span></span>
+         Whether to invert the added colour (255 - col)
+        </li>
+        <li><span class="parameter">seed</span>
+            <span class="types"><span class="type">number</span></span>
+         Seed for value noise
+        </li>
+    </ul>
+
+
+
+
+    <h3>Usage:</h3>
+    <ul>
+        <pre class="example">LK3D.ProcTex.ApplyValueBase(<span class="string">"proc_something"</span>, <span class="number">16</span>, <span class="number">16</span>, <span class="number">243634</span>)</pre>
+    </ul>
+
+</dd>
+    <dt>
+    <a name = "LK3D.ProcTex.PerlinMask"></a>
+    <strong>LK3D.ProcTex.PerlinMask(from, to, sx, sy, treshold, seed)</strong>
+    </dt>
+    <dd>
+
+<!-- Added here by loka, im so shit at HTML & CSS :( -->
+
+
+
+    Masks a texture onto the texture using perlin noise
+
+    </ul>
+    </ul>
+    </ul>
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">from</span>
+            <span class="types"><span class="type">string</span></span>
+         Texture to be masked
+        </li>
+        <li><span class="parameter">to</span>
+            <span class="types"><span class="type">string</span></span>
+         Texture to be applied onto
+        </li>
+        <li><span class="parameter">sx</span>
+            <span class="types"><span class="type">number</span></span>
+         X scale of the perlin noise
+        </li>
+        <li><span class="parameter">sy</span>
+            <span class="types"><span class="type">number</span></span>
+         Y scale of the perlin noise
+        </li>
+        <li><span class="parameter">treshold</span>
+            <span class="types"><span class="type">number</span></span>
+         Threshold to mask from, not a hard cut
+        </li>
+        <li><span class="parameter">seed</span>
+            <span class="types"><span class="type">number</span></span>
+         Seed for perlin noise
+        </li>
+    </ul>
+
+
+
+
+    <h3>Usage:</h3>
+    <ul>
+        <pre class="example">LK3D.ProcTex.LK3D.ProcTex.PerlinMask(<span class="string">"blend_orange"</span>, <span class="string">"blend_show"</span>, <span class="number">2</span>, <span class="number">2</span>, .<span class="number">45</span>, <span class="number">637742</span>)</pre>
+    </ul>
+
+</dd>
+    <dt>
+    <a name = "LK3D.ProcTex.WorleyMask"></a>
+    <strong>LK3D.ProcTex.WorleyMask(from, to, sx, sy, treshold, seed)</strong>
+    </dt>
+    <dd>
+
+<!-- Added here by loka, im so shit at HTML & CSS :( -->
+
+
+
+    Masks a texture onto the texture using worley noise
+
+    </ul>
+    </ul>
+    </ul>
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">from</span>
+            <span class="types"><span class="type">string</span></span>
+         Texture to be masked
+        </li>
+        <li><span class="parameter">to</span>
+            <span class="types"><span class="type">string</span></span>
+         Texture to be applied onto
+        </li>
+        <li><span class="parameter">sx</span>
+            <span class="types"><span class="type">number</span></span>
+         X scale of the worley noise
+        </li>
+        <li><span class="parameter">sy</span>
+            <span class="types"><span class="type">number</span></span>
+         Y scale of the worley noise
+        </li>
+        <li><span class="parameter">treshold</span>
+            <span class="types"><span class="type">number</span></span>
+         Threshold to mask from, not a hard cut
+        </li>
+        <li><span class="parameter">seed</span>
+            <span class="types"><span class="type">number</span></span>
+         Seed for worley noise
+        </li>
+    </ul>
+
+
+
+
+    <h3>Usage:</h3>
+    <ul>
+        <pre class="example">LK3D.ProcTex.LK3D.ProcTex.WorleyMask(<span class="string">"blend_orange"</span>, <span class="string">"blend_show"</span>, <span class="number">2</span>, <span class="number">2</span>, .<span class="number">45</span>, <span class="number">637742</span>)</pre>
+    </ul>
+
+</dd>
+    <dt>
+    <a name = "LK3D.ProcTex.SimplexMask"></a>
+    <strong>LK3D.ProcTex.SimplexMask(from, to, sx, sy, treshold, seed)</strong>
+    </dt>
+    <dd>
+
+<!-- Added here by loka, im so shit at HTML & CSS :( -->
+
+
+
+    Masks a texture onto the texture using simplex noise
+
+    </ul>
+    </ul>
+    </ul>
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">from</span>
+            <span class="types"><span class="type">string</span></span>
+         Texture to be masked
+        </li>
+        <li><span class="parameter">to</span>
+            <span class="types"><span class="type">string</span></span>
+         Texture to be applied onto
+        </li>
+        <li><span class="parameter">sx</span>
+            <span class="types"><span class="type">number</span></span>
+         X scale of the simplex noise
+        </li>
+        <li><span class="parameter">sy</span>
+            <span class="types"><span class="type">number</span></span>
+         Y scale of the simplex noise
+        </li>
+        <li><span class="parameter">treshold</span>
+            <span class="types"><span class="type">number</span></span>
+         Threshold to mask from, not a hard cut
+        </li>
+        <li><span class="parameter">seed</span>
+            <span class="types"><span class="type">number</span></span>
+         Seed for simplex noise
+        </li>
+    </ul>
+
+
+
+
+    <h3>Usage:</h3>
+    <ul>
+        <pre class="example">LK3D.ProcTex.LK3D.ProcTex.SimplexMask(<span class="string">"blend_orange"</span>, <span class="string">"blend_show"</span>, <span class="number">2</span>, <span class="number">2</span>, .<span class="number">45</span>, <span class="number">637742</span>)</pre>
+    </ul>
+
+</dd>
+    <dt>
+    <a name = "LK3D.ProcTex.TextureGenThink"></a>
+    <strong>LK3D.ProcTex.TextureGenThink()</strong>
+    </dt>
+    <dd>
+
+<!-- Added here by loka, im so shit at HTML & CSS :( -->
+
+
+
+    Handles the procedural texture generation, call on think
+
+    </ul>
+    </ul>
+    </ul>
+
+
+
+
+
+    <h3>Usage:</h3>
+    <ul>
+        <pre class="example">LK3D.ProcTex.TextureGenThink()</pre>
+    </ul>
+
+</dd>
+</dl>
+
+
+</div> <!-- id="content" -->
+</div> <!-- id="main" -->
+<div id="about">
+<i>generated by <a href="http://github.com/lunarmodules/LDoc">LDoc 1.4.6</a></i>
+<i style="float:right;">Last updated 2024-04-20 11:40:03 </i>
+</div> <!-- id="about" -->
+</div> <!-- id="container" -->
+</body>
+</html>
+

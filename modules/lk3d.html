@@ -1,0 +1,774 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+<head>
+    <title>LK3D Docs</title>
+    <link rel="stylesheet" href="../ldoc.css" type="text/css" />
+</head>
+<body>
+
+<div id="container">
+
+<div id="product">
+	<div id="product_logo"></div>
+	<div id="product_name"><big><b></b></big></div>
+	<div id="product_description"></div>
+</div> <!-- id="product" -->
+
+
+<div id="main">
+
+
+<!-- Menu -->
+
+<div id="navigation">
+<br/>
+<h1>LK3D</h1>
+
+
+<ul>
+  <li><a href="../index.html">Index</a></li>
+</ul>
+
+<h2>Contents</h2>
+<ul>
+<li><a href="#Functions">Functions</a></li>
+<li><a href="#Parameters">Parameters </a></li>
+</ul>
+
+
+<h2>Modules</h2>
+<ul class="nowrap">
+  <li><a href="../modules/baseshaders.html">baseshaders</a></li>
+  <li><a href="../modules/camera.html">camera</a></li>
+  <li><a href="../modules/debugutils.html">debugutils</a></li>
+  <li><a href="../modules/dumps.html">dumps</a></li>
+  <li><a href="../modules/lights.html">lights</a></li>
+  <li><strong>lk3d</strong></li>
+  <li><a href="../modules/lkpack.html">lkpack</a></li>
+  <li><a href="../modules/modelutils.html">modelutils</a></li>
+  <li><a href="../modules/noise.html">noise</a></li>
+  <li><a href="../modules/notiflogger.html">notiflogger</a></li>
+  <li><a href="../modules/objects.html">objects</a></li>
+  <li><a href="../modules/particles.html">particles</a></li>
+  <li><a href="../modules/physics.html">physics</a></li>
+  <li><a href="../modules/procmodel.html">procmodel</a></li>
+  <li><a href="../modules/proctex.html">proctex</a></li>
+  <li><a href="../modules/radiosity.html">radiosity</a></li>
+  <li><a href="../modules/rendertarget.html">rendertarget</a></li>
+  <li><a href="../modules/textures.html">textures</a></li>
+  <li><a href="../modules/trace.html">trace</a></li>
+  <li><a href="../modules/universes.html">universes</a></li>
+</ul>
+<h2>Manual</h2>
+<ul class="nowrap">
+  <li><a href="../manual/animated-models.md.html">Animated Models</a></li>
+  <li><a href="../manual/base-shaders.md.html">Base Shaders</a></li>
+  <li><a href="../manual/concommand-list.md.html">ConCommand List</a></li>
+  <li><a href="../manual/lightmapper-radiosity.md.html">Lightmapping: Radiosity</a></li>
+  <li><a href="../manual/lkpack-basics.md.html">Basics of LKPack</a></li>
+  <li><a href="../manual/loading-lk3d.md.html">Loading LK3D</a></li>
+  <li><a href="../manual/object-flags.md.html">Object Flags</a></li>
+</ul>
+
+</div>
+
+<div id="content">
+
+<h1>Module <code>lk3d</code></h1>
+<p>
+<h2>Base LK3D functions</h2>
+<hr/>
+</p>
+<p>This holds all of the other stuff that doesn't really fit into anything else  </p>
+
+
+<h2><a href="#Functions">Functions</a></h2>
+<table class="function_list">
+	<tr>
+	<td class="name" nowrap><a href="#LK3D.DeclareRenderer">LK3D.DeclareRenderer(renderer)</a></td>
+	<td class="summary">Declares a new renderer</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#LK3D.SetRenderer">LK3D.SetRenderer(rid)</a></td>
+	<td class="summary">Sets the active renderer</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#LK3D.SetWireframe">LK3D.SetWireframe(doWireframe)</a></td>
+	<td class="summary">Sets whether to render in wireframe mode</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#LK3D.SetAmbientCol">LK3D.SetAmbientCol(col)</a></td>
+	<td class="summary">Sets the ambient color</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#LK3D.SetSunDir">LK3D.SetSunDir(vec)</a></td>
+	<td class="summary">Sets the direction of the sun, for shading</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#LK3D.SetDoDirLighting">LK3D.SetDoDirLighting(flag)</a></td>
+	<td class="summary">Sets whether or not we should do directional shading</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#LK3D.SetFilterMode">LK3D.SetFilterMode(filtermode)</a></td>
+	<td class="summary">Sets the texture filter mode</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#LK3D.RenderActiveUniverse">LK3D.RenderActiveUniverse()</a></td>
+	<td class="summary">Renders the active universe to the active RT</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#LK3D.RenderActiveDepthArray">LK3D.RenderActiveDepthArray()</a></td>
+	<td class="summary">Renders the depth buffer of the active universe and returns it</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#LK3D.RenderObject">LK3D.RenderObject(obj)</a></td>
+	<td class="summary">Renders a single object from the active universe</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#LK3D.ToScreen">LK3D.ToScreen(pos)</a></td>
+	<td class="summary">Converts a position to screen coords</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#LK3D.ToScreenArray">LK3D.ToScreenArray(positions)</a></td>
+	<td class="summary">Converts a list of positions to screen coords</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#LK3D.RenderProcessingMessage">LK3D.RenderProcessingMessage(message, prog, xtrarender)</a></td>
+	<td class="summary">Renders a informational processing message, to avoid the game freezing <br/>
+ <strong>Only use this when computing a lot of stuff</strong></td>
+	</tr>
+</table>
+<h2><a href="#Parameters">Parameters </a></h2>
+<table class="function_list">
+	<tr>
+	<td class="name" nowrap><a href="#LK3D.FilterMode">LK3D.FilterMode</a></td>
+	<td class="summary">Texture filter mode</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#LK3D.LightmapFilterMode">LK3D.LightmapFilterMode</a></td>
+	<td class="summary">Lightmap upscale filter mode</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#LK3D.LightmapUpscale">LK3D.LightmapUpscale</a></td>
+	<td class="summary">Lightmap upscale amount</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#LK3D.AnimFrameDiv">LK3D.AnimFrameDiv</a></td>
+	<td class="summary">Whether to divide animation frame rate by frame count</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#LK3D.ShadowAlpha">LK3D.ShadowAlpha</a></td>
+	<td class="summary">Shadow volume alpha value (Hardware1 renderer only)</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#LK3D.ShadowExtrude">LK3D.ShadowExtrude</a></td>
+	<td class="summary">Distance to extrude shadow volumes (Hardware1 renderer only)</td>
+	</tr>
+</table>
+
+<br/>
+<br/>
+
+
+    <h2 class="section-header "><a name="Functions"></a>Functions</h2>
+
+    <dl class="function">
+    <dt>
+    <a name = "LK3D.DeclareRenderer"></a>
+    <strong>LK3D.DeclareRenderer(renderer)</strong>
+    </dt>
+    <dd>
+
+<!-- Added here by loka, im so shit at HTML & CSS :( -->
+        <div style="border:4px dotted rgb(153, 153, 153); background-color: rgb(233, 233, 233); padding-bottom:1em;">
+            <div style="text-align:left; text-indent:1em;"> <h2> INTERNAL </h2> </div>
+            <div style="text-align:left; text-indent:1em;"> This function is used internally, so you shouldn't use it unless you know what you're doing! </div>
+        </div> <br>
+
+
+
+    Declares a new renderer
+
+    </ul>
+    </ul>
+    </ul>
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">renderer</span>
+            <span class="types"><span class="type">table</span></span>
+         Renderer data
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "LK3D.SetRenderer"></a>
+    <strong>LK3D.SetRenderer(rid)</strong>
+    </dt>
+    <dd>
+
+<!-- Added here by loka, im so shit at HTML & CSS :( -->
+
+
+
+    Sets the active renderer
+
+    </ul>
+    </ul>
+    </ul>
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">rid</span>
+            <span class="types"><span class="type">number</span></span>
+         Renderer ID
+        </li>
+    </ul>
+
+
+
+
+    <h3>Usage:</h3>
+    <ul>
+        <pre class="example">LK3D.SetRenderer(LK3D_RENDER_HARD) <span class="comment">-- sets to hw renderer</span></pre>
+    </ul>
+
+</dd>
+    <dt>
+    <a name = "LK3D.SetWireframe"></a>
+    <strong>LK3D.SetWireframe(doWireframe)</strong>
+    </dt>
+    <dd>
+
+<!-- Added here by loka, im so shit at HTML & CSS :( -->
+
+
+
+    Sets whether to render in wireframe mode
+
+    </ul>
+    </ul>
+    </ul>
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">doWireframe</span>
+            <span class="types"><span class="type">bool</span></span>
+         Whether or not to render in wireframe
+        </li>
+    </ul>
+
+
+
+
+    <h3>Usage:</h3>
+    <ul>
+        <pre class="example">LK3D.SetWireframe(<span class="keyword">true</span>) <span class="comment">-- render wireframe</span></pre>
+    </ul>
+
+</dd>
+    <dt>
+    <a name = "LK3D.SetAmbientCol"></a>
+    <strong>LK3D.SetAmbientCol(col)</strong>
+    </dt>
+    <dd>
+
+<!-- Added here by loka, im so shit at HTML & CSS :( -->
+
+
+
+    Sets the ambient color
+
+    </ul>
+    </ul>
+    </ul>
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">col</span>
+            <span class="types"><span class="type">color</span></span>
+         Ambient color
+        </li>
+    </ul>
+
+
+
+
+    <h3>Usage:</h3>
+    <ul>
+        <pre class="example">LK3D.SetAmbientCol(Color(<span class="number">255</span>, <span class="number">0</span>, <span class="number">0</span>)) <span class="comment">-- ugly preset</span></pre>
+    </ul>
+
+</dd>
+    <dt>
+    <a name = "LK3D.SetSunDir"></a>
+    <strong>LK3D.SetSunDir(vec)</strong>
+    </dt>
+    <dd>
+
+<!-- Added here by loka, im so shit at HTML & CSS :( -->
+
+
+
+    Sets the direction of the sun, for shading
+
+    </ul>
+    </ul>
+    </ul>
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">vec</span>
+            <span class="types"><span class="type">vector</span></span>
+         Direction the sun should point at
+        </li>
+    </ul>
+
+
+
+
+    <h3>Usage:</h3>
+    <ul>
+        <pre class="example">LK3D.SetSunDir(Vector(<span class="number">0.75</span>, <span class="number">1</span>, <span class="number">1</span>)) <span class="comment">-- this is normalized internally</span></pre>
+    </ul>
+
+</dd>
+    <dt>
+    <a name = "LK3D.SetDoDirLighting"></a>
+    <strong>LK3D.SetDoDirLighting(flag)</strong>
+    </dt>
+    <dd>
+
+<!-- Added here by loka, im so shit at HTML & CSS :( -->
+
+
+
+    Sets whether or not we should do directional shading
+
+    </ul>
+    </ul>
+    </ul>
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">flag</span>
+            <span class="types"><span class="type">bool</span></span>
+         Whether or not we should do directional shading
+        </li>
+    </ul>
+
+
+
+
+    <h3>Usage:</h3>
+    <ul>
+        <pre class="example">LK3D.SetDoDirLighting(<span class="keyword">false</span>) <span class="comment">-- no weird shading by default</span></pre>
+    </ul>
+
+</dd>
+    <dt>
+    <a name = "LK3D.SetFilterMode"></a>
+    <strong>LK3D.SetFilterMode(filtermode)</strong>
+    </dt>
+    <dd>
+
+<!-- Added here by loka, im so shit at HTML & CSS :( -->
+
+
+
+    Sets the texture filter mode
+
+    </ul>
+    </ul>
+    </ul>
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">filtermode</span>
+            <span class="types"><span class="type">number</span></span>
+         <a href="https://wiki.facepunch.com/gmod/Enums/TEXFILTER">Texture filter mode constant</a>
+        </li>
+    </ul>
+
+
+
+
+    <h3>Usage:</h3>
+    <ul>
+        <pre class="example">LK3D.SetFilterMode(TEXFILTER.POINT)</pre>
+    </ul>
+
+</dd>
+    <dt>
+    <a name = "LK3D.RenderActiveUniverse"></a>
+    <strong>LK3D.RenderActiveUniverse()</strong>
+    </dt>
+    <dd>
+
+<!-- Added here by loka, im so shit at HTML & CSS :( -->
+
+
+
+    Renders the active universe to the active RT
+
+    </ul>
+    </ul>
+    </ul>
+
+
+
+
+
+    <h3>Usage:</h3>
+    <ul>
+        <pre class="example">LK3D.RenderActiveUniverse()</pre>
+    </ul>
+
+</dd>
+    <dt>
+    <a name = "LK3D.RenderActiveDepthArray"></a>
+    <strong>LK3D.RenderActiveDepthArray()</strong>
+    </dt>
+    <dd>
+
+<!-- Added here by loka, im so shit at HTML & CSS :( -->
+
+
+
+    Renders the depth buffer of the active universe and returns it
+
+    </ul>
+    </ul>
+    </ul>
+
+
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><span class="type">table</span></span>
+        Depth array, as a sequential table <strong>starting at 0</strong>
+    </ol>
+
+
+
+    <h3>Usage:</h3>
+    <ul>
+        <pre class="example"><span class="keyword">local</span> depthArray = LK3D.RenderActiveDepthArray()
+ <span class="keyword">local</span> depthTopLeft = depthArray[<span class="number">0</span>]</pre>
+    </ul>
+
+</dd>
+    <dt>
+    <a name = "LK3D.RenderObject"></a>
+    <strong>LK3D.RenderObject(obj)</strong>
+    </dt>
+    <dd>
+
+<!-- Added here by loka, im so shit at HTML & CSS :( -->
+
+
+
+    Renders a single object from the active universe
+
+    </ul>
+    </ul>
+    </ul>
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">obj</span>
+            <span class="types"><span class="type">string</span></span>
+         Index tag of the object
+        </li>
+    </ul>
+
+
+
+
+    <h3>Usage:</h3>
+    <ul>
+        <pre class="example">LK3D.RenderObject(<span class="string">"loka_pc"</span>)</pre>
+    </ul>
+
+</dd>
+    <dt>
+    <a name = "LK3D.ToScreen"></a>
+    <strong>LK3D.ToScreen(pos)</strong>
+    </dt>
+    <dd>
+
+<!-- Added here by loka, im so shit at HTML & CSS :( -->
+
+
+
+    Converts a position to screen coords
+
+    </ul>
+    </ul>
+    </ul>
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">pos</span>
+            <span class="types"><span class="type">vector</span></span>
+         Pos to convert to screen coords
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><span class="type">table</span></span>
+        The <a href="https://wiki.facepunch.com/gmod/Structures/ToScreenData">ToScreenData</a>
+    </ol>
+
+
+
+    <h3>Usage:</h3>
+    <ul>
+        <pre class="example"><span class="keyword">local</span> scrData = LK3D.ToScreen(Vector(<span class="number">0</span>, <span class="number">16</span>, <span class="number">0</span>))
+ <span class="global">print</span>(scrData.x, scrData.y)</pre>
+    </ul>
+
+</dd>
+    <dt>
+    <a name = "LK3D.ToScreenArray"></a>
+    <strong>LK3D.ToScreenArray(positions)</strong>
+    </dt>
+    <dd>
+
+<!-- Added here by loka, im so shit at HTML & CSS :( -->
+
+
+
+    Converts a list of positions to screen coords
+
+    </ul>
+    </ul>
+    </ul>
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">positions</span>
+            <span class="types"><span class="type">table</span></span>
+         Sequential table of positions
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><span class="type">table</span></span>
+        A table of <a href="https://wiki.facepunch.com/gmod/Structures/ToScreenData">ToScreenData</a>
+    </ol>
+
+
+
+    <h3>Usage:</h3>
+    <ul>
+        <pre class="example"><span class="keyword">local</span> scrDataArray = LK3D.ToScreen({Vector(<span class="number">0</span>, <span class="number">16</span>, <span class="number">0</span>), Vector(<span class="number">4</span>, <span class="number">16</span>, <span class="number">0</span>)})
+<span class="global">print</span>(scrDataArray[<span class="number">1</span>].x, scrDataArray[<span class="number">1</span>].y)
+<span class="global">print</span>(scrDataArray[<span class="number">2</span>].x, scrDataArray[<span class="number">2</span>].y)</pre>
+    </ul>
+
+</dd>
+    <dt>
+    <a name = "LK3D.RenderProcessingMessage"></a>
+    <strong>LK3D.RenderProcessingMessage(message, prog, xtrarender)</strong>
+    </dt>
+    <dd>
+
+<!-- Added here by loka, im so shit at HTML & CSS :( -->
+
+
+
+    Renders a informational processing message, to avoid the game freezing <br/>
+ <strong>Only use this when computing a lot of stuff</strong>
+
+    </ul>
+    </ul>
+    </ul>
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">message</span>
+            <span class="types"><span class="type">string</span></span>
+         Message to write at the top left
+        </li>
+        <li><span class="parameter">prog</span>
+            <span class="types"><span class="type">number</span></span>
+         Progress processing, 0 - 100
+        </li>
+        <li><span class="parameter">xtrarender</span>
+            <span class="types">optional <span class="type">function</span></span>
+         Extra rendering function to render more stuff ontop
+        </li>
+    </ul>
+
+
+
+
+    <h3>Usage:</h3>
+    <ul>
+        <pre class="example"><span class="keyword">for</span> i = <span class="number">1</span>, <span class="number">51200000</span> <span class="keyword">do</span>
+  LK3D.RenderProcessingMessage(<span class="string">"doing stuff"</span>, (i / <span class="number">51200000</span>) * <span class="number">100</span>)
+<span class="keyword">end</span></pre>
+    </ul>
+
+</dd>
+</dl>
+    <h2 class="section-header "><a name="Parameters"></a>Parameters </h2>
+
+    <dl class="function">
+    <dt>
+    <a name = "LK3D.FilterMode"></a>
+    <strong>LK3D.FilterMode</strong>
+    </dt>
+    <dd>
+
+<!-- Added here by loka, im so shit at HTML & CSS :( -->
+
+
+
+    Texture filter mode
+
+    </ul>
+    </ul>
+    </ul>
+
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "LK3D.LightmapFilterMode"></a>
+    <strong>LK3D.LightmapFilterMode</strong>
+    </dt>
+    <dd>
+
+<!-- Added here by loka, im so shit at HTML & CSS :( -->
+
+
+
+    Lightmap upscale filter mode
+
+    </ul>
+    </ul>
+    </ul>
+
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "LK3D.LightmapUpscale"></a>
+    <strong>LK3D.LightmapUpscale</strong>
+    </dt>
+    <dd>
+
+<!-- Added here by loka, im so shit at HTML & CSS :( -->
+
+
+
+    Lightmap upscale amount
+
+    </ul>
+    </ul>
+    </ul>
+
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "LK3D.AnimFrameDiv"></a>
+    <strong>LK3D.AnimFrameDiv</strong>
+    </dt>
+    <dd>
+
+<!-- Added here by loka, im so shit at HTML & CSS :( -->
+
+
+
+    Whether to divide animation frame rate by frame count
+
+    </ul>
+    </ul>
+    </ul>
+
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "LK3D.ShadowAlpha"></a>
+    <strong>LK3D.ShadowAlpha</strong>
+    </dt>
+    <dd>
+
+<!-- Added here by loka, im so shit at HTML & CSS :( -->
+
+
+
+    Shadow volume alpha value (Hardware1 renderer only)
+
+    </ul>
+    </ul>
+    </ul>
+
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "LK3D.ShadowExtrude"></a>
+    <strong>LK3D.ShadowExtrude</strong>
+    </dt>
+    <dd>
+
+<!-- Added here by loka, im so shit at HTML & CSS :( -->
+
+
+
+    Distance to extrude shadow volumes (Hardware1 renderer only)
+
+    </ul>
+    </ul>
+    </ul>
+
+
+
+
+
+
+</dd>
+</dl>
+
+
+</div> <!-- id="content" -->
+</div> <!-- id="main" -->
+<div id="about">
+<i>generated by <a href="http://github.com/lunarmodules/LDoc">LDoc 1.4.6</a></i>
+<i style="float:right;">Last updated 2024-04-20 11:40:03 </i>
+</div> <!-- id="about" -->
+</div> <!-- id="container" -->
+</body>
+</html>
+

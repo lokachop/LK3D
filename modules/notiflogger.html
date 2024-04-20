@@ -1,0 +1,456 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+<head>
+    <title>LK3D Docs</title>
+    <link rel="stylesheet" href="../ldoc.css" type="text/css" />
+</head>
+<body>
+
+<div id="container">
+
+<div id="product">
+	<div id="product_logo"></div>
+	<div id="product_name"><big><b></b></big></div>
+	<div id="product_description"></div>
+</div> <!-- id="product" -->
+
+
+<div id="main">
+
+
+<!-- Menu -->
+
+<div id="navigation">
+<br/>
+<h1>LK3D</h1>
+
+
+<ul>
+  <li><a href="../index.html">Index</a></li>
+</ul>
+
+<h2>Contents</h2>
+<ul>
+<li><a href="#Functions">Functions</a></li>
+<li><a href="#Fields">Fields</a></li>
+<li><a href="#Constants">Constants </a></li>
+</ul>
+
+
+<h2>Modules</h2>
+<ul class="nowrap">
+  <li><a href="../modules/baseshaders.html">baseshaders</a></li>
+  <li><a href="../modules/camera.html">camera</a></li>
+  <li><a href="../modules/debugutils.html">debugutils</a></li>
+  <li><a href="../modules/dumps.html">dumps</a></li>
+  <li><a href="../modules/lights.html">lights</a></li>
+  <li><a href="../modules/lk3d.html">lk3d</a></li>
+  <li><a href="../modules/lkpack.html">lkpack</a></li>
+  <li><a href="../modules/modelutils.html">modelutils</a></li>
+  <li><a href="../modules/noise.html">noise</a></li>
+  <li><strong>notiflogger</strong></li>
+  <li><a href="../modules/objects.html">objects</a></li>
+  <li><a href="../modules/particles.html">particles</a></li>
+  <li><a href="../modules/physics.html">physics</a></li>
+  <li><a href="../modules/procmodel.html">procmodel</a></li>
+  <li><a href="../modules/proctex.html">proctex</a></li>
+  <li><a href="../modules/radiosity.html">radiosity</a></li>
+  <li><a href="../modules/rendertarget.html">rendertarget</a></li>
+  <li><a href="../modules/textures.html">textures</a></li>
+  <li><a href="../modules/trace.html">trace</a></li>
+  <li><a href="../modules/universes.html">universes</a></li>
+</ul>
+<h2>Manual</h2>
+<ul class="nowrap">
+  <li><a href="../manual/animated-models.md.html">Animated Models</a></li>
+  <li><a href="../manual/base-shaders.md.html">Base Shaders</a></li>
+  <li><a href="../manual/concommand-list.md.html">ConCommand List</a></li>
+  <li><a href="../manual/lightmapper-radiosity.md.html">Lightmapping: Radiosity</a></li>
+  <li><a href="../manual/lkpack-basics.md.html">Basics of LKPack</a></li>
+  <li><a href="../manual/loading-lk3d.md.html">Loading LK3D</a></li>
+  <li><a href="../manual/object-flags.md.html">Object Flags</a></li>
+</ul>
+
+</div>
+
+<div id="content">
+
+<h1>Module <code>notiflogger</code></h1>
+<p>
+<h2>NotifLogger</h2>
+<hr/>
+</p>
+<p>Module that handles logging / console prints  </p>
+
+
+<h2><a href="#Functions">Functions</a></h2>
+<table class="function_list">
+	<tr>
+	<td class="name" nowrap><a href="#LK3D.LogMessage">LK3D.LogMessage(text)</a></td>
+	<td class="summary">Writes a message to the logs</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#LK3D.DeclareModuleColour">LK3D.DeclareModuleColour(lk_module, col)</a></td>
+	<td class="summary">Declares the colour for a log module</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#LK3D.New_D_Print">LK3D.New_D_Print(text, severity, lk_module)</a></td>
+	<td class="summary">Prints a message to the console and logs it</td>
+	</tr>
+</table>
+<h2><a href="#Fields">Fields</a></h2>
+<table class="function_list">
+	<tr>
+	<td class="name" nowrap><a href="#LK3D.DoLogging">LK3D.DoLogging</a></td>
+	<td class="summary">Flag for enabling / disabling logging</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#LK3D.LogSeverity">LK3D.LogSeverity</a></td>
+	<td class="summary">Value that marks which severity to start logging from (inclusive)</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#LK3D.DebugOnlySev">LK3D.DebugOnlySev</a></td>
+	<td class="summary">Value that marks which severity to start printing with LK3D.Debug <strong>disabled</strong></td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#LK3D.DebugSev">LK3D.DebugSev</a></td>
+	<td class="summary">Value that marks which severity to start printing with LK3D.Debug <strong>enabled</strong></td>
+	</tr>
+</table>
+<h2><a href="#Constants">Constants </a></h2>
+<table class="function_list">
+	<tr>
+	<td class="name" nowrap><a href="#LK3D_SEVERITY_INFO">LK3D_SEVERITY_INFO</a></td>
+	<td class="summary">Info severity type</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#LK3D_SEVERITY_WARN">LK3D_SEVERITY_WARN</a></td>
+	<td class="summary">Warn severity type</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#LK3D_SEVERITY_ERROR">LK3D_SEVERITY_ERROR</a></td>
+	<td class="summary">Error severity type</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#LK3D_SEVERITY_FATAL">LK3D_SEVERITY_FATAL</a></td>
+	<td class="summary">Fatal severity type</td>
+	</tr>
+</table>
+
+<br/>
+<br/>
+
+
+    <h2 class="section-header "><a name="Functions"></a>Functions</h2>
+
+    <dl class="function">
+    <dt>
+    <a name = "LK3D.LogMessage"></a>
+    <strong>LK3D.LogMessage(text)</strong>
+    </dt>
+    <dd>
+
+<!-- Added here by loka, im so shit at HTML & CSS :( -->
+
+
+
+    Writes a message to the logs
+
+    </ul>
+    </ul>
+    </ul>
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">text</span>
+            <span class="types"><span class="type">string</span></span>
+         String to log
+        </li>
+    </ul>
+
+
+
+
+    <h3>Usage:</h3>
+    <ul>
+        <pre class="example">LK3D.LogMessage(<span class="string">"Hi From LK3DWiki!"</span>)</pre>
+    </ul>
+
+</dd>
+    <dt>
+    <a name = "LK3D.DeclareModuleColour"></a>
+    <strong>LK3D.DeclareModuleColour(lk_module, col)</strong>
+    </dt>
+    <dd>
+
+<!-- Added here by loka, im so shit at HTML & CSS :( -->
+
+
+
+    Declares the colour for a log module
+
+    </ul>
+    </ul>
+    </ul>
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">lk_module</span>
+            <span class="types"><span class="type">string</span></span>
+         Module name
+        </li>
+        <li><span class="parameter">col</span>
+            <span class="types"><span class="type">color</span></span>
+         Module colour
+        </li>
+    </ul>
+
+
+
+
+    <h3>Usage:</h3>
+    <ul>
+        <pre class="example">LK3D.DeclareModuleColour(<span class="string">"Custom"</span>, Color(<span class="number">255</span>, <span class="number">0</span>, <span class="number">0</span>))</pre>
+    </ul>
+
+</dd>
+    <dt>
+    <a name = "LK3D.New_D_Print"></a>
+    <strong>LK3D.New_D_Print(text, severity, lk_module)</strong>
+    </dt>
+    <dd>
+
+<!-- Added here by loka, im so shit at HTML & CSS :( -->
+
+
+
+    Prints a message to the console and logs it
+
+    </ul>
+    </ul>
+    </ul>
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">text</span>
+            <span class="types"><span class="type">string</span></span>
+         Text to print
+        </li>
+        <li><span class="parameter">severity</span>
+            <span class="types"><span class="type">number</span></span>
+         Severity type constant
+        </li>
+        <li><span class="parameter">lk_module</span>
+            <span class="types"><span class="type">string</span></span>
+         Module to log as
+        </li>
+    </ul>
+
+
+
+
+    <h3>Usage:</h3>
+    <ul>
+        <pre class="example">LK3D.New_D_Print(<span class="string">"Help!"</span> LK3D_SEVERITY_WARN, <span class="string">"Hardware2"</span>)</pre>
+    </ul>
+
+</dd>
+</dl>
+    <h2 class="section-header "><a name="Fields"></a>Fields</h2>
+
+    <dl class="function">
+    <dt>
+    <a name = "LK3D.DoLogging"></a>
+    <strong>LK3D.DoLogging</strong>
+    </dt>
+    <dd>
+
+<!-- Added here by loka, im so shit at HTML & CSS :( -->
+
+
+
+    Flag for enabling / disabling logging
+
+    </ul>
+    </ul>
+    </ul>
+
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "LK3D.LogSeverity"></a>
+    <strong>LK3D.LogSeverity</strong>
+    </dt>
+    <dd>
+
+<!-- Added here by loka, im so shit at HTML & CSS :( -->
+
+
+
+    Value that marks which severity to start logging from (inclusive)
+
+    </ul>
+    </ul>
+    </ul>
+
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "LK3D.DebugOnlySev"></a>
+    <strong>LK3D.DebugOnlySev</strong>
+    </dt>
+    <dd>
+
+<!-- Added here by loka, im so shit at HTML & CSS :( -->
+
+
+
+    Value that marks which severity to start printing with LK3D.Debug <strong>disabled</strong>
+
+    </ul>
+    </ul>
+    </ul>
+
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "LK3D.DebugSev"></a>
+    <strong>LK3D.DebugSev</strong>
+    </dt>
+    <dd>
+
+<!-- Added here by loka, im so shit at HTML & CSS :( -->
+
+
+
+    Value that marks which severity to start printing with LK3D.Debug <strong>enabled</strong>
+
+    </ul>
+    </ul>
+    </ul>
+
+
+
+
+
+
+</dd>
+</dl>
+    <h2 class="section-header "><a name="Constants"></a>Constants </h2>
+
+    <dl class="function">
+    <dt>
+    <a name = "LK3D_SEVERITY_INFO"></a>
+    <strong>LK3D_SEVERITY_INFO</strong>
+    </dt>
+    <dd>
+
+<!-- Added here by loka, im so shit at HTML & CSS :( -->
+
+
+
+    Info severity type
+
+    </ul>
+    </ul>
+    </ul>
+
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "LK3D_SEVERITY_WARN"></a>
+    <strong>LK3D_SEVERITY_WARN</strong>
+    </dt>
+    <dd>
+
+<!-- Added here by loka, im so shit at HTML & CSS :( -->
+
+
+
+    Warn severity type
+
+    </ul>
+    </ul>
+    </ul>
+
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "LK3D_SEVERITY_ERROR"></a>
+    <strong>LK3D_SEVERITY_ERROR</strong>
+    </dt>
+    <dd>
+
+<!-- Added here by loka, im so shit at HTML & CSS :( -->
+
+
+
+    Error severity type
+
+    </ul>
+    </ul>
+    </ul>
+
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "LK3D_SEVERITY_FATAL"></a>
+    <strong>LK3D_SEVERITY_FATAL</strong>
+    </dt>
+    <dd>
+
+<!-- Added here by loka, im so shit at HTML & CSS :( -->
+
+
+
+    Fatal severity type
+
+    </ul>
+    </ul>
+    </ul>
+
+
+
+
+
+
+</dd>
+</dl>
+
+
+</div> <!-- id="content" -->
+</div> <!-- id="main" -->
+<div id="about">
+<i>generated by <a href="http://github.com/lunarmodules/LDoc">LDoc 1.4.6</a></i>
+<i style="float:right;">Last updated 2024-04-20 11:40:03 </i>
+</div> <!-- id="about" -->
+</div> <!-- id="container" -->
+</body>
+</html>
+

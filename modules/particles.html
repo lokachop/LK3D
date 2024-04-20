@@ -1,0 +1,366 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+<head>
+    <title>LK3D Docs</title>
+    <link rel="stylesheet" href="../ldoc.css" type="text/css" />
+</head>
+<body>
+
+<div id="container">
+
+<div id="product">
+	<div id="product_logo"></div>
+	<div id="product_name"><big><b></b></big></div>
+	<div id="product_description"></div>
+</div> <!-- id="product" -->
+
+
+<div id="main">
+
+
+<!-- Menu -->
+
+<div id="navigation">
+<br/>
+<h1>LK3D</h1>
+
+
+<ul>
+  <li><a href="../index.html">Index</a></li>
+</ul>
+
+<h2>Contents</h2>
+<ul>
+<li><a href="#Functions">Functions</a></li>
+</ul>
+
+
+<h2>Modules</h2>
+<ul class="nowrap">
+  <li><a href="../modules/baseshaders.html">baseshaders</a></li>
+  <li><a href="../modules/camera.html">camera</a></li>
+  <li><a href="../modules/debugutils.html">debugutils</a></li>
+  <li><a href="../modules/dumps.html">dumps</a></li>
+  <li><a href="../modules/lights.html">lights</a></li>
+  <li><a href="../modules/lk3d.html">lk3d</a></li>
+  <li><a href="../modules/lkpack.html">lkpack</a></li>
+  <li><a href="../modules/modelutils.html">modelutils</a></li>
+  <li><a href="../modules/noise.html">noise</a></li>
+  <li><a href="../modules/notiflogger.html">notiflogger</a></li>
+  <li><a href="../modules/objects.html">objects</a></li>
+  <li><strong>particles</strong></li>
+  <li><a href="../modules/physics.html">physics</a></li>
+  <li><a href="../modules/procmodel.html">procmodel</a></li>
+  <li><a href="../modules/proctex.html">proctex</a></li>
+  <li><a href="../modules/radiosity.html">radiosity</a></li>
+  <li><a href="../modules/rendertarget.html">rendertarget</a></li>
+  <li><a href="../modules/textures.html">textures</a></li>
+  <li><a href="../modules/trace.html">trace</a></li>
+  <li><a href="../modules/universes.html">universes</a></li>
+</ul>
+<h2>Manual</h2>
+<ul class="nowrap">
+  <li><a href="../manual/animated-models.md.html">Animated Models</a></li>
+  <li><a href="../manual/base-shaders.md.html">Base Shaders</a></li>
+  <li><a href="../manual/concommand-list.md.html">ConCommand List</a></li>
+  <li><a href="../manual/lightmapper-radiosity.md.html">Lightmapping: Radiosity</a></li>
+  <li><a href="../manual/lkpack-basics.md.html">Basics of LKPack</a></li>
+  <li><a href="../manual/loading-lk3d.md.html">Loading LK3D</a></li>
+  <li><a href="../manual/object-flags.md.html">Object Flags</a></li>
+</ul>
+
+</div>
+
+<div id="content">
+
+<h1>Module <code>particles</code></h1>
+<p>
+<h2>Manages the particle system</h2>
+<hr/>
+</p>
+<p>Module to declare new particles or create / modify / delete particle emitters on the active universe   </p>
+
+
+<h2><a href="#Functions">Functions</a></h2>
+<table class="function_list">
+	<tr>
+	<td class="name" nowrap><a href="#LK3D.DeclareParticle">LK3D.DeclareParticle(name, proptbl)</a></td>
+	<td class="summary">Declares a new particle type</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#LK3D.AddParticleEmitter">LK3D.AddParticleEmitter(name, typeg, prop)</a></td>
+	<td class="summary">Adds a particle emitter to the active universe</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#LK3D.UpdateParticleEmitterProp">LK3D.UpdateParticleEmitterProp(name, key, val)</a></td>
+	<td class="summary">Updates a property on the particle emitter</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#LK3D.RemoveActiveParticles">LK3D.RemoveActiveParticles(name)</a></td>
+	<td class="summary">Removes all active particles from a particle emitter</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#LK3D.RemoveParticleEmitter">LK3D.RemoveParticleEmitter(name)</a></td>
+	<td class="summary">Removes a particle emitter from the active universe</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#LK3D.UpdateParticles">LK3D.UpdateParticles()</a></td>
+	<td class="summary">Updates all particle emitters on the active universe</td>
+	</tr>
+</table>
+
+<br/>
+<br/>
+
+
+    <h2 class="section-header "><a name="Functions"></a>Functions</h2>
+
+    <dl class="function">
+    <dt>
+    <a name = "LK3D.DeclareParticle"></a>
+    <strong>LK3D.DeclareParticle(name, proptbl)</strong>
+    </dt>
+    <dd>
+
+<!-- Added here by loka, im so shit at HTML & CSS :( -->
+
+
+
+    Declares a new particle type
+
+    </ul>
+    </ul>
+    </ul>
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">name</span>
+            <span class="types"><span class="type">string</span></span>
+         Name of the particle type
+        </li>
+        <li><span class="parameter">proptbl</span>
+            <span class="types"><span class="type">table</span></span>
+         Table of particle settings
+        </li>
+    </ul>
+
+
+
+
+    <h3>Usage:</h3>
+    <ul>
+        <pre class="example"><span class="comment">-- Generic example with all property parameters
+</span> LK3D.DeclareParticle(<span class="string">"snow_square"</span>, {
+  life = <span class="number">12</span>,
+  mat = <span class="string">"white"</span>,
+ })</pre>
+    </ul>
+
+</dd>
+    <dt>
+    <a name = "LK3D.AddParticleEmitter"></a>
+    <strong>LK3D.AddParticleEmitter(name, typeg, prop)</strong>
+    </dt>
+    <dd>
+
+<!-- Added here by loka, im so shit at HTML & CSS :( -->
+
+
+
+    Adds a particle emitter to the active universe
+
+    </ul>
+    </ul>
+    </ul>
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">name</span>
+            <span class="types"><span class="type">string</span></span>
+         Name of the particle emitter
+        </li>
+        <li><span class="parameter">typeg</span>
+            <span class="types"><span class="type">string</span></span>
+         Name of the particle type
+        </li>
+        <li><span class="parameter">prop</span>
+            <span class="types"><span class="type">table</span></span>
+         Struct holding all of the data for the particle emitter, refer to the usage
+        </li>
+    </ul>
+
+
+
+
+    <h3>Usage:</h3>
+    <ul>
+        <pre class="example"><span class="comment">-- Simple snow particles, extract from PONR
+</span>LK3D.AddParticleEmitter(<span class="string">"snow_emitter"</span>, <span class="string">"snow"</span>, {
+	start_col = {<span class="number">255</span>, <span class="number">255</span>, <span class="number">255</span>}, <span class="comment">-- start col
+</span>	end_col = {<span class="number">255</span>, <span class="number">255</span>, <span class="number">255</span>}, <span class="comment">-- end cos
+</span>	pos = Vector(<span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>), <span class="comment">-- position in world space of the emitter
+</span>	part_sz = .<span class="number">1</span>, <span class="comment">-- start size
+</span>	end_sz = .<span class="number">0</span>, <span class="comment">-- end size
+</span>	max = <span class="number">200</span>, <span class="comment">-- max particle count
+</span>	rate = <span class="number">0.05</span>, <span class="comment">-- delta per insert in curtime
+</span>	inserts = <span class="number">1</span>, <span class="comment">-- particles to insert per delta
+</span>	pos_off_min = Vector(-<span class="number">6.25</span>, -<span class="number">6.25</span>, <span class="number">8</span>), <span class="comment">-- start position offsets
+</span>	pos_off_max = Vector(<span class="number">6.25</span>, <span class="number">6.25</span>, <span class="number">8.5</span>),
+	vel_off_min = Vector(-<span class="number">1.5</span>, -<span class="number">1.5</span>, -<span class="number">10</span>), <span class="comment">-- vel offsets
+</span>	vel_off_max = Vector(<span class="number">1.5</span>, <span class="number">1.5</span>, -<span class="number">10.5</span>),
+	rotate_range = {-<span class="number">12</span>, <span class="number">12</span>}, <span class="comment">-- rate as to which to rotate in DEGREES
+</span>	grav = <span class="number">0</span>, <span class="comment">-- gravity
+</span>	lit = <span class="keyword">true</span>,
+	active = <span class="keyword">true</span>,
+})</pre>
+    </ul>
+
+</dd>
+    <dt>
+    <a name = "LK3D.UpdateParticleEmitterProp"></a>
+    <strong>LK3D.UpdateParticleEmitterProp(name, key, val)</strong>
+    </dt>
+    <dd>
+
+<!-- Added here by loka, im so shit at HTML & CSS :( -->
+
+
+
+    Updates a property on the particle emitter
+
+    </ul>
+    </ul>
+    </ul>
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">name</span>
+            <span class="types"><span class="type">string</span></span>
+         Name of the particle emitter
+        </li>
+        <li><span class="parameter">key</span>
+            <span class="types"><span class="type">string</span></span>
+         Parameter to set on the properties
+        </li>
+        <li><span class="parameter">val</span>
+         Value to set the parameter to
+        </li>
+    </ul>
+
+
+
+
+    <h3>Usage:</h3>
+    <ul>
+        <pre class="example">LK3D.UpdateParticleEmitterProp(<span class="string">"snow_emitter"</span>, <span class="string">"pos"</span>, Vector(<span class="number">0</span>, <span class="number">0</span>, <span class="number">16</span>))</pre>
+    </ul>
+
+</dd>
+    <dt>
+    <a name = "LK3D.RemoveActiveParticles"></a>
+    <strong>LK3D.RemoveActiveParticles(name)</strong>
+    </dt>
+    <dd>
+
+<!-- Added here by loka, im so shit at HTML & CSS :( -->
+
+
+
+    Removes all active particles from a particle emitter
+
+    </ul>
+    </ul>
+    </ul>
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">name</span>
+            <span class="types"><span class="type">string</span></span>
+         Name of the particle emitter
+        </li>
+    </ul>
+
+
+
+
+    <h3>Usage:</h3>
+    <ul>
+        <pre class="example">LK3D.RemoveActiveParticles(<span class="string">"snow_emitter"</span>)</pre>
+    </ul>
+
+</dd>
+    <dt>
+    <a name = "LK3D.RemoveParticleEmitter"></a>
+    <strong>LK3D.RemoveParticleEmitter(name)</strong>
+    </dt>
+    <dd>
+
+<!-- Added here by loka, im so shit at HTML & CSS :( -->
+
+
+
+    Removes a particle emitter from the active universe
+
+    </ul>
+    </ul>
+    </ul>
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">name</span>
+            <span class="types"><span class="type">string</span></span>
+         Name of the particle emitter
+        </li>
+    </ul>
+
+
+
+
+    <h3>Usage:</h3>
+    <ul>
+        <pre class="example">LK3D.RemoveParticleEmitter(<span class="string">"snow_emitter"</span>)</pre>
+    </ul>
+
+</dd>
+    <dt>
+    <a name = "LK3D.UpdateParticles"></a>
+    <strong>LK3D.UpdateParticles()</strong>
+    </dt>
+    <dd>
+
+<!-- Added here by loka, im so shit at HTML & CSS :( -->
+
+
+
+    Updates all particle emitters on the active universe
+
+    </ul>
+    </ul>
+    </ul>
+
+
+
+
+
+    <h3>Usage:</h3>
+    <ul>
+        <pre class="example"><span class="comment">-- On your think hook
+</span> LK3D.UpdateParticles()</pre>
+    </ul>
+
+</dd>
+</dl>
+
+
+</div> <!-- id="content" -->
+</div> <!-- id="main" -->
+<div id="about">
+<i>generated by <a href="http://github.com/lunarmodules/LDoc">LDoc 1.4.6</a></i>
+<i style="float:right;">Last updated 2024-04-20 11:40:03 </i>
+</div> <!-- id="about" -->
+</div> <!-- id="container" -->
+</body>
+</html>
+

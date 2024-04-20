@@ -1,0 +1,994 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+<head>
+    <title>LK3D Docs</title>
+    <link rel="stylesheet" href="../ldoc.css" type="text/css" />
+</head>
+<body>
+
+<div id="container">
+
+<div id="product">
+	<div id="product_logo"></div>
+	<div id="product_name"><big><b></b></big></div>
+	<div id="product_description"></div>
+</div> <!-- id="product" -->
+
+
+<div id="main">
+
+
+<!-- Menu -->
+
+<div id="navigation">
+<br/>
+<h1>LK3D</h1>
+
+
+<ul>
+  <li><a href="../index.html">Index</a></li>
+</ul>
+
+<h2>Contents</h2>
+<ul>
+<li><a href="#Functions">Functions</a></li>
+</ul>
+
+
+<h2>Modules</h2>
+<ul class="nowrap">
+  <li><a href="../modules/baseshaders.html">baseshaders</a></li>
+  <li><a href="../modules/camera.html">camera</a></li>
+  <li><a href="../modules/debugutils.html">debugutils</a></li>
+  <li><a href="../modules/dumps.html">dumps</a></li>
+  <li><a href="../modules/lights.html">lights</a></li>
+  <li><a href="../modules/lk3d.html">lk3d</a></li>
+  <li><a href="../modules/lkpack.html">lkpack</a></li>
+  <li><a href="../modules/modelutils.html">modelutils</a></li>
+  <li><a href="../modules/noise.html">noise</a></li>
+  <li><a href="../modules/notiflogger.html">notiflogger</a></li>
+  <li><a href="../modules/objects.html">objects</a></li>
+  <li><a href="../modules/particles.html">particles</a></li>
+  <li><strong>physics</strong></li>
+  <li><a href="../modules/procmodel.html">procmodel</a></li>
+  <li><a href="../modules/proctex.html">proctex</a></li>
+  <li><a href="../modules/radiosity.html">radiosity</a></li>
+  <li><a href="../modules/rendertarget.html">rendertarget</a></li>
+  <li><a href="../modules/textures.html">textures</a></li>
+  <li><a href="../modules/trace.html">trace</a></li>
+  <li><a href="../modules/universes.html">universes</a></li>
+</ul>
+<h2>Manual</h2>
+<ul class="nowrap">
+  <li><a href="../manual/animated-models.md.html">Animated Models</a></li>
+  <li><a href="../manual/base-shaders.md.html">Base Shaders</a></li>
+  <li><a href="../manual/concommand-list.md.html">ConCommand List</a></li>
+  <li><a href="../manual/lightmapper-radiosity.md.html">Lightmapping: Radiosity</a></li>
+  <li><a href="../manual/lkpack-basics.md.html">Basics of LKPack</a></li>
+  <li><a href="../manual/loading-lk3d.md.html">Loading LK3D</a></li>
+  <li><a href="../manual/object-flags.md.html">Object Flags</a></li>
+</ul>
+
+</div>
+
+<div id="content">
+
+<h1>Module <code>physics</code></h1>
+<p>
+<h2>Pure-lua physics engine, powered by <a href="https://github.com/0x1ED1CE/FPS">FPS</a></h2>
+<hr/>
+</p>
+<p>Module that simulates rigidbody physics on the client completely without using any source-engine features <br/>
+This internally just binds to <a href="https://github.com/0x1ED1CE/FPS">Free Physics Solver</a>, translating GMod types into its format &amp; viceversa <br/>
+It also currently only simulates boxes, although convex mesh support might be added at some point  </p>
+
+
+<h2><a href="#Functions">Functions</a></h2>
+<table class="function_list">
+	<tr>
+	<td class="name" nowrap><a href="#LK3D.SetUnivGravity">LK3D.SetUnivGravity(grav)</a></td>
+	<td class="summary">Sets the gravity of the active universe</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#LK3D.GetUnivGravity">LK3D.GetUnivGravity()</a></td>
+	<td class="summary">Gets the gravity of the active universe</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#LK3D.GetPhysicsBodyFromName">LK3D.GetPhysicsBodyFromName(name)</a></td>
+	<td class="summary">Gets a physics body by name</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#LK3D.GetPhysicsColliderFromName">LK3D.GetPhysicsColliderFromName(name)</a></td>
+	<td class="summary">Gets the collider of the physics body by name</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#LK3D.AddPhysicsBodyToUniv">LK3D.AddPhysicsBodyToUniv(name)</a></td>
+	<td class="summary">Adds a physics body to the active universe</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#LK3D.SetPhysicsBodyStatic">LK3D.SetPhysicsBodyStatic(name, static)</a></td>
+	<td class="summary">Sets whether a physics body is static or not</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#LK3D.GetPhysicsBodyStatic">LK3D.GetPhysicsBodyStatic(name)</a></td>
+	<td class="summary">Gets whether a physics body is static or not</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#LK3D.SetPhysicsBodyMass">LK3D.SetPhysicsBodyMass(name, mass)</a></td>
+	<td class="summary">Sets the mass of the physics body</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#LK3D.GetPhysicsBodyMass">LK3D.GetPhysicsBodyMass(name)</a></td>
+	<td class="summary">Gets the mass of the physics body</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#LK3D.SetPhysicsBodyPos">LK3D.SetPhysicsBodyPos(name, pos)</a></td>
+	<td class="summary">Sets the position of the physics body</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#LK3D.GetPhysicsBodyPos">LK3D.GetPhysicsBodyPos(name)</a></td>
+	<td class="summary">Gets the position of the physics body</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#LK3D.SetPhysicsBodyAng">LK3D.SetPhysicsBodyAng(name, ang)</a></td>
+	<td class="summary">Sets the angle of the physics body</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#LK3D.GetPhysicsBodyAng">LK3D.GetPhysicsBodyAng(name)</a></td>
+	<td class="summary">Gets the angle of the physics body</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#LK3D.SetPhysicsBodyMatrix">LK3D.SetPhysicsBodyMatrix(name, mat)</a></td>
+	<td class="summary">Sets the transform matrix of the physics body</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#LK3D.GetPhysicsBodyMatrix">LK3D.GetPhysicsBodyMatrix(name)</a></td>
+	<td class="summary">Gets the transform matrix of the physics body</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#LK3D.SetPhysicsBodyPosAng">LK3D.SetPhysicsBodyPosAng(name, pos, ang)</a></td>
+	<td class="summary">Sets the position and angle of the physics body</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#LK3D.SetPhysicsBodyScl">LK3D.SetPhysicsBodyScl(name, scl)</a></td>
+	<td class="summary">Sets the scale of the physics body</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#LK3D.GetPhysicsBodyScl">LK3D.GetPhysicsBodyScl(name)</a></td>
+	<td class="summary">Gets the scale of the physics body</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#LK3D.SetPhysicsBodyVel">LK3D.SetPhysicsBodyVel(name, vel)</a></td>
+	<td class="summary">Sets the velocity of the physics body</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#LK3D.GetPhysicsBodyBoundary">LK3D.GetPhysicsBodyBoundary(name)</a></td>
+	<td class="summary">Gets the AABB of the physics body</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#LK3D.RemovePhysicsBodyFromUniv">LK3D.RemovePhysicsBodyFromUniv(name)</a></td>
+	<td class="summary">Removes a physics body from the active universe</td>
+	</tr>
+</table>
+
+<br/>
+<br/>
+
+
+    <h2 class="section-header "><a name="Functions"></a>Functions</h2>
+
+    <dl class="function">
+    <dt>
+    <a name = "LK3D.SetUnivGravity"></a>
+    <strong>LK3D.SetUnivGravity(grav)</strong>
+    </dt>
+    <dd>
+
+<!-- Added here by loka, im so shit at HTML & CSS :( -->
+
+
+
+    Sets the gravity of the active universe
+
+    </ul>
+    </ul>
+    </ul>
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">grav</span>
+            <span class="types"><span class="type">vector</span></span>
+         Gravity
+        </li>
+    </ul>
+
+
+
+
+    <h3>Usage:</h3>
+    <ul>
+        <pre class="example">LK3D.SetUnivGravity(Vector(<span class="number">0</span>, <span class="number">0</span>, -<span class="number">100</span>)) <span class="comment">-- downwards gravity</span></pre>
+    </ul>
+
+</dd>
+    <dt>
+    <a name = "LK3D.GetUnivGravity"></a>
+    <strong>LK3D.GetUnivGravity()</strong>
+    </dt>
+    <dd>
+
+<!-- Added here by loka, im so shit at HTML & CSS :( -->
+
+
+
+    Gets the gravity of the active universe
+
+    </ul>
+    </ul>
+    </ul>
+
+
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><span class="type">vector</span></span>
+        Gravity of the active universe, nil if the physics universe is not initialized
+    </ol>
+
+
+
+    <h3>Usage:</h3>
+    <ul>
+        <pre class="example"><span class="keyword">local</span> grav = LK3D.SetUnivGravity()</pre>
+    </ul>
+
+</dd>
+    <dt>
+    <a name = "LK3D.GetPhysicsBodyFromName"></a>
+    <strong>LK3D.GetPhysicsBodyFromName(name)</strong>
+    </dt>
+    <dd>
+
+<!-- Added here by loka, im so shit at HTML & CSS :( -->
+        <div style="border:4px dotted rgb(153, 153, 153); background-color: rgb(233, 233, 233); padding-bottom:1em;">
+            <div style="text-align:left; text-indent:1em;"> <h2> INTERNAL </h2> </div>
+            <div style="text-align:left; text-indent:1em;"> This function is used internally, so you shouldn't use it unless you know what you're doing! </div>
+        </div> <br>
+
+
+
+    Gets a physics body by name
+
+    </ul>
+    </ul>
+    </ul>
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">name</span>
+            <span class="types"><span class="type">string</span></span>
+         Index name of the physics body
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><span class="type">table</span></span>
+        PhysicsBody, nil if not found
+    </ol>
+
+
+
+    <h3>Usage:</h3>
+    <ul>
+        <pre class="example"><span class="keyword">local</span> physObj = LK3D.GetPhysicsBodyFromName(<span class="string">"phys_lk"</span>)</pre>
+    </ul>
+
+</dd>
+    <dt>
+    <a name = "LK3D.GetPhysicsColliderFromName"></a>
+    <strong>LK3D.GetPhysicsColliderFromName(name)</strong>
+    </dt>
+    <dd>
+
+<!-- Added here by loka, im so shit at HTML & CSS :( -->
+        <div style="border:4px dotted rgb(153, 153, 153); background-color: rgb(233, 233, 233); padding-bottom:1em;">
+            <div style="text-align:left; text-indent:1em;"> <h2> INTERNAL </h2> </div>
+            <div style="text-align:left; text-indent:1em;"> This function is used internally, so you shouldn't use it unless you know what you're doing! </div>
+        </div> <br>
+
+
+
+    Gets the collider of the physics body by name
+
+    </ul>
+    </ul>
+    </ul>
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">name</span>
+            <span class="types"><span class="type">string</span></span>
+         Index name of the physics body
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><span class="type">table</span></span>
+        PhysicsCollider, nil if not found
+    </ol>
+
+
+
+    <h3>Usage:</h3>
+    <ul>
+        <pre class="example"><span class="keyword">local</span> physObj = LK3D.GetPhysicsColliderFromName(<span class="string">"phys_lk"</span>)</pre>
+    </ul>
+
+</dd>
+    <dt>
+    <a name = "LK3D.AddPhysicsBodyToUniv"></a>
+    <strong>LK3D.AddPhysicsBodyToUniv(name)</strong>
+    </dt>
+    <dd>
+
+<!-- Added here by loka, im so shit at HTML & CSS :( -->
+
+
+
+    Adds a physics body to the active universe
+
+    </ul>
+    </ul>
+    </ul>
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">name</span>
+            <span class="types"><span class="type">string</span></span>
+         Index name of the physics body
+        </li>
+    </ul>
+
+
+
+
+    <h3>Usage:</h3>
+    <ul>
+        <pre class="example">LK3D.AddPhysicsBodyToUniv(<span class="string">"phys_lk"</span>)</pre>
+    </ul>
+
+</dd>
+    <dt>
+    <a name = "LK3D.SetPhysicsBodyStatic"></a>
+    <strong>LK3D.SetPhysicsBodyStatic(name, static)</strong>
+    </dt>
+    <dd>
+
+<!-- Added here by loka, im so shit at HTML & CSS :( -->
+
+
+
+    Sets whether a physics body is static or not
+
+    </ul>
+    </ul>
+    </ul>
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">name</span>
+            <span class="types"><span class="type">string</span></span>
+         Index name of the physics body
+        </li>
+        <li><span class="parameter">static</span>
+            <span class="types"><span class="type">bool</span></span>
+         Whether the physics body should be static or not
+        </li>
+    </ul>
+
+
+
+
+    <h3>Usage:</h3>
+    <ul>
+        <pre class="example">LK3D.SetPhysicsBodyStatic(<span class="string">"phys_lk_floor"</span>, <span class="keyword">true</span>)</pre>
+    </ul>
+
+</dd>
+    <dt>
+    <a name = "LK3D.GetPhysicsBodyStatic"></a>
+    <strong>LK3D.GetPhysicsBodyStatic(name)</strong>
+    </dt>
+    <dd>
+
+<!-- Added here by loka, im so shit at HTML & CSS :( -->
+
+
+
+    Gets whether a physics body is static or not
+
+    </ul>
+    </ul>
+    </ul>
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">name</span>
+            <span class="types"><span class="type">string</span></span>
+         Index name of the physics body
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><span class="type">bool</span></span>
+        Whether the physics body is static or not, nil if not found
+    </ol>
+
+
+
+    <h3>Usage:</h3>
+    <ul>
+        <pre class="example"><span class="keyword">local</span> static = LK3D.GetPhysicsBodyStatic(<span class="string">"phys_lk_floor"</span>)</pre>
+    </ul>
+
+</dd>
+    <dt>
+    <a name = "LK3D.SetPhysicsBodyMass"></a>
+    <strong>LK3D.SetPhysicsBodyMass(name, mass)</strong>
+    </dt>
+    <dd>
+
+<!-- Added here by loka, im so shit at HTML & CSS :( -->
+
+
+
+    Sets the mass of the physics body
+
+    </ul>
+    </ul>
+    </ul>
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">name</span>
+            <span class="types"><span class="type">string</span></span>
+         Index name of the physics body
+        </li>
+        <li><span class="parameter">mass</span>
+            <span class="types"><span class="type">number</span></span>
+         Mass to set the physics body to
+        </li>
+    </ul>
+
+
+
+
+    <h3>Usage:</h3>
+    <ul>
+        <pre class="example">LK3D.SetPhysicsBodyMass(<span class="string">"phys_lk"</span>, <span class="number">16</span>)</pre>
+    </ul>
+
+</dd>
+    <dt>
+    <a name = "LK3D.GetPhysicsBodyMass"></a>
+    <strong>LK3D.GetPhysicsBodyMass(name)</strong>
+    </dt>
+    <dd>
+
+<!-- Added here by loka, im so shit at HTML & CSS :( -->
+
+
+
+    Gets the mass of the physics body
+
+    </ul>
+    </ul>
+    </ul>
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">name</span>
+            <span class="types"><span class="type">string</span></span>
+         Index name of the physics body
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><span class="type">number</span></span>
+        Mass of the physics body, nil if not found
+    </ol>
+
+
+
+    <h3>Usage:</h3>
+    <ul>
+        <pre class="example"><span class="keyword">local</span> mass = LK3D.GetPhysicsBodyMass(<span class="string">"phys_lk"</span>)</pre>
+    </ul>
+
+</dd>
+    <dt>
+    <a name = "LK3D.SetPhysicsBodyPos"></a>
+    <strong>LK3D.SetPhysicsBodyPos(name, pos)</strong>
+    </dt>
+    <dd>
+
+<!-- Added here by loka, im so shit at HTML & CSS :( -->
+
+
+
+    Sets the position of the physics body
+
+    </ul>
+    </ul>
+    </ul>
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">name</span>
+            <span class="types"><span class="type">string</span></span>
+         Index name of the physics body
+        </li>
+        <li><span class="parameter">pos</span>
+            <span class="types"><span class="type">vector</span></span>
+         Position to set the physics body to
+        </li>
+    </ul>
+
+
+
+
+    <h3>Usage:</h3>
+    <ul>
+        <pre class="example">LK3D.SetPhysicsBodyPos(<span class="string">"phys_lk_floor"</span>, Vector(<span class="number">0</span>, <span class="number">0</span>, -<span class="number">4</span>))</pre>
+    </ul>
+
+</dd>
+    <dt>
+    <a name = "LK3D.GetPhysicsBodyPos"></a>
+    <strong>LK3D.GetPhysicsBodyPos(name)</strong>
+    </dt>
+    <dd>
+
+<!-- Added here by loka, im so shit at HTML & CSS :( -->
+
+
+
+    Gets the position of the physics body
+
+    </ul>
+    </ul>
+    </ul>
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">name</span>
+            <span class="types"><span class="type">string</span></span>
+         Index name of the physics body
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><span class="type">vector</span></span>
+        Position of the physics body, nil if not found
+    </ol>
+
+
+
+    <h3>Usage:</h3>
+    <ul>
+        <pre class="example"><span class="keyword">local</span> bPos = LK3D.GetPhysicsBodyPos(<span class="string">"phys_lk"</span>)</pre>
+    </ul>
+
+</dd>
+    <dt>
+    <a name = "LK3D.SetPhysicsBodyAng"></a>
+    <strong>LK3D.SetPhysicsBodyAng(name, ang)</strong>
+    </dt>
+    <dd>
+
+<!-- Added here by loka, im so shit at HTML & CSS :( -->
+
+
+
+    Sets the angle of the physics body
+
+    </ul>
+    </ul>
+    </ul>
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">name</span>
+            <span class="types"><span class="type">string</span></span>
+         Index name of the physics body
+        </li>
+        <li><span class="parameter">ang</span>
+            <span class="types"><span class="type">angle</span></span>
+         Angle to set the physics body to
+        </li>
+    </ul>
+
+
+
+
+    <h3>Usage:</h3>
+    <ul>
+        <pre class="example">LK3D.SetPhysicsBodyAng(<span class="string">"phys_lk_floor"</span>, Angle(<span class="number">25</span>, <span class="number">0</span>, <span class="number">0</span>))</pre>
+    </ul>
+
+</dd>
+    <dt>
+    <a name = "LK3D.GetPhysicsBodyAng"></a>
+    <strong>LK3D.GetPhysicsBodyAng(name)</strong>
+    </dt>
+    <dd>
+
+<!-- Added here by loka, im so shit at HTML & CSS :( -->
+
+
+        <div style="border:4px dotted rgb(209, 143, 143); background-color: rgb(255, 173, 173); padding-bottom:1em;">
+            <div style="text-align:left; text-indent:1em;"> <h2> WARNING </h2> </div>
+            <div style="text-align:left; text-indent:1em;"> This function is currently unimplemented </div>
+        </div> <br>
+
+    Gets the angle of the physics body
+
+    </ul>
+    </ul>
+    </ul>
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">name</span>
+            <span class="types"><span class="type">string</span></span>
+         Index name of the physics body
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><span class="type">nil</span></span>
+        nothing, unimplemented
+    </ol>
+
+
+
+    <h3>Usage:</h3>
+    <ul>
+        <pre class="example"><span class="keyword">local</span> nothing = LK3D.GetPhysicsBodyAng(<span class="string">"phys_lk"</span>)</pre>
+    </ul>
+
+</dd>
+    <dt>
+    <a name = "LK3D.SetPhysicsBodyMatrix"></a>
+    <strong>LK3D.SetPhysicsBodyMatrix(name, mat)</strong>
+    </dt>
+    <dd>
+
+<!-- Added here by loka, im so shit at HTML & CSS :( -->
+
+
+
+    Sets the transform matrix of the physics body
+
+    </ul>
+    </ul>
+    </ul>
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">name</span>
+            <span class="types"><span class="type">string</span></span>
+         Index name of the physics body
+        </li>
+        <li><span class="parameter">mat</span>
+            <span class="types"><span class="type">matrix</span></span>
+         Transform <a href="https://wiki.facepunch.com/gmod/VMatrix">VMatrix</a>
+        </li>
+    </ul>
+
+
+
+
+    <h3>Usage:</h3>
+    <ul>
+        <pre class="example"><span class="keyword">local</span> matTransform = Matrix()
+matTransform:SetTranslation(Vector(<span class="number">0</span>, <span class="number">0</span>, <span class="number">4</span>))
+matTransform:SetAngles(Angle(<span class="number">45</span>, <span class="number">25</span>, <span class="number">15</span>))
+LK3D.SetPhysicsBodyMatrix(<span class="string">"phys_lk"</span>, matTransform)</pre>
+    </ul>
+
+</dd>
+    <dt>
+    <a name = "LK3D.GetPhysicsBodyMatrix"></a>
+    <strong>LK3D.GetPhysicsBodyMatrix(name)</strong>
+    </dt>
+    <dd>
+
+<!-- Added here by loka, im so shit at HTML & CSS :( -->
+
+
+
+    Gets the transform matrix of the physics body
+
+    </ul>
+    </ul>
+    </ul>
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">name</span>
+            <span class="types"><span class="type">string</span></span>
+         Index name of the physics body
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><span class="type">matrix</span></span>
+        Transform matrix of the physics body
+    </ol>
+
+
+
+    <h3>Usage:</h3>
+    <ul>
+        <pre class="example"><span class="keyword">local</span> matTransform = LK3D.GetPhysicsBodyMatrix(<span class="string">"phys_lk"</span>)</pre>
+    </ul>
+
+</dd>
+    <dt>
+    <a name = "LK3D.SetPhysicsBodyPosAng"></a>
+    <strong>LK3D.SetPhysicsBodyPosAng(name, pos, ang)</strong>
+    </dt>
+    <dd>
+
+<!-- Added here by loka, im so shit at HTML & CSS :( -->
+
+
+
+    Sets the position and angle of the physics body
+
+    </ul>
+    </ul>
+    </ul>
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">name</span>
+            <span class="types"><span class="type">string</span></span>
+         Index name of the physics body
+        </li>
+        <li><span class="parameter">pos</span>
+            <span class="types"><span class="type">vector</span></span>
+         Position to set the physics body to
+        </li>
+        <li><span class="parameter">ang</span>
+            <span class="types"><span class="type">angle</span></span>
+         Angle to set the physics body to
+        </li>
+    </ul>
+
+
+
+
+    <h3>Usage:</h3>
+    <ul>
+        <pre class="example">LK3D.SetPhysicsBodyPosAng(<span class="string">"phys_lk"</span>, Vector(<span class="number">0</span>, <span class="number">0</span>, <span class="number">4</span>), Angle(<span class="number">45</span>, <span class="number">25</span>, <span class="number">15</span>))</pre>
+    </ul>
+
+</dd>
+    <dt>
+    <a name = "LK3D.SetPhysicsBodyScl"></a>
+    <strong>LK3D.SetPhysicsBodyScl(name, scl)</strong>
+    </dt>
+    <dd>
+
+<!-- Added here by loka, im so shit at HTML & CSS :( -->
+
+
+
+    Sets the scale of the physics body
+
+    </ul>
+    </ul>
+    </ul>
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">name</span>
+            <span class="types"><span class="type">string</span></span>
+         Index name of the physics body
+        </li>
+        <li><span class="parameter">scl</span>
+            <span class="types"><span class="type">vector</span></span>
+         Scale to set the physics body to
+        </li>
+    </ul>
+
+
+
+
+    <h3>Usage:</h3>
+    <ul>
+        <pre class="example">LK3D.SetPhysicsBodyScl(<span class="string">"phys_lk_floor"</span>, Vector(<span class="number">16</span>, <span class="number">16</span>, <span class="number">1</span>)) <span class="comment">-- large objects are buggy on FPS, avoid this</span></pre>
+    </ul>
+
+</dd>
+    <dt>
+    <a name = "LK3D.GetPhysicsBodyScl"></a>
+    <strong>LK3D.GetPhysicsBodyScl(name)</strong>
+    </dt>
+    <dd>
+
+<!-- Added here by loka, im so shit at HTML & CSS :( -->
+
+
+
+    Gets the scale of the physics body
+
+    </ul>
+    </ul>
+    </ul>
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">name</span>
+            <span class="types"><span class="type">string</span></span>
+         Index name of the physics body
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><span class="type">vector</span></span>
+        Scale of the physics body
+    </ol>
+
+
+
+    <h3>Usage:</h3>
+    <ul>
+        <pre class="example"><span class="keyword">local</span> scl = LK3D.GetPhysicsBodyScl(<span class="string">"phys_lk_floor"</span>)</pre>
+    </ul>
+
+</dd>
+    <dt>
+    <a name = "LK3D.SetPhysicsBodyVel"></a>
+    <strong>LK3D.SetPhysicsBodyVel(name, vel)</strong>
+    </dt>
+    <dd>
+
+<!-- Added here by loka, im so shit at HTML & CSS :( -->
+
+
+
+    Sets the velocity of the physics body
+
+    </ul>
+    </ul>
+    </ul>
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">name</span>
+            <span class="types"><span class="type">string</span></span>
+         Index name of the physics body
+        </li>
+        <li><span class="parameter">vel</span>
+            <span class="types"><span class="type">vector</span></span>
+         Velocity to set the physics body to
+        </li>
+    </ul>
+
+
+
+
+    <h3>Usage:</h3>
+    <ul>
+        <pre class="example">LK3D.SetPhysicsBodyVel(<span class="string">"phys_lk"</span>, Vector(<span class="number">0</span>, <span class="number">0</span>, <span class="number">4</span>)) <span class="comment">-- up</span></pre>
+    </ul>
+
+</dd>
+    <dt>
+    <a name = "LK3D.GetPhysicsBodyBoundary"></a>
+    <strong>LK3D.GetPhysicsBodyBoundary(name)</strong>
+    </dt>
+    <dd>
+
+<!-- Added here by loka, im so shit at HTML & CSS :( -->
+
+
+
+    Gets the AABB of the physics body
+
+    </ul>
+    </ul>
+    </ul>
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">name</span>
+            <span class="types"><span class="type">string</span></span>
+         Index name of the physics body
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><span class="type">table</span></span>
+        AABB table, refer to usage
+    </ol>
+
+
+
+    <h3>Usage:</h3>
+    <ul>
+        <pre class="example"><span class="keyword">local</span> aabb = LK3D.GetPhysicsBodyBoundary(<span class="string">"phys_lk"</span>)
+<span class="keyword">local</span> mins = aabb[<span class="number">1</span>]
+<span class="keyword">local</span> maxs = aabb[<span class="number">2</span>]</pre>
+    </ul>
+
+</dd>
+    <dt>
+    <a name = "LK3D.RemovePhysicsBodyFromUniv"></a>
+    <strong>LK3D.RemovePhysicsBodyFromUniv(name)</strong>
+    </dt>
+    <dd>
+
+<!-- Added here by loka, im so shit at HTML & CSS :( -->
+
+
+
+    Removes a physics body from the active universe
+
+    </ul>
+    </ul>
+    </ul>
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">name</span>
+            <span class="types"><span class="type">string</span></span>
+         Index name of the physics body
+        </li>
+    </ul>
+
+
+
+
+    <h3>Usage:</h3>
+    <ul>
+        <pre class="example">LK3D.RemovePhysicsBodyFromUniv(<span class="string">"phys_lk"</span>)</pre>
+    </ul>
+
+</dd>
+</dl>
+
+
+</div> <!-- id="content" -->
+</div> <!-- id="main" -->
+<div id="about">
+<i>generated by <a href="http://github.com/lunarmodules/LDoc">LDoc 1.4.6</a></i>
+<i style="float:right;">Last updated 2024-04-20 11:40:03 </i>
+</div> <!-- id="about" -->
+</div> <!-- id="container" -->
+</body>
+</html>
+

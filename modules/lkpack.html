@@ -1,0 +1,362 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+<head>
+    <title>LK3D Docs</title>
+    <link rel="stylesheet" href="../ldoc.css" type="text/css" />
+</head>
+<body>
+
+<div id="container">
+
+<div id="product">
+	<div id="product_logo"></div>
+	<div id="product_name"><big><b></b></big></div>
+	<div id="product_description"></div>
+</div> <!-- id="product" -->
+
+
+<div id="main">
+
+
+<!-- Menu -->
+
+<div id="navigation">
+<br/>
+<h1>LK3D</h1>
+
+
+<ul>
+  <li><a href="../index.html">Index</a></li>
+</ul>
+
+<h2>Contents</h2>
+<ul>
+<li><a href="#Functions">Functions</a></li>
+</ul>
+
+
+<h2>Modules</h2>
+<ul class="nowrap">
+  <li><a href="../modules/baseshaders.html">baseshaders</a></li>
+  <li><a href="../modules/camera.html">camera</a></li>
+  <li><a href="../modules/debugutils.html">debugutils</a></li>
+  <li><a href="../modules/dumps.html">dumps</a></li>
+  <li><a href="../modules/lights.html">lights</a></li>
+  <li><a href="../modules/lk3d.html">lk3d</a></li>
+  <li><strong>lkpack</strong></li>
+  <li><a href="../modules/modelutils.html">modelutils</a></li>
+  <li><a href="../modules/noise.html">noise</a></li>
+  <li><a href="../modules/notiflogger.html">notiflogger</a></li>
+  <li><a href="../modules/objects.html">objects</a></li>
+  <li><a href="../modules/particles.html">particles</a></li>
+  <li><a href="../modules/physics.html">physics</a></li>
+  <li><a href="../modules/procmodel.html">procmodel</a></li>
+  <li><a href="../modules/proctex.html">proctex</a></li>
+  <li><a href="../modules/radiosity.html">radiosity</a></li>
+  <li><a href="../modules/rendertarget.html">rendertarget</a></li>
+  <li><a href="../modules/textures.html">textures</a></li>
+  <li><a href="../modules/trace.html">trace</a></li>
+  <li><a href="../modules/universes.html">universes</a></li>
+</ul>
+<h2>Manual</h2>
+<ul class="nowrap">
+  <li><a href="../manual/animated-models.md.html">Animated Models</a></li>
+  <li><a href="../manual/base-shaders.md.html">Base Shaders</a></li>
+  <li><a href="../manual/concommand-list.md.html">ConCommand List</a></li>
+  <li><a href="../manual/lightmapper-radiosity.md.html">Lightmapping: Radiosity</a></li>
+  <li><a href="../manual/lkpack-basics.md.html">Basics of LKPack</a></li>
+  <li><a href="../manual/loading-lk3d.md.html">Loading LK3D</a></li>
+  <li><a href="../manual/object-flags.md.html">Object Flags</a></li>
+</ul>
+
+</div>
+
+<div id="content">
+
+<h1>Module <code>lkpack</code></h1>
+<p>
+<h2>LK3D Data Archive</h2>
+<hr/>
+</p>
+<p>Module to handle LKPack, a method to pack data into a single .ain file for workshop <br/>
+It is highly recommended to read through the Basics of LKPack manual first before using these functions.</p>
+
+
+<h2><a href="#Functions">Functions</a></h2>
+<table class="function_list">
+	<tr>
+	<td class="name" nowrap><a href="#LK3D.MakeLKPack">LK3D.MakeLKPack(dir)</a></td>
+	<td class="summary">Creates an LKPack file from a dev directory</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#LK3D.LoadLKPack">LK3D.LoadLKPack(name)</a></td>
+	<td class="summary">Loads an LKPack and sets it as the active LKPack</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#LK3D.GetDataPathToFile">LK3D.GetDataPathToFile(path)</a></td>
+	<td class="summary">Gets the real filepath to a LKPack file</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#LK3D.ReadFileFromLKPack">LK3D.ReadFileFromLKPack(path)</a></td>
+	<td class="summary">Reads a file from LKPack</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#LK3D.OpenFileFromLKPack">LK3D.OpenFileFromLKPack(path, openMode)</a></td>
+	<td class="summary">Opens a file from LKPack</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#LK3D.PlayAudioFromLKPack">LK3D.PlayAudioFromLKPack(path, flags, callback)</a></td>
+	<td class="summary">Plays a sound file from LKPack</td>
+	</tr>
+</table>
+
+<br/>
+<br/>
+
+
+    <h2 class="section-header "><a name="Functions"></a>Functions</h2>
+
+    <dl class="function">
+    <dt>
+    <a name = "LK3D.MakeLKPack"></a>
+    <strong>LK3D.MakeLKPack(dir)</strong>
+    </dt>
+    <dd>
+
+<!-- Added here by loka, im so shit at HTML & CSS :( -->
+
+
+
+    Creates an LKPack file from a dev directory
+
+    </ul>
+    </ul>
+    </ul>
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">dir</span>
+            <span class="types"><span class="type">string</span></span>
+         Dev directory to turn into an LKPack
+        </li>
+    </ul>
+
+
+
+
+    <h3>Usage:</h3>
+    <ul>
+        <pre class="example">LK3D.MakeLKPack(<span class="string">"deepdive_content"</span>)</pre>
+    </ul>
+
+</dd>
+    <dt>
+    <a name = "LK3D.LoadLKPack"></a>
+    <strong>LK3D.LoadLKPack(name)</strong>
+    </dt>
+    <dd>
+
+<!-- Added here by loka, im so shit at HTML & CSS :( -->
+
+
+
+    Loads an LKPack and sets it as the active LKPack
+
+    </ul>
+    </ul>
+    </ul>
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">name</span>
+            <span class="types"><span class="type">string</span></span>
+         Name of the LKPack to load, relative to maps/
+        </li>
+    </ul>
+
+
+
+
+    <h3>Usage:</h3>
+    <ul>
+        <pre class="example">LK3D.LoadLKPack(<span class="string">"deepdive_content"</span>)</pre>
+    </ul>
+
+</dd>
+    <dt>
+    <a name = "LK3D.GetDataPathToFile"></a>
+    <strong>LK3D.GetDataPathToFile(path)</strong>
+    </dt>
+    <dd>
+
+<!-- Added here by loka, im so shit at HTML & CSS :( -->
+
+
+
+    Gets the real filepath to a LKPack file
+
+    </ul>
+    </ul>
+    </ul>
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">path</span>
+            <span class="types"><span class="type">string</span></span>
+         LKPack filepath where to get the real path
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><span class="type">string</span></span>
+        Real path to the file
+    </ol>
+
+
+
+    <h3>Usage:</h3>
+    <ul>
+        <pre class="example">LK3D.GetDataPathToFile(<span class="string">"models/dd_main/items/spray_can.obj"</span>)</pre>
+    </ul>
+
+</dd>
+    <dt>
+    <a name = "LK3D.ReadFileFromLKPack"></a>
+    <strong>LK3D.ReadFileFromLKPack(path)</strong>
+    </dt>
+    <dd>
+
+<!-- Added here by loka, im so shit at HTML & CSS :( -->
+
+
+
+    Reads a file from LKPack
+
+    </ul>
+    </ul>
+    </ul>
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">path</span>
+            <span class="types"><span class="type">string</span></span>
+         LKPack filepath where to read the file
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><span class="type">string</span></span>
+        Contents of the file, nil if not found
+    </ol>
+
+
+
+    <h3>Usage:</h3>
+    <ul>
+        <pre class="example">LK3D.ReadFileFromLKPack(<span class="string">"models/ponr_main/revolver/revolver_bakeduvs.obj"</span>)</pre>
+    </ul>
+
+</dd>
+    <dt>
+    <a name = "LK3D.OpenFileFromLKPack"></a>
+    <strong>LK3D.OpenFileFromLKPack(path, openMode)</strong>
+    </dt>
+    <dd>
+
+<!-- Added here by loka, im so shit at HTML & CSS :( -->
+
+
+
+    Opens a file from LKPack
+
+    </ul>
+    </ul>
+    </ul>
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">path</span>
+            <span class="types"><span class="type">string</span></span>
+         LKPack filepath where to open the file
+        </li>
+        <li><span class="parameter">openMode</span>
+            <span class="types"><span class="type">string</span></span>
+         The file open mode, ex. "rb"
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><span class="type">file_class</span></span>
+        File pointer, nil if not found
+    </ol>
+
+
+
+    <h3>Usage:</h3>
+    <ul>
+        <pre class="example">LK3D.OpenFileFromLKPack(<span class="string">"ponr_keyframes/intro/camera.lkf"</span>)</pre>
+    </ul>
+
+</dd>
+    <dt>
+    <a name = "LK3D.PlayAudioFromLKPack"></a>
+    <strong>LK3D.PlayAudioFromLKPack(path, flags, callback)</strong>
+    </dt>
+    <dd>
+
+<!-- Added here by loka, im so shit at HTML & CSS :( -->
+
+
+
+    Plays a sound file from LKPack
+
+    </ul>
+    </ul>
+    </ul>
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">path</span>
+            <span class="types"><span class="type">string</span></span>
+         LKPack filepath to the sound
+        </li>
+        <li><span class="parameter">flags</span>
+            <span class="types"><span class="type">string</span></span>
+         Sound flags, refer to <a href="https://wiki.facepunch.com/gmod/sound.PlayFile">sound.PlayFile</a>
+        </li>
+        <li><span class="parameter">callback</span>
+            <span class="types"><span class="type">function</span></span>
+         Callback to execute once loaded
+        </li>
+    </ul>
+
+
+
+
+    <h3>Usage:</h3>
+    <ul>
+        <pre class="example">LK3D.PlayAudioFromLKPack(<span class="string">"sound/ponr_main/revolver/revolver_fire.wav"</span>)</pre>
+    </ul>
+
+</dd>
+</dl>
+
+
+</div> <!-- id="content" -->
+</div> <!-- id="main" -->
+<div id="about">
+<i>generated by <a href="http://github.com/lunarmodules/LDoc">LDoc 1.4.6</a></i>
+<i style="float:right;">Last updated 2024-04-20 11:40:03 </i>
+</div> <!-- id="about" -->
+</div> <!-- id="container" -->
+</body>
+</html>
+

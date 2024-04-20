@@ -1,0 +1,829 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+<head>
+    <title>LK3D Docs</title>
+    <link rel="stylesheet" href="../ldoc.css" type="text/css" />
+</head>
+<body>
+
+<div id="container">
+
+<div id="product">
+	<div id="product_logo"></div>
+	<div id="product_name"><big><b></b></big></div>
+	<div id="product_description"></div>
+</div> <!-- id="product" -->
+
+
+<div id="main">
+
+
+<!-- Menu -->
+
+<div id="navigation">
+<br/>
+<h1>LK3D</h1>
+
+
+<ul>
+  <li><a href="../index.html">Index</a></li>
+</ul>
+
+<h2>Contents</h2>
+<ul>
+<li><a href="#Functions">Functions</a></li>
+</ul>
+
+
+<h2>Modules</h2>
+<ul class="nowrap">
+  <li><a href="../modules/baseshaders.html">baseshaders</a></li>
+  <li><a href="../modules/camera.html">camera</a></li>
+  <li><a href="../modules/debugutils.html">debugutils</a></li>
+  <li><a href="../modules/dumps.html">dumps</a></li>
+  <li><a href="../modules/lights.html">lights</a></li>
+  <li><a href="../modules/lk3d.html">lk3d</a></li>
+  <li><a href="../modules/lkpack.html">lkpack</a></li>
+  <li><a href="../modules/modelutils.html">modelutils</a></li>
+  <li><a href="../modules/noise.html">noise</a></li>
+  <li><a href="../modules/notiflogger.html">notiflogger</a></li>
+  <li><strong>objects</strong></li>
+  <li><a href="../modules/particles.html">particles</a></li>
+  <li><a href="../modules/physics.html">physics</a></li>
+  <li><a href="../modules/procmodel.html">procmodel</a></li>
+  <li><a href="../modules/proctex.html">proctex</a></li>
+  <li><a href="../modules/radiosity.html">radiosity</a></li>
+  <li><a href="../modules/rendertarget.html">rendertarget</a></li>
+  <li><a href="../modules/textures.html">textures</a></li>
+  <li><a href="../modules/trace.html">trace</a></li>
+  <li><a href="../modules/universes.html">universes</a></li>
+</ul>
+<h2>Manual</h2>
+<ul class="nowrap">
+  <li><a href="../manual/animated-models.md.html">Animated Models</a></li>
+  <li><a href="../manual/base-shaders.md.html">Base Shaders</a></li>
+  <li><a href="../manual/concommand-list.md.html">ConCommand List</a></li>
+  <li><a href="../manual/lightmapper-radiosity.md.html">Lightmapping: Radiosity</a></li>
+  <li><a href="../manual/lkpack-basics.md.html">Basics of LKPack</a></li>
+  <li><a href="../manual/loading-lk3d.md.html">Loading LK3D</a></li>
+  <li><a href="../manual/object-flags.md.html">Object Flags</a></li>
+</ul>
+
+</div>
+
+<div id="content">
+
+<h1>Module <code>objects</code></h1>
+<p>
+<h2>Manages objects</h2>
+<hr/>
+</p>
+<p>Module to create / update / delete objects on the active universe   </p>
+
+
+<h2><a href="#Functions">Functions</a></h2>
+<table class="function_list">
+	<tr>
+	<td class="name" nowrap><a href="#LK3D.AddObjectToUniverse">LK3D.AddObjectToUniverse(index, mdl, pos, ang)</a></td>
+	<td class="summary">Adds an object to the active universe</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#LK3D.RemoveObjectFromUniverse">LK3D.RemoveObjectFromUniverse(index)</a></td>
+	<td class="summary">Removes an object from the active universe</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#LK3D.SetObjectMat">LK3D.SetObjectMat(index, mat)</a></td>
+	<td class="summary">Sets the material of an object</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#LK3D.SetObjectCol">LK3D.SetObjectCol(index, col)</a></td>
+	<td class="summary">Sets the colour of an object</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#LK3D.SetObjectPos">LK3D.SetObjectPos(index, pos)</a></td>
+	<td class="summary">Sets the position of an object</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#LK3D.SetObjectAng">LK3D.SetObjectAng(index, ang)</a></td>
+	<td class="summary">Sets the angle of an object</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#LK3D.SetObjectPosAng">LK3D.SetObjectPosAng(index, pos, ang)</a></td>
+	<td class="summary">Sets the position and angle of an object</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#LK3D.SetObjectScale">LK3D.SetObjectScale(index, scale)</a></td>
+	<td class="summary">Sets the scale of the object</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#LK3D.SetObjectModel">LK3D.SetObjectModel(index, mdl)</a></td>
+	<td class="summary">Sets the model of the object</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#LK3D.SetObjectFlag">LK3D.SetObjectFlag(index, flag, value)</a></td>
+	<td class="summary">Sets a flag on the object, refer to the Object Flags manual</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#LK3D.SetObjectHide">LK3D.SetObjectHide(index, bool)</a></td>
+	<td class="summary">Hides the object from rendering, can still render individually</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#LK3D.DeclareObjectAnim">LK3D.DeclareObjectAnim(index, an_index, frames, func)</a></td>
+	<td class="summary">Declares an object animation from a function</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#LK3D.SetObjectAnim">LK3D.SetObjectAnim(index, an_index)</a></td>
+	<td class="summary">Sets the animation of an object with an animated model</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#LK3D.SetObjectAnimRate">LK3D.SetObjectAnimRate(index, rate)</a></td>
+	<td class="summary">Sets the speed of an animation on an object</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#LK3D.SetObjectAnimPlay">LK3D.SetObjectAnimPlay(index, bool)</a></td>
+	<td class="summary">Sets whether the animation of an object should play or not</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#LK3D.SetObjectAnimDelta">LK3D.SetObjectAnimDelta(index, delta)</a></td>
+	<td class="summary">Sets the current delta (time) of the object's animation</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#LK3D.GetObjectAnimDelta">LK3D.GetObjectAnimDelta(index)</a></td>
+	<td class="summary">Gets the current delta (time) of an object's animation</td>
+	</tr>
+</table>
+
+<br/>
+<br/>
+
+
+    <h2 class="section-header "><a name="Functions"></a>Functions</h2>
+
+    <dl class="function">
+    <dt>
+    <a name = "LK3D.AddObjectToUniverse"></a>
+    <strong>LK3D.AddObjectToUniverse(index, mdl, pos, ang)</strong>
+    </dt>
+    <dd>
+
+<!-- Added here by loka, im so shit at HTML & CSS :( -->
+
+
+
+    Adds an object to the active universe
+
+    </ul>
+    </ul>
+    </ul>
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">index</span>
+            <span class="types"><span class="type">string</span></span>
+         Index tag of the object
+        </li>
+        <li><span class="parameter">mdl</span>
+            <span class="types"><span class="type">string</span></span>
+         LK3D model of the object
+        </li>
+        <li><span class="parameter">pos</span>
+            <span class="types">optional <span class="type">vector</span></span>
+         Position to set the object to
+        </li>
+        <li><span class="parameter">ang</span>
+            <span class="types">optional <span class="type">vector</span></span>
+         Angle to set the object to
+        </li>
+    </ul>
+
+
+
+
+    <h3>Usage:</h3>
+    <ul>
+        <pre class="example">LK3D.AddObjectToUniverse(<span class="string">"cube1"</span>, <span class="string">"cube_nuv"</span>)</pre>
+    </ul>
+
+</dd>
+    <dt>
+    <a name = "LK3D.RemoveObjectFromUniverse"></a>
+    <strong>LK3D.RemoveObjectFromUniverse(index)</strong>
+    </dt>
+    <dd>
+
+<!-- Added here by loka, im so shit at HTML & CSS :( -->
+
+
+
+    Removes an object from the active universe
+
+    </ul>
+    </ul>
+    </ul>
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">index</span>
+            <span class="types"><span class="type">string</span></span>
+         Index tag of the object
+        </li>
+    </ul>
+
+
+
+
+    <h3>Usage:</h3>
+    <ul>
+        <pre class="example">LK3D.RemoveObjectFromUniverse(<span class="string">"cube1"</span>)</pre>
+    </ul>
+
+</dd>
+    <dt>
+    <a name = "LK3D.SetObjectMat"></a>
+    <strong>LK3D.SetObjectMat(index, mat)</strong>
+    </dt>
+    <dd>
+
+<!-- Added here by loka, im so shit at HTML & CSS :( -->
+
+
+
+    Sets the material of an object
+
+    </ul>
+    </ul>
+    </ul>
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">index</span>
+            <span class="types"><span class="type">string</span></span>
+         Index tag of the object
+        </li>
+        <li><span class="parameter">mat</span>
+            <span class="types"><span class="type">string</span></span>
+         Material name
+        </li>
+    </ul>
+
+
+
+
+    <h3>Usage:</h3>
+    <ul>
+        <pre class="example">LK3D.SetObjectMat(<span class="string">"cube1"</span>, <span class="string">"checker"</span>)</pre>
+    </ul>
+
+</dd>
+    <dt>
+    <a name = "LK3D.SetObjectCol"></a>
+    <strong>LK3D.SetObjectCol(index, col)</strong>
+    </dt>
+    <dd>
+
+<!-- Added here by loka, im so shit at HTML & CSS :( -->
+
+
+
+    Sets the colour of an object
+
+    </ul>
+    </ul>
+    </ul>
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">index</span>
+            <span class="types"><span class="type">string</span></span>
+         Index tag of the object
+        </li>
+        <li><span class="parameter">col</span>
+            <span class="types"><span class="type">color</span></span>
+         New colour
+        </li>
+    </ul>
+
+
+
+
+    <h3>Usage:</h3>
+    <ul>
+        <pre class="example">LK3D.SetObjectCol(<span class="string">"cube1"</span>, Color(<span class="number">64</span>, <span class="number">128</span>, <span class="number">255</span>))</pre>
+    </ul>
+
+</dd>
+    <dt>
+    <a name = "LK3D.SetObjectPos"></a>
+    <strong>LK3D.SetObjectPos(index, pos)</strong>
+    </dt>
+    <dd>
+
+<!-- Added here by loka, im so shit at HTML & CSS :( -->
+
+
+
+    Sets the position of an object
+
+    </ul>
+    </ul>
+    </ul>
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">index</span>
+            <span class="types"><span class="type">string</span></span>
+         Index tag of the object
+        </li>
+        <li><span class="parameter">pos</span>
+            <span class="types"><span class="type">vector</span></span>
+         New position
+        </li>
+    </ul>
+
+
+
+
+    <h3>Usage:</h3>
+    <ul>
+        <pre class="example">LK3D.SetObjectPos(<span class="string">"cube1"</span>, Vector(<span class="number">0</span>, <span class="number">0</span>, <span class="number">1</span>))</pre>
+    </ul>
+
+</dd>
+    <dt>
+    <a name = "LK3D.SetObjectAng"></a>
+    <strong>LK3D.SetObjectAng(index, ang)</strong>
+    </dt>
+    <dd>
+
+<!-- Added here by loka, im so shit at HTML & CSS :( -->
+
+
+
+    Sets the angle of an object
+
+    </ul>
+    </ul>
+    </ul>
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">index</span>
+            <span class="types"><span class="type">string</span></span>
+         Index tag of the object
+        </li>
+        <li><span class="parameter">ang</span>
+            <span class="types"><span class="type">angle</span></span>
+         New angle
+        </li>
+    </ul>
+
+
+
+
+    <h3>Usage:</h3>
+    <ul>
+        <pre class="example">LK3D.SetObjectAng(<span class="string">"cube1"</span>, Angle(<span class="number">0</span>, <span class="number">0</span>, <span class="number">90</span>))</pre>
+    </ul>
+
+</dd>
+    <dt>
+    <a name = "LK3D.SetObjectPosAng"></a>
+    <strong>LK3D.SetObjectPosAng(index, pos, ang)</strong>
+    </dt>
+    <dd>
+
+<!-- Added here by loka, im so shit at HTML & CSS :( -->
+
+
+
+    Sets the position and angle of an object
+
+    </ul>
+    </ul>
+    </ul>
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">index</span>
+            <span class="types"><span class="type">string</span></span>
+         Index tag of the object
+        </li>
+        <li><span class="parameter">pos</span>
+            <span class="types">optional <span class="type">vector</span></span>
+         New position
+        </li>
+        <li><span class="parameter">ang</span>
+            <span class="types">optional <span class="type">angle</span></span>
+         New angle
+        </li>
+    </ul>
+
+
+
+
+    <h3>Usage:</h3>
+    <ul>
+        <pre class="example">LK3D.SetObjectPosAng(<span class="string">"cube1"</span>, Vector(<span class="number">0</span>, <span class="number">0</span>, <span class="number">1</span>), Angle(<span class="number">0</span>, <span class="number">0</span>, <span class="number">90</span>))</pre>
+    </ul>
+
+</dd>
+    <dt>
+    <a name = "LK3D.SetObjectScale"></a>
+    <strong>LK3D.SetObjectScale(index, scale)</strong>
+    </dt>
+    <dd>
+
+<!-- Added here by loka, im so shit at HTML & CSS :( -->
+
+
+
+    Sets the scale of the object
+
+    </ul>
+    </ul>
+    </ul>
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">index</span>
+            <span class="types"><span class="type">string</span></span>
+         Index tag of the object
+        </li>
+        <li><span class="parameter">scale</span>
+            <span class="types"><span class="type">vector</span></span>
+         New scale
+        </li>
+    </ul>
+
+
+
+
+    <h3>Usage:</h3>
+    <ul>
+        <pre class="example">LK3D.SetObjectScale(<span class="string">"cube1"</span>, Vector(.<span class="number">25</span>, .<span class="number">25</span>, <span class="number">1</span>))</pre>
+    </ul>
+
+</dd>
+    <dt>
+    <a name = "LK3D.SetObjectModel"></a>
+    <strong>LK3D.SetObjectModel(index, mdl)</strong>
+    </dt>
+    <dd>
+
+<!-- Added here by loka, im so shit at HTML & CSS :( -->
+
+
+
+    Sets the model of the object
+
+    </ul>
+    </ul>
+    </ul>
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">index</span>
+            <span class="types"><span class="type">string</span></span>
+         Index tag of the object
+        </li>
+        <li><span class="parameter">mdl</span>
+            <span class="types"><span class="type">string</span></span>
+         New model, sets to "fail" if not found
+        </li>
+    </ul>
+
+
+
+
+    <h3>Usage:</h3>
+    <ul>
+        <pre class="example">LK3D.SetObjectModel(<span class="string">"cube1"</span>, <span class="string">"cube_hd"</span>)</pre>
+    </ul>
+
+</dd>
+    <dt>
+    <a name = "LK3D.SetObjectFlag"></a>
+    <strong>LK3D.SetObjectFlag(index, flag, value)</strong>
+    </dt>
+    <dd>
+
+<!-- Added here by loka, im so shit at HTML & CSS :( -->
+
+
+
+    Sets a flag on the object, refer to the Object Flags manual
+
+    </ul>
+    </ul>
+    </ul>
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">index</span>
+            <span class="types"><span class="type">string</span></span>
+         Index tag of the object
+        </li>
+        <li><span class="parameter">flag</span>
+            <span class="types"><span class="type">string</span></span>
+         Flag index
+        </li>
+        <li><span class="parameter">value</span>
+         Value to set the flag to
+        </li>
+    </ul>
+
+
+
+
+    <h3>Usage:</h3>
+    <ul>
+        <pre class="example">LK3D.SetObjectFlag(<span class="string">"cube1"</span>, <span class="string">"NO_SHADING"</span>, <span class="keyword">true</span>)</pre>
+    </ul>
+
+</dd>
+    <dt>
+    <a name = "LK3D.SetObjectHide"></a>
+    <strong>LK3D.SetObjectHide(index, bool)</strong>
+    </dt>
+    <dd>
+
+<!-- Added here by loka, im so shit at HTML & CSS :( -->
+
+
+
+    Hides the object from rendering, can still render individually
+
+    </ul>
+    </ul>
+    </ul>
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">index</span>
+            <span class="types"><span class="type">string</span></span>
+         Index tag of the object
+        </li>
+        <li><span class="parameter">bool</span>
+            <span class="types"><span class="type">bool</span></span>
+         Should hide
+        </li>
+    </ul>
+
+
+
+
+    <h3>Usage:</h3>
+    <ul>
+        <pre class="example">LK3D.SetObjectHide(<span class="string">"cube1"</span>, <span class="keyword">true</span>)</pre>
+    </ul>
+
+</dd>
+    <dt>
+    <a name = "LK3D.DeclareObjectAnim"></a>
+    <strong>LK3D.DeclareObjectAnim(index, an_index, frames, func)</strong>
+    </dt>
+    <dd>
+
+<!-- Added here by loka, im so shit at HTML & CSS :( -->
+
+
+
+    Declares an object animation from a function
+
+    </ul>
+    </ul>
+    </ul>
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">index</span>
+            <span class="types"><span class="type">string</span></span>
+         Index tag of the object
+        </li>
+        <li><span class="parameter">an_index</span>
+            <span class="types"><span class="type">string</span></span>
+         New animation index
+        </li>
+        <li><span class="parameter">frames</span>
+            <span class="types"><span class="type">number</span></span>
+         Frame count of the new animation
+        </li>
+        <li><span class="parameter">func</span>
+            <span class="types"><span class="type">function</span></span>
+         Animation function
+        </li>
+    </ul>
+
+
+
+
+    <h3>Usage:</h3>
+    <ul>
+        <pre class="example"><span class="comment">-- This animation will do nothing
+</span><span class="comment">-- Refer to a TBD manual for more reference on this, or ask Lokachop
+</span>LK3D.DeclareObjectAnim(<span class="string">"cube1"</span>, <span class="string">"test_hello"</span>, <span class="number">32</span>, <span class="keyword">function</span>() <span class="keyword">end</span>)</pre>
+    </ul>
+
+</dd>
+    <dt>
+    <a name = "LK3D.SetObjectAnim"></a>
+    <strong>LK3D.SetObjectAnim(index, an_index)</strong>
+    </dt>
+    <dd>
+
+<!-- Added here by loka, im so shit at HTML & CSS :( -->
+
+
+
+    Sets the animation of an object with an animated model
+
+    </ul>
+    </ul>
+    </ul>
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">index</span>
+            <span class="types"><span class="type">string</span></span>
+         Index tag of the object
+        </li>
+        <li><span class="parameter">an_index</span>
+            <span class="types"><span class="type">string</span></span>
+         Index of the animation
+        </li>
+    </ul>
+
+
+
+
+    <h3>Usage:</h3>
+    <ul>
+        <pre class="example">LK3D.SetObjectAnim(<span class="string">"human_ponr"</span>, <span class="string">"walkin"</span>)</pre>
+    </ul>
+
+</dd>
+    <dt>
+    <a name = "LK3D.SetObjectAnimRate"></a>
+    <strong>LK3D.SetObjectAnimRate(index, rate)</strong>
+    </dt>
+    <dd>
+
+<!-- Added here by loka, im so shit at HTML & CSS :( -->
+
+
+
+    Sets the speed of an animation on an object
+
+    </ul>
+    </ul>
+    </ul>
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">index</span>
+            <span class="types"><span class="type">string</span></span>
+         Index tag of the object
+        </li>
+        <li><span class="parameter">rate</span>
+            <span class="types"><span class="type">number</span></span>
+         Rate (speed) of the animation
+        </li>
+    </ul>
+
+
+
+
+    <h3>Usage:</h3>
+    <ul>
+        <pre class="example">LK3D.SetObjectAnimRate(<span class="string">"human_ponr"</span>, <span class="number">24</span>) <span class="comment">-- Please refer to LK3D.AnimFrameDiv</span></pre>
+    </ul>
+
+</dd>
+    <dt>
+    <a name = "LK3D.SetObjectAnimPlay"></a>
+    <strong>LK3D.SetObjectAnimPlay(index, bool)</strong>
+    </dt>
+    <dd>
+
+<!-- Added here by loka, im so shit at HTML & CSS :( -->
+
+
+
+    Sets whether the animation of an object should play or not
+
+    </ul>
+    </ul>
+    </ul>
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">index</span>
+            <span class="types"><span class="type">string</span></span>
+         Index tag of the object
+        </li>
+        <li><span class="parameter">bool</span>
+            <span class="types"><span class="type">bool</span></span>
+         Should play?
+        </li>
+    </ul>
+
+
+
+
+    <h3>Usage:</h3>
+    <ul>
+        <pre class="example">LK3D.SetObjectAnimPlay(<span class="string">"human_ponr"</span>, <span class="keyword">true</span>)</pre>
+    </ul>
+
+</dd>
+    <dt>
+    <a name = "LK3D.SetObjectAnimDelta"></a>
+    <strong>LK3D.SetObjectAnimDelta(index, delta)</strong>
+    </dt>
+    <dd>
+
+<!-- Added here by loka, im so shit at HTML & CSS :( -->
+
+
+
+    Sets the current delta (time) of the object's animation
+
+    </ul>
+    </ul>
+    </ul>
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">index</span>
+            <span class="types"><span class="type">string</span></span>
+         Index tag of the object
+        </li>
+        <li><span class="parameter">delta</span>
+            <span class="types"><span class="type">number</span></span>
+         Delta to set, between 0 and 1
+        </li>
+    </ul>
+
+
+
+
+    <h3>Usage:</h3>
+    <ul>
+        <pre class="example">LK3D.SetObjectAnimDelta(<span class="string">"human_ponr"</span>, <span class="number">0.25</span>)</pre>
+    </ul>
+
+</dd>
+    <dt>
+    <a name = "LK3D.GetObjectAnimDelta"></a>
+    <strong>LK3D.GetObjectAnimDelta(index)</strong>
+    </dt>
+    <dd>
+
+<!-- Added here by loka, im so shit at HTML & CSS :( -->
+
+
+
+    Gets the current delta (time) of an object's animation
+
+    </ul>
+    </ul>
+    </ul>
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">index</span>
+            <span class="types"><span class="type">string</span></span>
+         Index tag of the object
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><span class="type">number</span></span>
+        Delta of the animation, between 0 and 1
+    </ol>
+
+
+
+    <h3>Usage:</h3>
+    <ul>
+        <pre class="example"><span class="keyword">local</span> delta = LK3D.GetObjectAnimDelta(<span class="string">"human_ponr"</span>)</pre>
+    </ul>
+
+</dd>
+</dl>
+
+
+</div> <!-- id="content" -->
+</div> <!-- id="main" -->
+<div id="about">
+<i>generated by <a href="http://github.com/lunarmodules/LDoc">LDoc 1.4.6</a></i>
+<i style="float:right;">Last updated 2024-04-20 11:40:03 </i>
+</div> <!-- id="about" -->
+</div> <!-- id="container" -->
+</body>
+</html>
+

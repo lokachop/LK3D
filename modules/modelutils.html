@@ -1,0 +1,905 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+<head>
+    <title>LK3D Docs</title>
+    <link rel="stylesheet" href="../ldoc.css" type="text/css" />
+</head>
+<body>
+
+<div id="container">
+
+<div id="product">
+	<div id="product_logo"></div>
+	<div id="product_name"><big><b></b></big></div>
+	<div id="product_description"></div>
+</div> <!-- id="product" -->
+
+
+<div id="main">
+
+
+<!-- Menu -->
+
+<div id="navigation">
+<br/>
+<h1>LK3D</h1>
+
+
+<ul>
+  <li><a href="../index.html">Index</a></li>
+</ul>
+
+<h2>Contents</h2>
+<ul>
+<li><a href="#Functions">Functions</a></li>
+</ul>
+
+
+<h2>Modules</h2>
+<ul class="nowrap">
+  <li><a href="../modules/baseshaders.html">baseshaders</a></li>
+  <li><a href="../modules/camera.html">camera</a></li>
+  <li><a href="../modules/debugutils.html">debugutils</a></li>
+  <li><a href="../modules/dumps.html">dumps</a></li>
+  <li><a href="../modules/lights.html">lights</a></li>
+  <li><a href="../modules/lk3d.html">lk3d</a></li>
+  <li><a href="../modules/lkpack.html">lkpack</a></li>
+  <li><strong>modelutils</strong></li>
+  <li><a href="../modules/noise.html">noise</a></li>
+  <li><a href="../modules/notiflogger.html">notiflogger</a></li>
+  <li><a href="../modules/objects.html">objects</a></li>
+  <li><a href="../modules/particles.html">particles</a></li>
+  <li><a href="../modules/physics.html">physics</a></li>
+  <li><a href="../modules/procmodel.html">procmodel</a></li>
+  <li><a href="../modules/proctex.html">proctex</a></li>
+  <li><a href="../modules/radiosity.html">radiosity</a></li>
+  <li><a href="../modules/rendertarget.html">rendertarget</a></li>
+  <li><a href="../modules/textures.html">textures</a></li>
+  <li><a href="../modules/trace.html">trace</a></li>
+  <li><a href="../modules/universes.html">universes</a></li>
+</ul>
+<h2>Manual</h2>
+<ul class="nowrap">
+  <li><a href="../manual/animated-models.md.html">Animated Models</a></li>
+  <li><a href="../manual/base-shaders.md.html">Base Shaders</a></li>
+  <li><a href="../manual/concommand-list.md.html">ConCommand List</a></li>
+  <li><a href="../manual/lightmapper-radiosity.md.html">Lightmapping: Radiosity</a></li>
+  <li><a href="../manual/lkpack-basics.md.html">Basics of LKPack</a></li>
+  <li><a href="../manual/loading-lk3d.md.html">Loading LK3D</a></li>
+  <li><a href="../manual/object-flags.md.html">Object Flags</a></li>
+</ul>
+
+</div>
+
+<div id="content">
+
+<h1>Module <code>modelutils</code></h1>
+<p>
+<h2>Model Utilities</h2>
+<hr/>
+</p>
+<p>Module that contains a bunch of helper model functions  </p>
+
+
+<h2><a href="#Functions">Functions</a></h2>
+<table class="function_list">
+	<tr>
+	<td class="name" nowrap><a href="#LK3D.GenerateNormals">LK3D.GenerateNormals(data, invert, smoothOnly)</a></td>
+	<td class="summary">Generates normals for a model</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#LK3D.GetOptimizedModelTable">LK3D.GetOptimizedModelTable(data)</a></td>
+	<td class="summary">Generates an optimized version of the model data</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#LK3D.DeclareModel">LK3D.DeclareModel(name, data)</a></td>
+	<td class="summary">Declares a model from Model data</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#LK3D.CopyModel">LK3D.CopyModel(from, to)</a></td>
+	<td class="summary">Copies a model</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#LK3D.DeclareAnimatedModel">LK3D.DeclareAnimatedModel(name, fpath, flush)</a></td>
+	<td class="summary">Declares an animated model</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#LK3D.PushObjectAnims">LK3D.PushObjectAnims(index, an_index)</a></td>
+	<td class="summary">Pushes the animations to an object using an animated model</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#LK3D.ExportFastAnimatedModel">LK3D.ExportFastAnimatedModel(name, path, mdlData)</a></td>
+	<td class="summary">Exports a standalone FAM model from a animated model</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#LK3D.LoadFastAnimatedModel">LK3D.LoadFastAnimatedModel(path)</a></td>
+	<td class="summary">Loads a standalone FAM Model</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#LK3D.ExportAnimatedModelFAM">LK3D.ExportAnimatedModelFAM(index, fpath)</a></td>
+	<td class="summary">Exports a full FAM model</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#LK3D.ParseOBJMesh">LK3D.ParseOBJMesh(objData)</a></td>
+	<td class="summary">Parses a OBJ mesh</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#LK3D.AddModelOBJ">LK3D.AddModelOBJ(name, objData)</a></td>
+	<td class="summary">Declares a Model from OBJ model data</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#LK3D.DeclareModelFromOBJFile">LK3D.DeclareModelFromOBJFile(name, fpath)</a></td>
+	<td class="summary">Declares a Model from OBJ model data</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#LK3D.CompressModel">LK3D.CompressModel(name)</a></td>
+	<td class="summary">Compresses a model into LKComp Legacy</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#LK3D.AddModelCompStr">LK3D.AddModelCompStr(name, str)</a></td>
+	<td class="summary">Loads a LKComp Legacy model</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#LK3D.DeclareModelFromSource">LK3D.DeclareModelFromSource(name, mdl)</a></td>
+	<td class="summary">Declares a LK3D model from a source engine model</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#LK3D.CompressModelLKC">LK3D.CompressModelLKC(name)</a></td>
+	<td class="summary">Compresses a model into a LKComp model</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#LK3D.AddModelLKC">LK3D.AddModelLKC(name, data)</a></td>
+	<td class="summary">Loads a LKComp model</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#LK3D.DeclareModelFromLKCFile">LK3D.DeclareModelFromLKCFile(name, fpath)</a></td>
+	<td class="summary">Loads a LKComp model from a LKPack path</td>
+	</tr>
+</table>
+
+<br/>
+<br/>
+
+
+    <h2 class="section-header "><a name="Functions"></a>Functions</h2>
+
+    <dl class="function">
+    <dt>
+    <a name = "LK3D.GenerateNormals"></a>
+    <strong>LK3D.GenerateNormals(data, invert, smoothOnly)</strong>
+    </dt>
+    <dd>
+
+<!-- Added here by loka, im so shit at HTML & CSS :( -->
+
+
+
+    Generates normals for a model
+
+    </ul>
+    </ul>
+    </ul>
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">data</span>
+            <span class="types"><span class="type">table</span></span>
+         LK3D Model data
+        </li>
+        <li><span class="parameter">invert</span>
+            <span class="types"><span class="type">bool</span></span>
+         Whether the normals should be inverted or not
+        </li>
+        <li><span class="parameter">smoothOnly</span>
+            <span class="types"><span class="type">bool</span></span>
+         Whether we should generate only the vertex normals "<em>smooth normals</em>"
+        </li>
+    </ul>
+
+
+
+
+    <h3>Usage:</h3>
+    <ul>
+        <li><pre class="example"><span class="comment">-- Generates normals for a model called cube_nuv
+</span> LK3D.GenerateNormals(LK3D.Models[<span class="string">"cube_nuv_invert"</span>])</pre></li>
+        <li><pre class="example"><span class="comment">-- Generates inverted normals for a model called cube_nuv_inverted
+</span> LK3D.GenerateNormals(LK3D.Models[<span class="string">"cube_nuv_invert"</span>], <span class="keyword">true</span>)</pre></li>
+        <li><pre class="example"><span class="comment">-- Generates vertex normals for a model called cylinder_smooth
+</span> LK3D.GenerateNormals(LK3D.Models[<span class="string">"cylinder_smooth"</span>], <span class="keyword">false</span>, <span class="keyword">true</span>)</pre></li>
+    </ul>
+
+</dd>
+    <dt>
+    <a name = "LK3D.GetOptimizedModelTable"></a>
+    <strong>LK3D.GetOptimizedModelTable(data)</strong>
+    </dt>
+    <dd>
+
+<!-- Added here by loka, im so shit at HTML & CSS :( -->
+
+
+
+    Generates an optimized version of the model data
+
+    </ul>
+    </ul>
+    </ul>
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">data</span>
+            <span class="types"><span class="type">table</span></span>
+         LK3D Model data
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><span class="type">table</span></span>
+        Optimized LK3D Model data
+    </ol>
+
+
+
+    <h3>Usage:</h3>
+    <ul>
+        <pre class="example"><span class="keyword">local</span> opti = LK3D.GetOptimizedModelTable(LK3D.Models[<span class="string">"hi_poly"</span>])
+LK3D.DeclareModel(<span class="string">"hi_poly_opti"</span>, opti)
+<span class="comment">-- internally merges same-pos vertices</span></pre>
+    </ul>
+
+</dd>
+    <dt>
+    <a name = "LK3D.DeclareModel"></a>
+    <strong>LK3D.DeclareModel(name, data)</strong>
+    </dt>
+    <dd>
+
+<!-- Added here by loka, im so shit at HTML & CSS :( -->
+
+
+
+    Declares a model from Model data
+
+    </ul>
+    </ul>
+    </ul>
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">name</span>
+            <span class="types"><span class="type">string</span></span>
+         Model name
+        </li>
+        <li><span class="parameter">data</span>
+            <span class="types"><span class="type">table</span></span>
+         LK3D Model data
+        </li>
+    </ul>
+
+
+
+
+    <h3>Usage:</h3>
+    <ul>
+        <pre class="example"><span class="comment">-- Don't actually do this, use LK3D.AddModelOBJ
+</span><span class="keyword">local</span> objData = LK3D.ReadFileFromLKPack(<span class="string">"models/ponr_main/revolver/revolver_bakeduvs.obj"</span>)
+<span class="keyword">local</span> data = LK3D.ParseOBJMesh(objData)
+LK3D.DeclareModel(<span class="string">"revolver"</span>, data)</pre>
+    </ul>
+
+</dd>
+    <dt>
+    <a name = "LK3D.CopyModel"></a>
+    <strong>LK3D.CopyModel(from, to)</strong>
+    </dt>
+    <dd>
+
+<!-- Added here by loka, im so shit at HTML & CSS :( -->
+
+
+
+    Copies a model
+
+    </ul>
+    </ul>
+    </ul>
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">from</span>
+            <span class="types"><span class="type">string</span></span>
+         Source model name
+        </li>
+        <li><span class="parameter">to</span>
+            <span class="types"><span class="type">string</span></span>
+         Target model name (new)
+        </li>
+    </ul>
+
+
+
+
+    <h3>Usage:</h3>
+    <ul>
+        <pre class="example">LK3D.CopyModel(<span class="string">"cube_nuv"</span>, <span class="string">"cube_nuv_epic"</span>)</pre>
+    </ul>
+
+</dd>
+    <dt>
+    <a name = "LK3D.DeclareAnimatedModel"></a>
+    <strong>LK3D.DeclareAnimatedModel(name, fpath, flush)</strong>
+    </dt>
+    <dd>
+
+<!-- Added here by loka, im so shit at HTML & CSS :( -->
+
+
+
+    Declares an animated model
+
+    </ul>
+    </ul>
+    </ul>
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">name</span>
+            <span class="types"><span class="type">string</span></span>
+         LK3D Model name
+        </li>
+        <li><span class="parameter">fpath</span>
+            <span class="types"><span class="type">string</span></span>
+         LKPack filepath to the model
+        </li>
+        <li><span class="parameter">flush</span>
+            <span class="types"><span class="type">bool</span></span>
+         Whether to reload the model, even if already loaded
+        </li>
+    </ul>
+
+
+
+
+    <h3>Usage:</h3>
+    <ul>
+        <pre class="example">LK3D.DeclareAnimatedModel(<span class="string">"human"</span>, <span class="string">"ponr_main/anim/human_ponr"</span>)</pre>
+    </ul>
+
+</dd>
+    <dt>
+    <a name = "LK3D.PushObjectAnims"></a>
+    <strong>LK3D.PushObjectAnims(index, an_index)</strong>
+    </dt>
+    <dd>
+
+<!-- Added here by loka, im so shit at HTML & CSS :( -->
+
+
+
+    Pushes the animations to an object using an animated model
+
+    </ul>
+    </ul>
+    </ul>
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">index</span>
+            <span class="types"><span class="type">string</span></span>
+         Object index tag
+        </li>
+        <li><span class="parameter">an_index</span>
+            <span class="types"><span class="type">string</span></span>
+         Animated model index
+        </li>
+    </ul>
+
+
+
+
+    <h3>Usage:</h3>
+    <ul>
+        <pre class="example">LK3D.PushObjectAnims(<span class="string">"worm_test"</span>, <span class="string">"worm"</span>)</pre>
+    </ul>
+
+</dd>
+    <dt>
+    <a name = "LK3D.ExportFastAnimatedModel"></a>
+    <strong>LK3D.ExportFastAnimatedModel(name, path, mdlData)</strong>
+    </dt>
+    <dd>
+
+<!-- Added here by loka, im so shit at HTML & CSS :( -->
+        <div style="border:4px dotted rgb(153, 153, 153); background-color: rgb(233, 233, 233); padding-bottom:1em;">
+            <div style="text-align:left; text-indent:1em;"> <h2> INTERNAL </h2> </div>
+            <div style="text-align:left; text-indent:1em;"> This function is used internally, so you shouldn't use it unless you know what you're doing! </div>
+        </div> <br>
+
+        <div style="border:4px dotted rgb(209, 194, 143); background-color: rgb(255, 236, 173); padding-bottom:1em;">
+            <div style="text-align:left; text-indent:1em;"> <h2> DEPRECATED </h2> </div>
+            <div style="text-align:left; text-indent:1em;"> This function is deprecated, it might be removed on a later update. </div>
+        </div> <br>
+
+
+    Exports a standalone FAM model from a animated model
+
+    </ul>
+    </ul>
+    </ul>
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">name</span>
+            <span class="types"><span class="type">string</span></span>
+         LK3D model name
+        </li>
+        <li><span class="parameter">path</span>
+            <span class="types"><span class="type">string</span></span>
+         Export path
+        </li>
+        <li><span class="parameter">mdlData</span>
+            <span class="types"><span class="type">table</span></span>
+         LK3D Model data
+        </li>
+    </ul>
+
+
+
+
+    <h3>Usage:</h3>
+    <ul>
+        <pre class="example"><span class="comment">-- Don't use this
+</span> LK3D.ExportFastAnimatedModel(<span class="string">"human"</span>, <span class="string">"export_human"</span>, LK3D.Models[<span class="string">"human"</span>])</pre>
+    </ul>
+
+</dd>
+    <dt>
+    <a name = "LK3D.LoadFastAnimatedModel"></a>
+    <strong>LK3D.LoadFastAnimatedModel(path)</strong>
+    </dt>
+    <dd>
+
+<!-- Added here by loka, im so shit at HTML & CSS :( -->
+        <div style="border:4px dotted rgb(153, 153, 153); background-color: rgb(233, 233, 233); padding-bottom:1em;">
+            <div style="text-align:left; text-indent:1em;"> <h2> INTERNAL </h2> </div>
+            <div style="text-align:left; text-indent:1em;"> This function is used internally, so you shouldn't use it unless you know what you're doing! </div>
+        </div> <br>
+
+        <div style="border:4px dotted rgb(209, 194, 143); background-color: rgb(255, 236, 173); padding-bottom:1em;">
+            <div style="text-align:left; text-indent:1em;"> <h2> DEPRECATED </h2> </div>
+            <div style="text-align:left; text-indent:1em;"> This function is deprecated, it might be removed on a later update. </div>
+        </div> <br>
+
+
+    Loads a standalone FAM Model
+
+    </ul>
+    </ul>
+    </ul>
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">path</span>
+            <span class="types"><span class="type">string</span></span>
+         Path to the FAM model
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><span class="type">table</span></span>
+        LK3D model data
+    </ol>
+
+
+
+    <h3>Usage:</h3>
+    <ul>
+        <pre class="example"><span class="comment">-- Don't use this
+</span> LK3D.ExportFastAnimatedModel(<span class="string">"lk3d/fam_test/human1.fam"</span>)</pre>
+    </ul>
+
+</dd>
+    <dt>
+    <a name = "LK3D.ExportAnimatedModelFAM"></a>
+    <strong>LK3D.ExportAnimatedModelFAM(index, fpath)</strong>
+    </dt>
+    <dd>
+
+<!-- Added here by loka, im so shit at HTML & CSS :( -->
+
+        <div style="border:4px dotted rgb(209, 194, 143); background-color: rgb(255, 236, 173); padding-bottom:1em;">
+            <div style="text-align:left; text-indent:1em;"> <h2> DEPRECATED </h2> </div>
+            <div style="text-align:left; text-indent:1em;"> This function is deprecated, it might be removed on a later update. </div>
+        </div> <br>
+
+
+    Exports a full FAM model
+
+    </ul>
+    </ul>
+    </ul>
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">index</span>
+            <span class="types"><span class="type">string</span></span>
+         LK3D Model name
+        </li>
+        <li><span class="parameter">fpath</span>
+            <span class="types"><span class="type">string</span></span>
+         Animated model LKPack filepath
+        </li>
+    </ul>
+
+
+
+
+    <h3>Usage:</h3>
+    <ul>
+        <pre class="example"><span class="comment">-- Don't use this
+</span> LK3D.ExportAnimatedModelFAM(<span class="string">"human"</span>, <span class="string">"dd_main/animated/human/"</span>)</pre>
+    </ul>
+
+</dd>
+    <dt>
+    <a name = "LK3D.ParseOBJMesh"></a>
+    <strong>LK3D.ParseOBJMesh(objData)</strong>
+    </dt>
+    <dd>
+
+<!-- Added here by loka, im so shit at HTML & CSS :( -->
+
+
+
+    Parses a OBJ mesh
+
+    </ul>
+    </ul>
+    </ul>
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">objData</span>
+            <span class="types"><span class="type">string</span></span>
+         OBJ mesh data
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><span class="type">table</span></span>
+        LK3D Model data
+    </ol>
+
+
+
+    <h3>Usage:</h3>
+    <ul>
+        <pre class="example"><span class="keyword">local</span> data = LK3D.ParseOBJMesh(LK3D.ReadFileFromLKPack(<span class="string">"models/ponr_main/revolver/revolver_bakeduvs.obj"</span>))</pre>
+    </ul>
+
+</dd>
+    <dt>
+    <a name = "LK3D.AddModelOBJ"></a>
+    <strong>LK3D.AddModelOBJ(name, objData)</strong>
+    </dt>
+    <dd>
+
+<!-- Added here by loka, im so shit at HTML & CSS :( -->
+
+
+
+    Declares a Model from OBJ model data
+
+    </ul>
+    </ul>
+    </ul>
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">name</span>
+            <span class="types"><span class="type">string</span></span>
+         LK3D Model name
+        </li>
+        <li><span class="parameter">objData</span>
+            <span class="types"><span class="type">string</span></span>
+         OBJ Model data
+        </li>
+    </ul>
+
+
+
+
+    <h3>Usage:</h3>
+    <ul>
+        <pre class="example"><span class="comment">-- Don't do this, use LK3D.DeclareModelFromOBJFile
+</span> LK3D.AddModelOBJ(<span class="string">"revolver"</span>, LK3D.ReadFileFromLKPack(<span class="string">"models/ponr_main/revolver/revolver_bakeduvs.obj"</span>))</pre>
+    </ul>
+
+</dd>
+    <dt>
+    <a name = "LK3D.DeclareModelFromOBJFile"></a>
+    <strong>LK3D.DeclareModelFromOBJFile(name, fpath)</strong>
+    </dt>
+    <dd>
+
+<!-- Added here by loka, im so shit at HTML & CSS :( -->
+
+
+
+    Declares a Model from OBJ model data
+
+    </ul>
+    </ul>
+    </ul>
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">name</span>
+            <span class="types"><span class="type">string</span></span>
+         LK3D Model name
+        </li>
+        <li><span class="parameter">fpath</span>
+            <span class="types"><span class="type">string</span></span>
+         LKPack filepath
+        </li>
+    </ul>
+
+
+
+
+    <h3>Usage:</h3>
+    <ul>
+        <pre class="example">LK3D.DeclareModelFromOBJFile(<span class="string">"revolver"</span>, <span class="string">"models/ponr_main/revolver/revolver_bakeduvs"</span>)</pre>
+    </ul>
+
+</dd>
+    <dt>
+    <a name = "LK3D.CompressModel"></a>
+    <strong>LK3D.CompressModel(name)</strong>
+    </dt>
+    <dd>
+
+<!-- Added here by loka, im so shit at HTML & CSS :( -->
+
+        <div style="border:4px dotted rgb(209, 194, 143); background-color: rgb(255, 236, 173); padding-bottom:1em;">
+            <div style="text-align:left; text-indent:1em;"> <h2> DEPRECATED </h2> </div>
+            <div style="text-align:left; text-indent:1em;"> This function is deprecated, it might be removed on a later update. </div>
+        </div> <br>
+
+
+    Compresses a model into LKComp Legacy
+
+    </ul>
+    </ul>
+    </ul>
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">name</span>
+            <span class="types"><span class="type">string</span></span>
+         LK3D model name
+        </li>
+    </ul>
+
+
+
+
+    <h3>Usage:</h3>
+    <ul>
+        <pre class="example"><span class="comment">-- THIS IS DEPRECATED!!!
+</span>LK3D.CompressModel(<span class="string">"cube_nuv"</span>)
+<span class="comment">-- Model written to "lk3d/compmodels/cube_nuv.txt"</span></pre>
+    </ul>
+
+</dd>
+    <dt>
+    <a name = "LK3D.AddModelCompStr"></a>
+    <strong>LK3D.AddModelCompStr(name, str)</strong>
+    </dt>
+    <dd>
+
+<!-- Added here by loka, im so shit at HTML & CSS :( -->
+
+        <div style="border:4px dotted rgb(209, 194, 143); background-color: rgb(255, 236, 173); padding-bottom:1em;">
+            <div style="text-align:left; text-indent:1em;"> <h2> DEPRECATED </h2> </div>
+            <div style="text-align:left; text-indent:1em;"> This function is deprecated, it might be removed on a later update. </div>
+        </div> <br>
+
+
+    Loads a LKComp Legacy model
+
+    </ul>
+    </ul>
+    </ul>
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">name</span>
+            <span class="types"><span class="type">string</span></span>
+         LK3D model name
+        </li>
+        <li><span class="parameter">str</span>
+            <span class="types"><span class="type">string</span></span>
+         LKComp Legacy model data
+        </li>
+    </ul>
+
+
+
+
+    <h3>Usage:</h3>
+    <ul>
+        <pre class="example"><span class="comment">-- THIS IS DEPRECATED!!!
+</span> LK3D.AddModelCompStr(<span class="string">"bad_deprecated"</span>, LK3D.ReadFileFromLKPack(<span class="string">"models/bad.kcl"</span>))</pre>
+    </ul>
+
+</dd>
+    <dt>
+    <a name = "LK3D.DeclareModelFromSource"></a>
+    <strong>LK3D.DeclareModelFromSource(name, mdl)</strong>
+    </dt>
+    <dd>
+
+<!-- Added here by loka, im so shit at HTML & CSS :( -->
+
+
+
+    Declares a LK3D model from a source engine model
+
+    </ul>
+    </ul>
+    </ul>
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">name</span>
+            <span class="types"><span class="type">string</span></span>
+         LK3D model name
+        </li>
+        <li><span class="parameter">mdl</span>
+            <span class="types"><span class="type">string</span></span>
+         Source engine model name
+        </li>
+    </ul>
+
+
+
+
+    <h3>Usage:</h3>
+    <ul>
+        <pre class="example"><span class="comment">-- It's not adviced to use source models with LK3D due to polycount
+</span> LK3D.DeclareModelFromSource(<span class="string">"player_epic"</span>, <span class="string">"models/player.mdl"</span>)</pre>
+    </ul>
+
+</dd>
+    <dt>
+    <a name = "LK3D.CompressModelLKC"></a>
+    <strong>LK3D.CompressModelLKC(name)</strong>
+    </dt>
+    <dd>
+
+<!-- Added here by loka, im so shit at HTML & CSS :( -->
+
+
+
+    Compresses a model into a LKComp model
+
+    </ul>
+    </ul>
+    </ul>
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">name</span>
+            <span class="types"><span class="type">string</span></span>
+         LK3D model name
+        </li>
+    </ul>
+
+
+
+
+    <h3>Usage:</h3>
+    <ul>
+        <pre class="example">LK3D.CompressModelLKC(<span class="string">"cube_nuv"</span>)
+ <span class="comment">-- file written to "lk3d/lkcomp_models/cube_nuv.lkc.txt"</span></pre>
+    </ul>
+
+</dd>
+    <dt>
+    <a name = "LK3D.AddModelLKC"></a>
+    <strong>LK3D.AddModelLKC(name, data)</strong>
+    </dt>
+    <dd>
+
+<!-- Added here by loka, im so shit at HTML & CSS :( -->
+
+
+
+    Loads a LKComp model
+
+    </ul>
+    </ul>
+    </ul>
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">name</span>
+            <span class="types"><span class="type">string</span></span>
+         LK3D model name
+        </li>
+        <li><span class="parameter">data</span>
+            <span class="types"><span class="type">string</span></span>
+         LKComp data
+        </li>
+    </ul>
+
+
+
+
+    <h3>Usage:</h3>
+    <ul>
+        <pre class="example"><span class="comment">-- Don't do this, use DeclareModelFromLKCFile
+</span> LK3D.AddModelLKC(<span class="string">"crystal_bad"</span>, LK3D.ReadFileFromLKPack(<span class="string">"models/dd_main/crystal.lkc"</span>))</pre>
+    </ul>
+
+</dd>
+    <dt>
+    <a name = "LK3D.DeclareModelFromLKCFile"></a>
+    <strong>LK3D.DeclareModelFromLKCFile(name, fpath)</strong>
+    </dt>
+    <dd>
+
+<!-- Added here by loka, im so shit at HTML & CSS :( -->
+
+
+
+    Loads a LKComp model from a LKPack path
+
+    </ul>
+    </ul>
+    </ul>
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">name</span>
+            <span class="types"><span class="type">string</span></span>
+         LK3D model name
+        </li>
+        <li><span class="parameter">fpath</span>
+            <span class="types"><span class="type">string</span></span>
+         LKPack path to model, without extension
+        </li>
+    </ul>
+
+
+
+
+    <h3>Usage:</h3>
+    <ul>
+        <pre class="example">LK3D.DeclareModelFromLKCFile(<span class="string">"crystal_good"</span>, <span class="string">"models/dd_main/crystal"</span>)</pre>
+    </ul>
+
+</dd>
+</dl>
+
+
+</div> <!-- id="content" -->
+</div> <!-- id="main" -->
+<div id="about">
+<i>generated by <a href="http://github.com/lunarmodules/LDoc">LDoc 1.4.6</a></i>
+<i style="float:right;">Last updated 2024-04-20 11:40:03 </i>
+</div> <!-- id="about" -->
+</div> <!-- id="container" -->
+</body>
+</html>
+

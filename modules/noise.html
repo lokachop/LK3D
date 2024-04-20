@@ -1,0 +1,314 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+<head>
+    <title>LK3D Docs</title>
+    <link rel="stylesheet" href="../ldoc.css" type="text/css" />
+</head>
+<body>
+
+<div id="container">
+
+<div id="product">
+	<div id="product_logo"></div>
+	<div id="product_name"><big><b></b></big></div>
+	<div id="product_description"></div>
+</div> <!-- id="product" -->
+
+
+<div id="main">
+
+
+<!-- Menu -->
+
+<div id="navigation">
+<br/>
+<h1>LK3D</h1>
+
+
+<ul>
+  <li><a href="../index.html">Index</a></li>
+</ul>
+
+<h2>Contents</h2>
+<ul>
+<li><a href="#Functions">Functions</a></li>
+</ul>
+
+
+<h2>Modules</h2>
+<ul class="nowrap">
+  <li><a href="../modules/baseshaders.html">baseshaders</a></li>
+  <li><a href="../modules/camera.html">camera</a></li>
+  <li><a href="../modules/debugutils.html">debugutils</a></li>
+  <li><a href="../modules/dumps.html">dumps</a></li>
+  <li><a href="../modules/lights.html">lights</a></li>
+  <li><a href="../modules/lk3d.html">lk3d</a></li>
+  <li><a href="../modules/lkpack.html">lkpack</a></li>
+  <li><a href="../modules/modelutils.html">modelutils</a></li>
+  <li><strong>noise</strong></li>
+  <li><a href="../modules/notiflogger.html">notiflogger</a></li>
+  <li><a href="../modules/objects.html">objects</a></li>
+  <li><a href="../modules/particles.html">particles</a></li>
+  <li><a href="../modules/physics.html">physics</a></li>
+  <li><a href="../modules/procmodel.html">procmodel</a></li>
+  <li><a href="../modules/proctex.html">proctex</a></li>
+  <li><a href="../modules/radiosity.html">radiosity</a></li>
+  <li><a href="../modules/rendertarget.html">rendertarget</a></li>
+  <li><a href="../modules/textures.html">textures</a></li>
+  <li><a href="../modules/trace.html">trace</a></li>
+  <li><a href="../modules/universes.html">universes</a></li>
+</ul>
+<h2>Manual</h2>
+<ul class="nowrap">
+  <li><a href="../manual/animated-models.md.html">Animated Models</a></li>
+  <li><a href="../manual/base-shaders.md.html">Base Shaders</a></li>
+  <li><a href="../manual/concommand-list.md.html">ConCommand List</a></li>
+  <li><a href="../manual/lightmapper-radiosity.md.html">Lightmapping: Radiosity</a></li>
+  <li><a href="../manual/lkpack-basics.md.html">Basics of LKPack</a></li>
+  <li><a href="../manual/loading-lk3d.md.html">Loading LK3D</a></li>
+  <li><a href="../manual/object-flags.md.html">Object Flags</a></li>
+</ul>
+
+</div>
+
+<div id="content">
+
+<h1>Module <code>noise</code></h1>
+<p>
+<h2>Noise Module</h2>
+<hr/>
+</p>
+<p>Module that provides a bunch of noise functions <br/>
+For use with procedural generation / texturing  </p>
+
+
+<h2><a href="#Functions">Functions</a></h2>
+<table class="function_list">
+	<tr>
+	<td class="name" nowrap><a href="#LK3D.Simplex2D">LK3D.Simplex2D(x, y, seed)</a></td>
+	<td class="summary">Calculates 2D <a href="https://en.wikipedia.org/wiki/Simplex_noise">Simplex noise</a></td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#LK3D.Perlin2D">LK3D.Perlin2D(x, y, seed)</a></td>
+	<td class="summary">Calculates 2D <a href="https://en.wikipedia.org/wiki/Perlin_noise">Perlin noise</a></td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#LK3D.Worley2D">LK3D.Worley2D(x, y, seed)</a></td>
+	<td class="summary">Calculates 2D <a href="https://en.wikipedia.org/wiki/Worley_noise">Worley noise</a></td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#LK3D.ValueNoise2D">LK3D.ValueNoise2D(x, y, seed)</a></td>
+	<td class="summary">Calculates 2D <a href="https://en.wikipedia.org/wiki/Value_noise">Value noise</a></td>
+	</tr>
+</table>
+
+<br/>
+<br/>
+
+
+    <h2 class="section-header "><a name="Functions"></a>Functions</h2>
+
+    <dl class="function">
+    <dt>
+    <a name = "LK3D.Simplex2D"></a>
+    <strong>LK3D.Simplex2D(x, y, seed)</strong>
+    </dt>
+    <dd>
+
+<!-- Added here by loka, im so shit at HTML & CSS :( -->
+
+
+
+    Calculates 2D <a href="https://en.wikipedia.org/wiki/Simplex_noise">Simplex noise</a>
+
+    </ul>
+    </ul>
+    </ul>
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">x</span>
+            <span class="types"><span class="type">number</span></span>
+         X Position
+        </li>
+        <li><span class="parameter">y</span>
+            <span class="types"><span class="type">number</span></span>
+         Y Position
+        </li>
+        <li><span class="parameter">seed</span>
+            <span class="types"><span class="type">number</span></span>
+         Seed (to randomize)
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><span class="type">number</span></span>
+        Noise value (-1 to 1)
+    </ol>
+
+
+
+    <h3>Usage:</h3>
+    <ul>
+        <pre class="example">LK3D.Simplex2D(<span class="number">32</span>, <span class="number">64</span>, <span class="number">52623</span>)</pre>
+    </ul>
+
+</dd>
+    <dt>
+    <a name = "LK3D.Perlin2D"></a>
+    <strong>LK3D.Perlin2D(x, y, seed)</strong>
+    </dt>
+    <dd>
+
+<!-- Added here by loka, im so shit at HTML & CSS :( -->
+
+
+
+    Calculates 2D <a href="https://en.wikipedia.org/wiki/Perlin_noise">Perlin noise</a>
+
+    </ul>
+    </ul>
+    </ul>
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">x</span>
+            <span class="types"><span class="type">number</span></span>
+         X Position
+        </li>
+        <li><span class="parameter">y</span>
+            <span class="types"><span class="type">number</span></span>
+         Y Position
+        </li>
+        <li><span class="parameter">seed</span>
+            <span class="types"><span class="type">number</span></span>
+         Seed (to randomize)
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><span class="type">number</span></span>
+        Noise value (-1 to 1)
+    </ol>
+
+
+
+    <h3>Usage:</h3>
+    <ul>
+        <pre class="example">LK3D.Perlin2D(<span class="number">32</span>, <span class="number">64</span>, <span class="number">52623</span>)</pre>
+    </ul>
+
+</dd>
+    <dt>
+    <a name = "LK3D.Worley2D"></a>
+    <strong>LK3D.Worley2D(x, y, seed)</strong>
+    </dt>
+    <dd>
+
+<!-- Added here by loka, im so shit at HTML & CSS :( -->
+
+
+
+    Calculates 2D <a href="https://en.wikipedia.org/wiki/Worley_noise">Worley noise</a>
+
+    </ul>
+    </ul>
+    </ul>
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">x</span>
+            <span class="types"><span class="type">number</span></span>
+         X Position
+        </li>
+        <li><span class="parameter">y</span>
+            <span class="types"><span class="type">number</span></span>
+         Y Position
+        </li>
+        <li><span class="parameter">seed</span>
+            <span class="types"><span class="type">number</span></span>
+         Seed (to randomize)
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><span class="type">number</span></span>
+        Noise value (0 to 1)
+    </ol>
+
+
+
+    <h3>Usage:</h3>
+    <ul>
+        <pre class="example">LK3D.Worley2D(<span class="number">32</span>, <span class="number">64</span>, <span class="number">52623</span>)</pre>
+    </ul>
+
+</dd>
+    <dt>
+    <a name = "LK3D.ValueNoise2D"></a>
+    <strong>LK3D.ValueNoise2D(x, y, seed)</strong>
+    </dt>
+    <dd>
+
+<!-- Added here by loka, im so shit at HTML & CSS :( -->
+
+
+
+    Calculates 2D <a href="https://en.wikipedia.org/wiki/Value_noise">Value noise</a>
+
+    </ul>
+    </ul>
+    </ul>
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">x</span>
+            <span class="types"><span class="type">number</span></span>
+         X Position
+        </li>
+        <li><span class="parameter">y</span>
+            <span class="types"><span class="type">number</span></span>
+         Y Position
+        </li>
+        <li><span class="parameter">seed</span>
+            <span class="types"><span class="type">number</span></span>
+         Seed (to randomize)
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><span class="type">number</span></span>
+        Noise value (-1 to 1)
+    </ol>
+
+
+
+    <h3>Usage:</h3>
+    <ul>
+        <pre class="example">LK3D.ValueNoise2D(<span class="number">32</span>, <span class="number">64</span>, <span class="number">52623</span>)</pre>
+    </ul>
+
+</dd>
+</dl>
+
+
+</div> <!-- id="content" -->
+</div> <!-- id="main" -->
+<div id="about">
+<i>generated by <a href="http://github.com/lunarmodules/LDoc">LDoc 1.4.6</a></i>
+<i style="float:right;">Last updated 2024-04-20 11:40:03 </i>
+</div> <!-- id="about" -->
+</div> <!-- id="container" -->
+</body>
+</html>
+
