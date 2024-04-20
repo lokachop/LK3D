@@ -137,7 +137,7 @@ local function getMaterialForShader(shader)
 	return "checker_big"
 end
 
-
+-- aand please run now??
 -- ???
 
 local function doShaderPreviewStitched(mdl, mat, shader)
