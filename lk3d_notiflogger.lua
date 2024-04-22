@@ -7,8 +7,9 @@ Module that handles logging / console prints
 -- @module notiflogger
 LK3D = LK3D or {}
 
---- Flag for enabling / disabling logging
-LK3D.DoLogging = LK3D.DoLogging or true -- write logs to lk3d/logs, WARNING SLOW, keep off when shipping
+--- Flag for enabling / disabling logging, writes logs to lk3d/logs
+-- @warning Slow, turn off when releasing the project!
+LK3D.DoLogging = (LK3D.DoLogging ~= nil and LK3D.DoLogging) or true
 
 if LK3D.DoLogging then
 	file.CreateDir("lk3d/logs")

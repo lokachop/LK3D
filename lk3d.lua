@@ -24,7 +24,7 @@ concommand.Add("lk3d_toggledebug", function()
 	LK3D.Debug = not LK3D.Debug
 	print("Debug is now: " .. (LK3D.Debug and "on" or "off"))
 end)
-LK3D.Version = "1.4 'Teal Triangle'"
+LK3D.Version = "1.5 'Cyan Line'"
 
 function LK3D.D_Print(...)
 	if not LK3D.Debug then

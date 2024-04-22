@@ -176,5 +176,5 @@ concommand.Add("lk3d_about", function()
 	makeSeparator(panelFill)
 
 	makeLink(panelFill, "GitHub", "https://github.com/lokachop/LK3D")
-
+	makeLink(panelFill, "Documentation", "https://lokachop.github.io/LK3D")
 end)

@@ -12,6 +12,8 @@ function LK3D.NewChangeLogVersion(name, desc)
 		removed = {},
 	}
 	cLogOrders[lastCLog] = name
+
+	return name
 end
 
 LK3D_CHANGELOG_ADDED = 1
@@ -48,46 +50,61 @@ function LK3D.AddToChangeLog(ver, ctype, title, desc)
 	tblptr[#tblptr + 1] = {title = title, desc = desc}
 end
 
+local cLog = nil
 
 
-LK3D.NewChangeLogVersion("1.4 'Teal Triangle'", "Better LKPack support")
+cLog = LK3D.NewChangeLogVersion("1.5 'Cyan Line'", "Docs, Physics and better function names!")
+LK3D.AddToChangeLog(cLog, LK3D_CHANGELOG_ADDED, "LK3D Docs", "LK3D Documentation is available at https://lokachop.github.io/LK3D/")
+LK3D.AddToChangeLog(cLog, LK3D_CHANGELOG_ADDED, "Physics engine", "Hooked up Free Physics Solver to work with LK3D")
+LK3D.AddToChangeLog(cLog, LK3D_CHANGELOG_ADDED, "More camera methods", "A bunch of new camera methods got added to avoid setting random variables")
+LK3D.AddToChangeLog(cLog, LK3D_CHANGELOG_ADDED, "LK3D.AnimFrameDiv", "Allows animations to not rely on their frame count for speed")
 
-LK3D.AddToChangeLog("1.4 'Teal Triangle'", LK3D_CHANGELOG_ADDED, "LK3D.ToScreen() function", "ToScreen function, equivalent of GLua one but on LK3D and with no vischecking")
-LK3D.AddToChangeLog("1.4 'Teal Triangle'", LK3D_CHANGELOG_ADDED, "LK3D.PlayAudioFromLKPack function", "Plays a sound file from LKPack")
-LK3D.AddToChangeLog("1.4 'Teal Triangle'", LK3D_CHANGELOG_ADDED, "LK3D.DeclareTextureFromPNGFile function", "Loads a texture from a PNG file from LKPack")
-LK3D.AddToChangeLog("1.4 'Teal Triangle'", LK3D_CHANGELOG_ADDED, "LK3D.DeclareModelFromOBJFile function", "Loads a model from a OBJ file from LKPack")
-LK3D.AddToChangeLog("1.4 'Teal Triangle'", LK3D_CHANGELOG_ADDED, "LK3D.DeclareModelFromLKCFile function", "Loads a model from a LKComp file from LKPack")
-LK3D.AddToChangeLog("1.4 'Teal Triangle'", LK3D_CHANGELOG_ADDED, "LK3D.AddModelOBJ function", "Adds a model from a raw .obj string")
-LK3D.AddToChangeLog("1.4 'Teal Triangle'", LK3D_CHANGELOG_ADDED, "LK3D.GetDataPathToFile function", "Gets the real path to a LKPack file")
-LK3D.AddToChangeLog("1.4 'Teal Triangle'", LK3D_CHANGELOG_ADDED, ".obj Animated Model Support", "Allows sequences of .obj files to be used for animations")
-LK3D.AddToChangeLog("1.4 'Teal Triangle'", LK3D_CHANGELOG_ADDED, "Software2 Renderer", "A pure-lua software renderer for LK3D, unfinished and broken, use at own risk")
+LK3D.AddToChangeLog(cLog, LK3D_CHANGELOG_CHANGED, "Object method refactor", "LK3D.SetModel* calls are now LK3D.SetObject*")
+LK3D.AddToChangeLog(cLog, LK3D_CHANGELOG_CHANGED, "Internal file refactoring", "Functions have their appropiate files now")
+LK3D.AddToChangeLog(cLog, LK3D_CHANGELOG_CHANGED, "LKPack PNG Cache fix", "PNG Cache files are only made in non-LKPackDevMode")
+LK3D.AddToChangeLog(cLog, LK3D_CHANGELOG_CHANGED, "Separated noise from ProcTex", "Noise has its own module now")
+LK3D.AddToChangeLog(cLog, LK3D_CHANGELOG_CHANGED, "Fixed reflective shader", "Reflective shader is more expensive now, but way more accurate")
 
-LK3D.AddToChangeLog("1.4 'Teal Triangle'", LK3D_CHANGELOG_CHANGED, "LKPack max. Filecount Upped", "LKPack files can now hold 2,147,483,646 different files (254 before)")
-LK3D.AddToChangeLog("1.4 'Teal Triangle'", LK3D_CHANGELOG_CHANGED, "Hardware Renderer Cleanup", "Split off the hardware renderer into a few files, still nasty")
-LK3D.AddToChangeLog("1.4 'Teal Triangle'", LK3D_CHANGELOG_CHANGED, "Renderer ID Constant Changes", "LK3D.Const is not used to address a renderer anymore")
-LK3D.AddToChangeLog("1.4 'Teal Triangle'", LK3D_CHANGELOG_CHANGED, "Renderer Declaration API cleanup", "Making new renderers should be easier to do now")
-LK3D.AddToChangeLog("1.4 'Teal Triangle'", LK3D_CHANGELOG_CHANGED, "Processing message fix", "LK3D.RenderProcessingMessage should be safe to use on start now")
-LK3D.AddToChangeLog("1.4 'Teal Triangle'", LK3D_CHANGELOG_CHANGED, "Processing screen size", "LK3D.RenderProcessingMessage renders at the screensize of the user now")
-LK3D.AddToChangeLog("1.4 'Teal Triangle'", LK3D_CHANGELOG_CHANGED, "OBJ Parser fixes", "The OBJ parser should have way less weird behaviour now")
-LK3D.AddToChangeLog("1.4 'Teal Triangle'", LK3D_CHANGELOG_CHANGED, "LK3D License change", "LK3D is now licensed under the MIT license")
+LK3D.AddToChangeLog(cLog, LK3D_CHANGELOG_REMOVED, "Unused files", "A bunch of unused files got removed")
 
 
-LK3D.AddToChangeLog("1.4 'Teal Triangle'", LK3D_CHANGELOG_REMOVED, "Removed \"parametri\"", "Any mention of \"parametri\" in the LK3D code is now \"params\"")
-LK3D.AddToChangeLog("1.4 'Teal Triangle'", LK3D_CHANGELOG_REMOVED, "Fixed LK3D_SEVERITY typo", "\"LK3D_SEVERITY_\" consts are no longer \"LK3D_SERVERITY_\"")
+cLog = LK3D.NewChangeLogVersion("1.4 'Teal Triangle'", "Better LKPack support")
+LK3D.AddToChangeLog(cLog, LK3D_CHANGELOG_ADDED, "LK3D.ToScreen() function", "ToScreen function, equivalent of GLua one but on LK3D and with no vischecking")
+LK3D.AddToChangeLog(cLog, LK3D_CHANGELOG_ADDED, "LK3D.PlayAudioFromLKPack function", "Plays a sound file from LKPack")
+LK3D.AddToChangeLog(cLog, LK3D_CHANGELOG_ADDED, "LK3D.DeclareTextureFromPNGFile function", "Loads a texture from a PNG file from LKPack")
+LK3D.AddToChangeLog(cLog, LK3D_CHANGELOG_ADDED, "LK3D.DeclareModelFromOBJFile function", "Loads a model from a OBJ file from LKPack")
+LK3D.AddToChangeLog(cLog, LK3D_CHANGELOG_ADDED, "LK3D.DeclareModelFromLKCFile function", "Loads a model from a LKComp file from LKPack")
+LK3D.AddToChangeLog(cLog, LK3D_CHANGELOG_ADDED, "LK3D.AddModelOBJ function", "Adds a model from a raw .obj string")
+LK3D.AddToChangeLog(cLog, LK3D_CHANGELOG_ADDED, "LK3D.GetDataPathToFile function", "Gets the real path to a LKPack file")
+LK3D.AddToChangeLog(cLog, LK3D_CHANGELOG_ADDED, ".obj Animated Model Support", "Allows sequences of .obj files to be used for animations")
+LK3D.AddToChangeLog(cLog, LK3D_CHANGELOG_ADDED, "Software2 Renderer", "A pure-lua software renderer for LK3D, unfinished and broken, use at own risk")
+
+LK3D.AddToChangeLog(cLog, LK3D_CHANGELOG_CHANGED, "LKPack max. Filecount Upped", "LKPack files can now hold 2,147,483,646 different files (254 before)")
+LK3D.AddToChangeLog(cLog, LK3D_CHANGELOG_CHANGED, "Hardware Renderer Cleanup", "Split off the hardware renderer into a few files, still nasty")
+LK3D.AddToChangeLog(cLog, LK3D_CHANGELOG_CHANGED, "Renderer ID Constant Changes", "LK3D.Const is not used to address a renderer anymore")
+LK3D.AddToChangeLog(cLog, LK3D_CHANGELOG_CHANGED, "Renderer Declaration API cleanup", "Making new renderers should be easier to do now")
+LK3D.AddToChangeLog(cLog, LK3D_CHANGELOG_CHANGED, "Processing message fix", "LK3D.RenderProcessingMessage should be safe to use on start now")
+LK3D.AddToChangeLog(cLog, LK3D_CHANGELOG_CHANGED, "Processing screen size", "LK3D.RenderProcessingMessage renders at the screensize of the user now")
+LK3D.AddToChangeLog(cLog, LK3D_CHANGELOG_CHANGED, "OBJ Parser fixes", "The OBJ parser should have way less weird behaviour now")
+LK3D.AddToChangeLog(cLog, LK3D_CHANGELOG_CHANGED, "LK3D License change", "LK3D is now licensed under the MIT license")
 
 
-LK3D.NewChangeLogVersion("1.3 'Green Square'", "A major overhaul of the radiosity system")
+LK3D.AddToChangeLog(cLog, LK3D_CHANGELOG_REMOVED, "Removed \"parametri\"", "Any mention of \"parametri\" in the LK3D code is now \"params\"")
+LK3D.AddToChangeLog(cLog, LK3D_CHANGELOG_REMOVED, "Fixed LK3D_SEVERITY typo", "\"LK3D_SEVERITY_\" consts are no longer \"LK3D_SERVERITY_\"")
 
-LK3D.AddToChangeLog("1.3 'Green Square'", LK3D_CHANGELOG_ADDED, "LK3D_SEVERITY Enums", "Added a bunch of enums for LK3D.New_D_Print()")
-LK3D.AddToChangeLog("1.3 'Green Square'", LK3D_CHANGELOG_ADDED, "Hardware renderer \"UV_USE_LIGHTMAP\" tag", "Makes the model use its lightmap UVs for normal rendering")
-LK3D.AddToChangeLog("1.3 'Green Square'", LK3D_CHANGELOG_ADDED, "lk3d_exportlightmaps concommand", "Allows exporting lightmaps")
-LK3D.AddToChangeLog("1.3 'Green Square'", LK3D_CHANGELOG_ADDED, "lk3d_about concommand", "Returns information about LK3D")
-LK3D.AddToChangeLog("1.3 'Green Square'", LK3D_CHANGELOG_ADDED, "lk3d_changelog concommand", "Shows the LK3D changelog (this!)")
 
-LK3D.AddToChangeLog("1.3 'Green Square'", LK3D_CHANGELOG_CHANGED, "Recoded Radiosity", "More accurate to real-life and ~33x times slower!")
-LK3D.AddToChangeLog("1.3 'Green Square'", LK3D_CHANGELOG_CHANGED, "Fast lightmap loading", "LK3D.LoadLightmapFromFile now internally loads from PNG at instant speeds")
+cLog = LK3D.NewChangeLogVersion("1.3 'Green Square'", "A major overhaul of the radiosity system")
 
-LK3D.AddToChangeLog("1.3 'Green Square'", LK3D_CHANGELOG_REMOVED, "LK3D.Utils Deleted", "All LK3D.Utils functions address to LK3D now")
+LK3D.AddToChangeLog(cLog, LK3D_CHANGELOG_ADDED, "LK3D_SEVERITY Enums", "Added a bunch of enums for LK3D.New_D_Print()")
+LK3D.AddToChangeLog(cLog, LK3D_CHANGELOG_ADDED, "Hardware renderer \"UV_USE_LIGHTMAP\" tag", "Makes the model use its lightmap UVs for normal rendering")
+LK3D.AddToChangeLog(cLog, LK3D_CHANGELOG_ADDED, "lk3d_exportlightmaps concommand", "Allows exporting lightmaps")
+LK3D.AddToChangeLog(cLog, LK3D_CHANGELOG_ADDED, "lk3d_about concommand", "Returns information about LK3D")
+LK3D.AddToChangeLog(cLog, LK3D_CHANGELOG_ADDED, "lk3d_changelog concommand", "Shows the LK3D changelog (this!)")
+
+LK3D.AddToChangeLog(cLog, LK3D_CHANGELOG_CHANGED, "Recoded Radiosity", "More accurate to real-life and ~33x times slower!")
+LK3D.AddToChangeLog(cLog, LK3D_CHANGELOG_CHANGED, "Fast lightmap loading", "LK3D.LoadLightmapFromFile now internally loads from PNG at instant speeds")
+
+LK3D.AddToChangeLog(cLog, LK3D_CHANGELOG_REMOVED, "LK3D.Utils Deleted", "All LK3D.Utils functions address to LK3D now")
 
 -- concommand derma stuff below
 
