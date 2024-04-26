@@ -241,16 +241,25 @@ function LK3D.DeclareTextureFromPNGFile(index, w, h, fpath, transp)
 		truePath = makeFakeFile(realPath)
 	end
 
-
-	timer.Simple(2, function() -- lateload fix so no weird png load errors
-		local matObj = Material("../data/" .. truePath, "nocull ignorez")
-
+	if LK3D.LKPackDevMode then -- Load instant on devMode
 		LK3D.UpdateTexture(index, function()
+			local matObj = Material("../data/" .. truePath, "nocull ignorez")
+
 			surface.SetDrawColor(255, 255, 255)
 			surface.SetMaterial(matObj)
 			surface.DrawTexturedRect(0, 0, ScrW(), ScrH())
 		end)
-	end)
+	else
+		timer.Simple(2, function() -- lateload fix so no weird png load errors
+			local matObj = Material("../data/" .. truePath, "nocull ignorez")
+
+			LK3D.UpdateTexture(index, function()
+				surface.SetDrawColor(255, 255, 255)
+				surface.SetMaterial(matObj)
+				surface.DrawTexturedRect(0, 0, ScrW(), ScrH())
+			end)
+		end)
+	end
 end
 
 --- Copies a LK3D Texture's rendertarget to another LK3D texture
@@ -864,6 +873,27 @@ function LK3D.SetupBaseMaterials()
 		end
 	end)
 
+	LK3D.DeclareTextureFromFunc("checker_mega", 128, 128, function()
+		local w, h = ScrW(), ScrH()
+		local div = 32
+
+		local wDiv = w / div
+		local hDiv = h / div
+
+		for i = 0, (div * div) - 1 do
+			local xc = i % div
+			local yc = math.floor(i / div)
+
+			if ((xc + yc) % 2) == 0 then
+				surface.SetDrawColor(96, 96, 96)
+			else
+				surface.SetDrawColor(64, 64, 64)
+			end
+
+			surface.DrawRect(xc * wDiv, yc * hDiv, wDiv, hDiv)
+
+		end
+	end)
 
 	LK3D.DeclareTextureFromFunc("intro_plane", 1024, 1024, function()
 		render.Clear(64, 64, 64, 255)

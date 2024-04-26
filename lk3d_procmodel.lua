@@ -338,12 +338,14 @@ end
 -- @tparam number psy Y Size
 -- @tparam number itrx X Vertex count
 -- @tparam number itry Y Vertex count
--- @tparam function distortfunc Distort function for altering positions, refer to usage
+-- @tparam ?function distortfunc Distort function for altering positions, refer to usage
+-- @tparam ?number uvScale How much to scale the UVs of this plane
 -- @usage LK3D.DeclareProcPlane("cool_terrain", 8, 8, 16, 16, function(x, y)
 --	 local spx = LK3D.Simplex2D(x, y, 5623)
 --	 return Vector(x, spx, y)
 -- end)
-function LK3D.DeclareProcPlane(name, psx, psy, itrx, itry, distortfunc)
+function LK3D.DeclareProcPlane(name, psx, psy, itrx, itry, distortfunc, uvScale)
+	uvScale = uvScale or 1
 	local mdat = {}
 	mdat["verts"] = {}
 	mdat["indices"] = {}
@@ -379,7 +381,7 @@ function LK3D.DeclareProcPlane(name, psx, psy, itrx, itry, distortfunc)
 			end
 
 			m_verts[#m_verts + 1] = cvx
-			m_uvs[#m_uvs + 1] = {xcr, ycr}
+			m_uvs[#m_uvs + 1] = {xcr * uvScale, ycr * uvScale}
 
 			lu = p_hash_lookup[hx1]
 		end
@@ -393,7 +395,7 @@ function LK3D.DeclareProcPlane(name, psx, psy, itrx, itry, distortfunc)
 			end
 
 			m_verts[#m_verts + 1] = cvxpx
-			m_uvs[#m_uvs + 1] = {xcr + delta, ycr}
+			m_uvs[#m_uvs + 1] = {(xcr + delta) * uvScale, ycr * uvScale}
 
 			lu_ox = p_hash_lookup[hy1]
 		end
@@ -407,7 +409,7 @@ function LK3D.DeclareProcPlane(name, psx, psy, itrx, itry, distortfunc)
 			end
 
 			m_verts[#m_verts + 1] = cvxpy
-			m_uvs[#m_uvs + 1] = {xcr, ycr + delta}
+			m_uvs[#m_uvs + 1] = {xcr * uvScale, (ycr + delta) * uvScale}
 
 			lu_oy = p_hash_lookup[hx2]
 		end
@@ -421,7 +423,7 @@ function LK3D.DeclareProcPlane(name, psx, psy, itrx, itry, distortfunc)
 			end
 
 			m_verts[#m_verts + 1] = cvxpxy
-			m_uvs[#m_uvs + 1] = {xcr + delta, ycr + delta}
+			m_uvs[#m_uvs + 1] = {(xcr + delta) * uvScale, (ycr + delta) * uvScale}
 
 			lu_ox_oy = p_hash_lookup[hy2]
 		end

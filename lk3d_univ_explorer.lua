@@ -1,11 +1,11 @@
 LK3D = LK3D or {}
 
 LK3D.UE = LK3D.UE or {}
-LK3D.UE.CamAng = Angle(0, 0, 0)
-LK3D.UE.CamPos = Vector(0, 0, 0)
-LK3D.UE.FlSpdMul = 1
-LK3D.UE.ZFar = LK3D.FAR_Z
-LK3D.UE.ZNear = LK3D.NEAR_Z
+LK3D.UE.CamAng = LK3D.UE.CamAng or Angle(0, 0, 0)
+LK3D.UE.CamPos = LK3D.UE.CamPos or Vector(0, 0, 0)
+LK3D.UE.FlSpdMul = LK3D.UE.FlSpdMul or 1
+LK3D.UE.ZFar = LK3D.UE.ZFar or LK3D.FAR_Z
+LK3D.UE.ZNear = LK3D.UE.ZNear or LK3D.NEAR_Z
 
 
 local concat_friendly = {}
