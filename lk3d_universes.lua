@@ -49,7 +49,7 @@ function LK3D.PushUniverse(univ)
 end
 
 --- Restores the last active universe from the stack  
--- @usage LK3D.PopRenderTarget()
+-- @usage LK3D.PopUniverse()
 function LK3D.PopUniverse()
 	LK3D.CurrUniv = LK3D.UniverseStack[#LK3D.UniverseStack] or LK3D.DEF_UNIVERSE
 	LK3D.UniverseStack[#LK3D.UniverseStack] = nil
@@ -66,4 +66,12 @@ function LK3D.WipeUniverse(univ)
 	univ["lightcount"] = 0
 	univ["particles"] = {}
 	univ["physics"] = {}
+end
+
+--- Gets a universe by its tag
+-- @tparam string tag Universe tag
+-- @treturn table LK3D universe, nil if non-existant
+-- @usage LK3D.GetUniverseByTag("universeGame")
+function LK3D.GetUniverseByTag(tag)
+	return LK3D.UniverseRegistry[tag]
 end

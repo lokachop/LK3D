@@ -181,6 +181,11 @@ end
 -- @tparam string an_index Index of the animation
 -- @usage LK3D.SetObjectAnim("human_ponr", "walkin")
 function LK3D.SetObjectAnim(index, an_index)
+	if an_index == "none" then
+		an_index = nil
+		LK3D.CurrUniv["objects"][index].mdlCache = {}
+	end
+
 	LK3D.CurrUniv["objects"][index].anim_index = an_index
 end
 

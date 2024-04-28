@@ -20,6 +20,7 @@ Spheremap shader, maps a 2D sphere map onto a 3D model, used to make shiny *meta
 Faster, lazier and horribly broken version of `reflective`  
 This shader is mostly phased out by `reflective_screen_rot`  
 **Breaks with non-smooth normals**  
+
 ![image](../images/shader_captures/reflective_simple/cube_nuv.png)
 ![image](../images/shader_captures/reflective_simple/barrel.png)
 ![image](../images/shader_captures/reflective_simple/suzanne.png)
@@ -30,6 +31,7 @@ This shader is mostly phased out by `reflective_screen_rot`
 
 Maps a spheremap to a model using the screenspace instead  
 **Breaks with non-smooth normals**  
+
 ![image](../images/shader_captures/reflective_screen_rot/cube_nuv.png)
 ![image](../images/shader_captures/reflective_screen_rot/barrel.png)
 ![image](../images/shader_captures/reflective_screen_rot/suzanne.png)
@@ -39,6 +41,7 @@ Maps a spheremap to a model using the screenspace instead
 <font size="6"> `specular`</font>  
 
 Hacky specular shader, looks horrible and runs horrible too!  
+
 ![image](../images/shader_captures/specular/cube_nuv.png)
 ![image](../images/shader_captures/specular/barrel.png)
 ![image](../images/shader_captures/specular/suzanne.png)
@@ -48,6 +51,7 @@ Hacky specular shader, looks horrible and runs horrible too!
 <font size="6"> `norm_vis`</font>  
 
 Shows the **rotated** normals as the vertex colours  
+
 ![image](../images/shader_captures/norm_vis/cube_nuv.png)
 ![image](../images/shader_captures/norm_vis/barrel.png)
 ![image](../images/shader_captures/norm_vis/suzanne.png)
@@ -57,6 +61,7 @@ Shows the **rotated** normals as the vertex colours
 <font size="6"> `norm_vis_rot`</font>  
 
 Unlike what it name implies, shows the **non-rotated** normals as the vertex colours  
+
 ![image](../images/shader_captures/norm_vis_rot/cube_nuv.png)
 ![image](../images/shader_captures/norm_vis_rot/barrel.png)
 ![image](../images/shader_captures/norm_vis_rot/suzanne.png)

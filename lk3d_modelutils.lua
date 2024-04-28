@@ -463,6 +463,33 @@ function LK3D.PushObjectAnims(index, an_index)
 	object.anim_state = object.anim_state or true
 end
 
+--- Returns if the model is animated / not
+-- @tparam string name Model name
+-- @treturn bool Does the model have animations?
+function LK3D.GetModelAnimated(name)
+	return LK3D.AnimatedModelRegistry[name] ~= nil
+end
+
+--- Returns a list of all of the model animations
+-- @tparam string name Model name
+-- @treturn table Animation list, nil if not animated
+function LK3D.GetModelAnimations(name)
+	local animRegistry = LK3D.AnimatedModelRegistry[name]
+	if animRegistry == nil then
+		return
+	end
+	local anims = animRegistry.anims
+	local ret = {}
+	for k, v in pairs(anims) do
+		ret[#ret + 1] = k
+	end
+
+	return ret
+end
+
+
+
+
 function LK3D.PushModelAnims(index, an_index)
 	LK3D.New_D_Print("Using deprecated function LK3D.PushModelAnims(), use LK3D.PushObjectAnims()", LK3D_SEVERITY_WARN, "LK3D")
 	LK3D.PushObjectAnims(index, an_index)

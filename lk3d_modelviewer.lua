@@ -12,10 +12,10 @@ LK3D.MV_OCam.Polar = LK3D.MV_OCam.Polar or 0
 LK3D.MV_OCam.Dist = LK3D.MV_OCam.Dist or 1
 
 
-LK3D.MV.Model = "cube_nuv"
-LK3D.MV.Texture = "checker"
-LK3D.MV.BaseShader = "none"
-
+LK3D.MV.Model = LK3D.MV.Model or "cube_nuv"
+LK3D.MV.Texture = LK3D.MV.Texture or "checker"
+LK3D.MV.BaseShader = LK3D.MV.BaseShader or "none"
+LK3D.MV.Animation = LK3D.MV.Animation or "none"
 
 LK3D.DeclareProcPlane("plane_editor", 32, 32, 16, 16)
 
@@ -229,6 +229,7 @@ local function openMV()
 	end)
 
 
+	local combo_animation = nil
 
 	local combo_model = vgui.Create("DComboBox", pnl_sidebar)
 	combo_model:SetTall(16)
@@ -245,12 +246,33 @@ local function openMV()
 
 
 		LK3D.PushUniverse(univ_lk3dmv)
+			LK3D.SetObjectAnim("the_model", "none")
 			LK3D.SetObjectModel("the_model", LK3D.MV.Model)
 			LK3D.SetObjectFlag("the_model", "NEEDS_CACHE_UPDATE", true)
 			LK3D.SetObjectFlag("the_model", "SHADOW_VOLUME_BAKE_CLEAR", true)
 
 			local n_aabb = LK3D.GetRecalcAABB(LK3D.CurrUniv["objects"]["the_model"])
 			LK3D.SetObjectPosAng("floor_plane", Vector(0, 0, n_aabb[1].z), Angle(0, 0, 90))
+		LK3D.PopUniverse()
+
+
+		combo_animation:Clear()
+
+		combo_animation:SetValue("none")
+		combo_animation:AddChoice("none")
+
+		if not LK3D.GetModelAnimated(val) then
+			return
+		end
+
+		LK3D.PushUniverse(univ_lk3dmv)
+			LK3D.PushObjectAnims("the_model", val)
+			local animList = LK3D.GetModelAnimations(val)
+			for k, v in ipairs(animList) do
+				combo_animation:AddChoice(v)
+			end
+
+
 		LK3D.PopUniverse()
 	end
 
@@ -293,6 +315,37 @@ local function openMV()
 
 		LK3D.PushUniverse(univ_lk3dmv)
 			LK3D.SetObjectPrefabShader("the_model", LK3D.MV.BaseShader)
+			LK3D.SetObjectFlag("the_model", "NEEDS_CACHE_UPDATE", true)
+			LK3D.SetObjectFlag("the_model", "SHADOW_VOLUME_BAKE_CLEAR", true)
+		LK3D.PopUniverse()
+	end
+
+
+	combo_animation = vgui.Create("DComboBox", pnl_sidebar)
+	combo_animation:SetTall(16)
+	combo_animation:SetWide(pnl_sidebar:GetWide())
+	combo_animation:Dock(TOP)
+
+	combo_animation:SetValue("none")
+	combo_animation:AddChoice("none")
+
+	function combo_animation:OnSelect(choice, val)
+		LK3D.MV.Animation = val
+
+
+		LK3D.PushUniverse(univ_lk3dmv)
+			--LK3D.SetObjectPrefabShader("the_model", LK3D.MV.Animation)
+			LK3D.PushObjectAnims("the_model", LK3D.MV.Model)
+
+			LK3D.SetObjectAnim("the_model", val)
+
+			if LK3D.AnimFrameDiv then -- HACK: not everyone animates at 24fps,  this is hardcoded because of PONR!
+				LK3D.SetObjectAnimRate("the_model", 24)
+			else
+				LK3D.SetObjectAnimRate("the_model", 1)
+			end
+
+
 			LK3D.SetObjectFlag("the_model", "NEEDS_CACHE_UPDATE", true)
 			LK3D.SetObjectFlag("the_model", "SHADOW_VOLUME_BAKE_CLEAR", true)
 		LK3D.PopUniverse()
@@ -346,6 +399,7 @@ local function openMV()
 		LK3D.MV_OCam.Dist = math.min(math.max(LK3D.MV_OCam.Dist - (delta / 16), 1), 8)
 	end
 
+	local colOriginHighlight = Color(96, 255, 96)
 	local pihalf = math.pi / 2
 	function pnl_render:Paint(w, h)
 		-- translate camera
@@ -366,6 +420,8 @@ local function openMV()
 			if LK3D.MV_OCam.Polar <= -pihalf then
 				LK3D.MV_OCam.Polar = -pihalf
 			end
+
+
 		end
 
 
@@ -374,6 +430,47 @@ local function openMV()
 			org.y + (od * (math.cos(pl) * math.sin(az))),
 			org.z + (od * math.sin(pl))
 		)
+
+		if self.dragging then
+			local vMul = 0.05
+			local dirVec = (org - c_pos):GetNormalized():Angle()
+
+
+			local newPosAdd = Vector(0, 0, 0)
+
+
+
+			if input.IsKeyDown(KEY_W) then
+				newPosAdd = newPosAdd + dirVec:Forward()
+			end
+
+			if input.IsKeyDown(KEY_S) then
+				newPosAdd = newPosAdd - dirVec:Forward()
+			end
+
+			if input.IsKeyDown(KEY_A) then
+				newPosAdd = newPosAdd - dirVec:Right()
+			end
+
+			if input.IsKeyDown(KEY_D) then
+				newPosAdd = newPosAdd + dirVec:Right()
+			end
+
+			if input.IsKeyDown(KEY_SPACE) then
+				newPosAdd = newPosAdd + Vector(0, 0, 1)
+			end
+
+			if input.IsKeyDown(KEY_LCONTROL) then
+				newPosAdd = newPosAdd - Vector(0, 0, 1)
+			end
+
+			LK3D.MV_OCam.Origin = LK3D.MV_OCam.Origin + newPosAdd:GetNormalized() * vMul
+
+			LK3D.PushUniverse(univ_lk3dmv)
+				LK3D.DebugUtils.Cross(LK3D.MV_OCam.Origin, 1, FrameTime() * 2, colOriginHighlight)
+			LK3D.PopUniverse()
+		end
+
 
 		LK3D.MV.CamPos = c_pos
 
