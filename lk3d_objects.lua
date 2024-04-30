@@ -214,6 +214,168 @@ function LK3D.SetObjectAnimDelta(index, delta)
 	LK3D.CurrUniv["objects"][index].anim_delta = math.min(math.max(delta, 0), 1) or 0
 end
 
+
+-- GETTERS
+
+
+--- Gets the current material of an object
+-- @tparam string index Index tag of the object
+-- @treturn string Material name
+-- @usage local mat = LK3D.GetObjectMat("cube1")
+function LK3D.GetObjectMat(index)
+	if not LK3D.CurrUniv["objects"][index] then
+		return
+	end
+
+	return LK3D.CurrUniv["objects"][index].mat
+end
+
+--- Gets the current colour of an object
+-- @tparam string index Index tag of the object
+-- @treturn color Colour
+-- @usage local col = LK3D.GetObjectCol("cube1")
+function LK3D.GetObjectCol(index)
+	if not LK3D.CurrUniv["objects"][index] then
+		return
+	end
+
+	return LK3D.CurrUniv["objects"][index].col
+end
+
+--- Gets the current position of an object
+-- @warning The returned vector is a pointer! modifying it might lead to broken behaviour.
+-- @tparam string index Index tag of the object
+-- @treturn vector Object position
+-- @usage local objPos = LK3D.GetObjectPos("cube1")
+function LK3D.GetObjectPos(index)
+	if not LK3D.CurrUniv["objects"][index] then
+		return
+	end
+
+	return LK3D.CurrUniv["objects"][index].pos
+end
+
+--- Gets the current angle of an object
+-- @warning The returned angle is a pointer! modifying it might lead to broken behaviour.
+-- @tparam string index Index tag of the object
+-- @treturn angle Object angle
+-- @usage local objAng = LK3D.GetObjectAng("cube1")
+function LK3D.GetObjectAng(index)
+	if not LK3D.CurrUniv["objects"][index] then
+		return
+	end
+
+	return LK3D.CurrUniv["objects"][index].ang
+end
+
+
+
+--- Gets the current position and angle of an object
+-- @warning The returned vector and angle are pointers! modifying them might lead to broken behaviour.
+-- @tparam string index Index tag of the object
+-- @treturn vector Object position
+-- @treturn angle Object angle
+-- @usage local objPos, objAng = LK3D.GetObjectPosAng("cube1")
+function LK3D.GetObjectPosAng(index)
+	if not LK3D.CurrUniv["objects"][index] then
+		return
+	end
+
+	return LK3D.CurrUniv["objects"][index].pos, LK3D.CurrUniv["objects"][index].ang
+end
+
+--- Gets the current scale of an object
+-- @warning The returned vector is a pointer! modifying it might lead to broken behaviour.
+-- @tparam string index Index tag of the object
+-- @treturn vector Object scale
+-- @usage local objScl = LK3D.GetObjectScale("cube1")
+function LK3D.GetObjectScale(index)
+	if not LK3D.CurrUniv["objects"][index] then
+		return
+	end
+
+	return LK3D.CurrUniv["objects"][index].scl
+end
+
+--- Gets the current model of an object
+-- @tparam string index Index tag of the object
+-- @treturn string Object model
+-- @usage local objModel = LK3D.GetObjectModel("cube1")
+function LK3D.GetObjectModel(index)
+	if not LK3D.CurrUniv["objects"][index] then
+		return
+	end
+
+	return LK3D.CurrUniv["objects"][index].mdl
+end
+
+
+--- Gets the value of an object's flag
+-- @tparam string index Index tag of the object
+-- @tparam string flag Flag index to get
+-- @return Value of the flag, nil if not found
+-- @usage local noShade = LK3D.GetObjectFlag("cube1", "NO_SHADING")
+function LK3D.GetObjectFlag(index, flag)
+	if not LK3D.CurrUniv["objects"][index] then
+		return
+	end
+
+	return LK3D.CurrUniv["objects"][index][flag]
+end
+
+
+--- Gets whether an object is hidden or not
+-- @tparam string index Index tag of the object
+-- @treturn bool Whether the object is hidden or not
+-- @usage local isHidden = LK3D.GetObjectHide("cube1")
+function LK3D.GetObjectHide(index)
+	if not LK3D.CurrUniv["objects"][index] then
+		return
+	end
+
+	return LK3D.CurrUniv["objects"][index]["RENDER_NOGLOBAL"] and true or false
+end
+
+
+--- Gets the name of the current active animation of an object
+-- @tparam string index Index tag of the object
+-- @treturn string Animation name, nil if the object is not animated
+-- @usage local anim = LK3D.GetObjectAnim("human_self")
+function LK3D.GetObjectAnim(index)
+	if not LK3D.CurrUniv["objects"][index] then
+		return
+	end
+
+	return LK3D.CurrUniv["objects"][index].anim_index
+end
+
+--- Gets the animation rate of the object
+-- @tparam string index Index tag of the object
+-- @treturn number Animation rate, nil if the object is not animated
+-- @usage local rate = LK3D.GetObjectAnimRate("human_self")
+function LK3D.GetObjectAnimRate(index)
+	if not LK3D.CurrUniv["objects"][index] then
+		return
+	end
+
+	return LK3D.CurrUniv["objects"][index].anim_rate
+end
+LK3D.GetObjectAnimPlayRate = LK3D.GetObjectAnimRate
+
+
+--- Gets whether the object's animation is playing or not
+-- @tparam string index Index tag of the object
+-- @treturn bool Whether it is playing or not, nil if the object is not animated
+-- @usage local playing = LK3D.GetObjectAnimPlay("human_self")
+function LK3D.GetObjectAnimPlay(index)
+	if not LK3D.CurrUniv["objects"][index] then
+		return
+	end
+
+	return LK3D.CurrUniv["objects"][index].anim_state
+end
+
+
 --- Gets the current delta (time) of an object's animation
 -- @tparam string index Index tag of the object
 -- @treturn number Delta of the animation, between 0 and 1
@@ -221,7 +383,6 @@ end
 function LK3D.GetObjectAnimDelta(index)
 	return LK3D.CurrUniv["objects"][index].anim_delta
 end
-
 
 
 
