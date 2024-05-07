@@ -18,7 +18,7 @@ file.CreateDir("lk3d/lkpack/decomp_active")
 
 local VAL_FOLDER_ID = 0xFFFFFFFF
 
-LK3D.ActiveLKPack = nil
+LK3D.ActiveLKPack = LK3D.ActiveLKPack
 
 -- makes a flat table which has each key being 
 -- {
@@ -63,8 +63,11 @@ function LK3D.MakeLKPack(dir)
 
 	local descriptors = {}
 	recursive_build_file_table("lk3d/lkpack/compile/" .. dir, "/" , descriptors)
+	local descriptorCount = #descriptors
 	local file_count, dir_count = 0, 0
 	for k, v in ipairs(descriptors) do
+		LK3D.RenderProcessingMessage("MakeLKPack; Descriptor build [" .. v.name .. "]", (k / descriptorCount) * 100)
+
 		if v.ftype == 1 then
 			file_count = file_count + 1
 		else
@@ -82,6 +85,10 @@ function LK3D.MakeLKPack(dir)
 
 	local last_file_id = 1
 	for k, v in ipairs(descriptors) do
+		LK3D.RenderProcessingMessage("MakeLKPack; Descriptor LUTProcess [" .. v.name .. "]", (k / descriptorCount) * 100)
+
+
+
 		descriptor_to_name[k] = v.name
 		descriptor_to_parent[k] = v.parent
 		descriptor_to_file[k] = v.ftype == 1 and last_file_id or -1
@@ -134,8 +141,10 @@ function LK3D.MakeLKPack(dir)
 
 
 	-- now write the content table
-	temp_f:WriteULong(#index_arr)
+	local indexArrCount = #index_arr
+	temp_f:WriteULong(indexArrCount)
 	for k, v in ipairs(index_arr) do
+		LK3D.RenderProcessingMessage("MakeLKPack; WriteIndexContent [" .. tostring(k) .. "] sz. " .. tostring(#v), (k / indexArrCount) * 100)
 		temp_f:WriteULong(#v)
 		temp_f:Write(v)
 	end
@@ -163,6 +172,11 @@ end
 -- @tparam string name Name of the LKPack to load, relative to maps/
 -- @usage LK3D.LoadLKPack("deepdive_content")
 function LK3D.LoadLKPack(name)
+	if LK3D.ActiveLKPack == name then -- Already loaded, avoid lagspike and abort!
+		return
+	end
+
+
 	local data = file.Read("maps/" .. name .. ".lkp.ain", "GAME")
 	if not data then
 		LK3D.New_D_Print("LKPack doesnt exist! (" .. name .. ") [" .. "maps/" .. name .. ".lkp.ain]", LK3D_SEVERITY_FATAL, "LKPack")
@@ -416,3 +430,8 @@ end
 if LK3D.AutoLoadLKPack and not LK3D.LKPackDevMode then
 	LK3D.LoadLKPack(LK3D.AutoLoadLKPack)
 end
+
+concommand.Add("lk3d_make_dev_lkpack", function()
+	LK3D.New_D_Print("Making LKPack [" .. tostring(LK3D.FallbackLKPack) .. "]", LK3D_SEVERITY_INFO, "LKPack")
+	LK3D.MakeLKPack(LK3D.FallbackLKPack)
+end)

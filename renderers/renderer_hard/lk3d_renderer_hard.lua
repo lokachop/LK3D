@@ -212,6 +212,7 @@ local function renderModel(object)
 	local uvs = mdlinfo.uvs
 	local lightmap_uvs = object.lightmap_uvs
 	local dolightmap = (lightmap_uvs ~= nil) and true or false
+
 	--if object["UV_USE_LIGHTMAP"] then
 	--	uvs = lightmap_uvs
 	--end
@@ -219,7 +220,6 @@ local function renderModel(object)
 	local ind = mdlinfo.indices
 	local normals = mdlinfo.normals
 	local s_norm = mdlinfo.s_normals
-
 
 	local col = object.col
 	local scl = object.scl

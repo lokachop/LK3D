@@ -395,6 +395,9 @@ include("lk3d_modelviewer.lua")
 include("lk3d_univ_explorer.lua")
 include("lk3d_baseshaders.lua")
 include("lk3d_radiosity.lua")
+include("lightmapping/lk3d_radiosa_main.lua")
+
+
 include("lk3d_skeleton.lua")
 include("lk3d_intro.lua")
 include("lk3d_changelog.lua")

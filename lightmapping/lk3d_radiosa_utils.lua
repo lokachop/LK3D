@@ -1,6 +1,8 @@
 LK3D = LK3D or {}
 LK3D.Radiosa = LK3D.Radiosa or {}
 
+local math = math
+local math_Round = math.Round
 
 
 local function copyUV(uv)
@@ -126,3 +128,11 @@ function LK3D.Radiosa.GetTriTable(obj)
 
 	return tri_list_genned
 end
+
+
+function LK3D.Radiosa.GetSolver()
+	return LK3D.Radiosa.SOLVER
+end
+
+
+

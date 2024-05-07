@@ -79,7 +79,11 @@ function LK3D.DeclareProcSphere(name, coli, rowi, szx, szy, uvm, invert)
 			mdat["uvs"][#mdat["uvs"] + 1] = {dx * uvm, dy * uvm}
 		end
 	end
-	LK3D.Models[name] = mdat
+
+	local opti = LK3D.GetOptimizedModelTable(mdat)
+
+
+	LK3D.Models[name] = opti
 	LK3D.GenerateNormals(LK3D.Models[name], invert)
 
 
