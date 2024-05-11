@@ -118,18 +118,6 @@
 	<td class="summary">Returns a list of all of the model animations</td>
 	</tr>
 	<tr>
-	<td class="name" nowrap><a href="#LK3D.ExportFastAnimatedModel">LK3D.ExportFastAnimatedModel(name, path, mdlData)</a></td>
-	<td class="summary">Exports a standalone FAM model from a animated model</td>
-	</tr>
-	<tr>
-	<td class="name" nowrap><a href="#LK3D.LoadFastAnimatedModel">LK3D.LoadFastAnimatedModel(path)</a></td>
-	<td class="summary">Loads a standalone FAM Model</td>
-	</tr>
-	<tr>
-	<td class="name" nowrap><a href="#LK3D.ExportAnimatedModelFAM">LK3D.ExportAnimatedModelFAM(index, fpath)</a></td>
-	<td class="summary">Exports a full FAM model</td>
-	</tr>
-	<tr>
 	<td class="name" nowrap><a href="#LK3D.ParseOBJMesh">LK3D.ParseOBJMesh(objData)</a></td>
 	<td class="summary">Parses a OBJ mesh</td>
 	</tr>
@@ -140,14 +128,6 @@
 	<tr>
 	<td class="name" nowrap><a href="#LK3D.DeclareModelFromOBJFile">LK3D.DeclareModelFromOBJFile(name, fpath)</a></td>
 	<td class="summary">Declares a Model from OBJ model data</td>
-	</tr>
-	<tr>
-	<td class="name" nowrap><a href="#LK3D.CompressModel">LK3D.CompressModel(name)</a></td>
-	<td class="summary">Compresses a model into LKComp Legacy</td>
-	</tr>
-	<tr>
-	<td class="name" nowrap><a href="#LK3D.AddModelCompStr">LK3D.AddModelCompStr(name, str)</a></td>
-	<td class="summary">Loads a LKComp Legacy model</td>
 	</tr>
 	<tr>
 	<td class="name" nowrap><a href="#LK3D.DeclareModelFromSource">LK3D.DeclareModelFromSource(name, mdl)</a></td>
@@ -164,6 +144,26 @@
 	<tr>
 	<td class="name" nowrap><a href="#LK3D.DeclareModelFromLKCFile">LK3D.DeclareModelFromLKCFile(name, fpath)</a></td>
 	<td class="summary">Loads a LKComp model from a LKPack path</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#LK3D.CompressModel">LK3D.CompressModel(name)</a></td>
+	<td class="summary">Compresses a model into LKComp Legacy</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#LK3D.AddModelCompStr">LK3D.AddModelCompStr(name, str)</a></td>
+	<td class="summary">Loads a LKComp Legacy model</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#LK3D.ExportFastAnimatedModel">LK3D.ExportFastAnimatedModel(name, path, mdlData)</a></td>
+	<td class="summary">Exports a standalone FAM model from a animated model</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#LK3D.LoadFastAnimatedModel">LK3D.LoadFastAnimatedModel(path)</a></td>
+	<td class="summary">Loads a standalone FAM Model</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#LK3D.ExportAnimatedModelFAM">LK3D.ExportAnimatedModelFAM(index, fpath)</a></td>
+	<td class="summary">Exports a full FAM model</td>
 	</tr>
 </table>
 
@@ -487,146 +487,6 @@ LK3D.DeclareModel(<span class="string">"revolver"</span>, data)</pre>
 
 </dd>
     <dt>
-    <a name = "LK3D.ExportFastAnimatedModel"></a>
-    <strong>LK3D.ExportFastAnimatedModel(name, path, mdlData)</strong>
-    </dt>
-    <dd>
-
-<!-- Added here by loka, im so shit at HTML & CSS :( -->
-        <div style="border:4px dotted rgb(153, 153, 153); background-color: rgb(233, 233, 233); padding-bottom:1em;">
-            <div style="text-align:left; text-indent:1em;"> <h2> INTERNAL </h2> </div>
-            <div style="text-align:left; text-indent:1em;"> This function is used internally, so you shouldn't use it unless you know what you're doing! </div>
-        </div> <br>
-
-        <div style="border:4px dotted rgb(209, 194, 143); background-color: rgb(255, 236, 173); padding-bottom:1em;">
-            <div style="text-align:left; text-indent:1em;"> <h2> DEPRECATED </h2> </div>
-            <div style="text-align:left; text-indent:1em;"> This function is deprecated, it might be removed on a later update. </div>
-        </div> <br>
-
-
-    Exports a standalone FAM model from a animated model
-
-    </ul>
-    </ul>
-    </ul>
-
-    <h3>Parameters:</h3>
-    <ul>
-        <li><span class="parameter">name</span>
-            <span class="types"><span class="type">string</span></span>
-         LK3D model name
-        </li>
-        <li><span class="parameter">path</span>
-            <span class="types"><span class="type">string</span></span>
-         Export path
-        </li>
-        <li><span class="parameter">mdlData</span>
-            <span class="types"><span class="type">table</span></span>
-         LK3D Model data
-        </li>
-    </ul>
-
-
-
-
-    <h3>Usage:</h3>
-    <ul>
-        <pre class="example"><span class="comment">-- Don't use this
-</span> LK3D.ExportFastAnimatedModel(<span class="string">"human"</span>, <span class="string">"export_human"</span>, LK3D.Models[<span class="string">"human"</span>])</pre>
-    </ul>
-
-</dd>
-    <dt>
-    <a name = "LK3D.LoadFastAnimatedModel"></a>
-    <strong>LK3D.LoadFastAnimatedModel(path)</strong>
-    </dt>
-    <dd>
-
-<!-- Added here by loka, im so shit at HTML & CSS :( -->
-        <div style="border:4px dotted rgb(153, 153, 153); background-color: rgb(233, 233, 233); padding-bottom:1em;">
-            <div style="text-align:left; text-indent:1em;"> <h2> INTERNAL </h2> </div>
-            <div style="text-align:left; text-indent:1em;"> This function is used internally, so you shouldn't use it unless you know what you're doing! </div>
-        </div> <br>
-
-        <div style="border:4px dotted rgb(209, 194, 143); background-color: rgb(255, 236, 173); padding-bottom:1em;">
-            <div style="text-align:left; text-indent:1em;"> <h2> DEPRECATED </h2> </div>
-            <div style="text-align:left; text-indent:1em;"> This function is deprecated, it might be removed on a later update. </div>
-        </div> <br>
-
-
-    Loads a standalone FAM Model
-
-    </ul>
-    </ul>
-    </ul>
-
-    <h3>Parameters:</h3>
-    <ul>
-        <li><span class="parameter">path</span>
-            <span class="types"><span class="type">string</span></span>
-         Path to the FAM model
-        </li>
-    </ul>
-
-    <h3>Returns:</h3>
-    <ol>
-
-           <span class="types"><span class="type">table</span></span>
-        LK3D model data
-    </ol>
-
-
-
-    <h3>Usage:</h3>
-    <ul>
-        <pre class="example"><span class="comment">-- Don't use this
-</span> LK3D.ExportFastAnimatedModel(<span class="string">"lk3d/fam_test/human1.fam"</span>)</pre>
-    </ul>
-
-</dd>
-    <dt>
-    <a name = "LK3D.ExportAnimatedModelFAM"></a>
-    <strong>LK3D.ExportAnimatedModelFAM(index, fpath)</strong>
-    </dt>
-    <dd>
-
-<!-- Added here by loka, im so shit at HTML & CSS :( -->
-
-        <div style="border:4px dotted rgb(209, 194, 143); background-color: rgb(255, 236, 173); padding-bottom:1em;">
-            <div style="text-align:left; text-indent:1em;"> <h2> DEPRECATED </h2> </div>
-            <div style="text-align:left; text-indent:1em;"> This function is deprecated, it might be removed on a later update. </div>
-        </div> <br>
-
-
-    Exports a full FAM model
-
-    </ul>
-    </ul>
-    </ul>
-
-    <h3>Parameters:</h3>
-    <ul>
-        <li><span class="parameter">index</span>
-            <span class="types"><span class="type">string</span></span>
-         LK3D Model name
-        </li>
-        <li><span class="parameter">fpath</span>
-            <span class="types"><span class="type">string</span></span>
-         Animated model LKPack filepath
-        </li>
-    </ul>
-
-
-
-
-    <h3>Usage:</h3>
-    <ul>
-        <pre class="example"><span class="comment">-- Don't use this
-</span> LK3D.ExportAnimatedModelFAM(<span class="string">"human"</span>, <span class="string">"dd_main/animated/human/"</span>)</pre>
-    </ul>
-
-</dd>
-    <dt>
     <a name = "LK3D.ParseOBJMesh"></a>
     <strong>LK3D.ParseOBJMesh(objData)</strong>
     </dt>
@@ -737,87 +597,6 @@ LK3D.DeclareModel(<span class="string">"revolver"</span>, data)</pre>
     <h3>Usage:</h3>
     <ul>
         <pre class="example">LK3D.DeclareModelFromOBJFile(<span class="string">"revolver"</span>, <span class="string">"models/ponr_main/revolver/revolver_bakeduvs"</span>)</pre>
-    </ul>
-
-</dd>
-    <dt>
-    <a name = "LK3D.CompressModel"></a>
-    <strong>LK3D.CompressModel(name)</strong>
-    </dt>
-    <dd>
-
-<!-- Added here by loka, im so shit at HTML & CSS :( -->
-
-        <div style="border:4px dotted rgb(209, 194, 143); background-color: rgb(255, 236, 173); padding-bottom:1em;">
-            <div style="text-align:left; text-indent:1em;"> <h2> DEPRECATED </h2> </div>
-            <div style="text-align:left; text-indent:1em;"> This function is deprecated, it might be removed on a later update. </div>
-        </div> <br>
-
-
-    Compresses a model into LKComp Legacy
-
-    </ul>
-    </ul>
-    </ul>
-
-    <h3>Parameters:</h3>
-    <ul>
-        <li><span class="parameter">name</span>
-            <span class="types"><span class="type">string</span></span>
-         LK3D model name
-        </li>
-    </ul>
-
-
-
-
-    <h3>Usage:</h3>
-    <ul>
-        <pre class="example"><span class="comment">-- THIS IS DEPRECATED!!!
-</span>LK3D.CompressModel(<span class="string">"cube_nuv"</span>)
-<span class="comment">-- Model written to "lk3d/compmodels/cube_nuv.txt"</span></pre>
-    </ul>
-
-</dd>
-    <dt>
-    <a name = "LK3D.AddModelCompStr"></a>
-    <strong>LK3D.AddModelCompStr(name, str)</strong>
-    </dt>
-    <dd>
-
-<!-- Added here by loka, im so shit at HTML & CSS :( -->
-
-        <div style="border:4px dotted rgb(209, 194, 143); background-color: rgb(255, 236, 173); padding-bottom:1em;">
-            <div style="text-align:left; text-indent:1em;"> <h2> DEPRECATED </h2> </div>
-            <div style="text-align:left; text-indent:1em;"> This function is deprecated, it might be removed on a later update. </div>
-        </div> <br>
-
-
-    Loads a LKComp Legacy model
-
-    </ul>
-    </ul>
-    </ul>
-
-    <h3>Parameters:</h3>
-    <ul>
-        <li><span class="parameter">name</span>
-            <span class="types"><span class="type">string</span></span>
-         LK3D model name
-        </li>
-        <li><span class="parameter">str</span>
-            <span class="types"><span class="type">string</span></span>
-         LKComp Legacy model data
-        </li>
-    </ul>
-
-
-
-
-    <h3>Usage:</h3>
-    <ul>
-        <pre class="example"><span class="comment">-- THIS IS DEPRECATED!!!
-</span> LK3D.AddModelCompStr(<span class="string">"bad_deprecated"</span>, LK3D.ReadFileFromLKPack(<span class="string">"models/bad.kcl"</span>))</pre>
     </ul>
 
 </dd>
@@ -968,6 +747,227 @@ LK3D.DeclareModel(<span class="string">"revolver"</span>, data)</pre>
     </ul>
 
 </dd>
+    <dt>
+    <a name = "LK3D.CompressModel"></a>
+    <strong>LK3D.CompressModel(name)</strong>
+    </dt>
+    <dd>
+
+<!-- Added here by loka, im so shit at HTML & CSS :( -->
+
+        <div style="border:4px dotted rgb(209, 194, 143); background-color: rgb(255, 236, 173); padding-bottom:1em;">
+            <div style="text-align:left; text-indent:1em;"> <h2> DEPRECATED </h2> </div>
+            <div style="text-align:left; text-indent:1em;"> This function is deprecated, it might be removed on a later update. </div>
+        </div> <br>
+
+
+    Compresses a model into LKComp Legacy
+
+    </ul>
+    </ul>
+    </ul>
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">name</span>
+            <span class="types"><span class="type">string</span></span>
+         LK3D model name
+        </li>
+    </ul>
+
+
+
+
+    <h3>Usage:</h3>
+    <ul>
+        <pre class="example"><span class="comment">-- THIS IS DEPRECATED!!!
+</span>LK3D.CompressModel(<span class="string">"cube_nuv"</span>)
+<span class="comment">-- Model written to "lk3d/compmodels/cube_nuv.txt"</span></pre>
+    </ul>
+
+</dd>
+    <dt>
+    <a name = "LK3D.AddModelCompStr"></a>
+    <strong>LK3D.AddModelCompStr(name, str)</strong>
+    </dt>
+    <dd>
+
+<!-- Added here by loka, im so shit at HTML & CSS :( -->
+
+        <div style="border:4px dotted rgb(209, 194, 143); background-color: rgb(255, 236, 173); padding-bottom:1em;">
+            <div style="text-align:left; text-indent:1em;"> <h2> DEPRECATED </h2> </div>
+            <div style="text-align:left; text-indent:1em;"> This function is deprecated, it might be removed on a later update. </div>
+        </div> <br>
+
+
+    Loads a LKComp Legacy model
+
+    </ul>
+    </ul>
+    </ul>
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">name</span>
+            <span class="types"><span class="type">string</span></span>
+         LK3D model name
+        </li>
+        <li><span class="parameter">str</span>
+            <span class="types"><span class="type">string</span></span>
+         LKComp Legacy model data
+        </li>
+    </ul>
+
+
+
+
+    <h3>Usage:</h3>
+    <ul>
+        <pre class="example"><span class="comment">-- THIS IS DEPRECATED!!!
+</span> LK3D.AddModelCompStr(<span class="string">"bad_deprecated"</span>, LK3D.ReadFileFromLKPack(<span class="string">"models/bad.kcl"</span>))</pre>
+    </ul>
+
+</dd>
+    <dt>
+    <a name = "LK3D.ExportFastAnimatedModel"></a>
+    <strong>LK3D.ExportFastAnimatedModel(name, path, mdlData)</strong>
+    </dt>
+    <dd>
+
+<!-- Added here by loka, im so shit at HTML & CSS :( -->
+        <div style="border:4px dotted rgb(153, 153, 153); background-color: rgb(233, 233, 233); padding-bottom:1em;">
+            <div style="text-align:left; text-indent:1em;"> <h2> INTERNAL </h2> </div>
+            <div style="text-align:left; text-indent:1em;"> This function is used internally, so you shouldn't use it unless you know what you're doing! </div>
+        </div> <br>
+
+        <div style="border:4px dotted rgb(209, 194, 143); background-color: rgb(255, 236, 173); padding-bottom:1em;">
+            <div style="text-align:left; text-indent:1em;"> <h2> DEPRECATED </h2> </div>
+            <div style="text-align:left; text-indent:1em;"> This function is deprecated, it might be removed on a later update. </div>
+        </div> <br>
+
+
+    Exports a standalone FAM model from a animated model
+
+    </ul>
+    </ul>
+    </ul>
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">name</span>
+            <span class="types"><span class="type">string</span></span>
+         LK3D model name
+        </li>
+        <li><span class="parameter">path</span>
+            <span class="types"><span class="type">string</span></span>
+         Export path
+        </li>
+        <li><span class="parameter">mdlData</span>
+            <span class="types"><span class="type">table</span></span>
+         LK3D Model data
+        </li>
+    </ul>
+
+
+
+
+    <h3>Usage:</h3>
+    <ul>
+        <pre class="example"><span class="comment">-- Don't use this
+</span> LK3D.ExportFastAnimatedModel(<span class="string">"human"</span>, <span class="string">"export_human"</span>, LK3D.Models[<span class="string">"human"</span>])</pre>
+    </ul>
+
+</dd>
+    <dt>
+    <a name = "LK3D.LoadFastAnimatedModel"></a>
+    <strong>LK3D.LoadFastAnimatedModel(path)</strong>
+    </dt>
+    <dd>
+
+<!-- Added here by loka, im so shit at HTML & CSS :( -->
+        <div style="border:4px dotted rgb(153, 153, 153); background-color: rgb(233, 233, 233); padding-bottom:1em;">
+            <div style="text-align:left; text-indent:1em;"> <h2> INTERNAL </h2> </div>
+            <div style="text-align:left; text-indent:1em;"> This function is used internally, so you shouldn't use it unless you know what you're doing! </div>
+        </div> <br>
+
+        <div style="border:4px dotted rgb(209, 194, 143); background-color: rgb(255, 236, 173); padding-bottom:1em;">
+            <div style="text-align:left; text-indent:1em;"> <h2> DEPRECATED </h2> </div>
+            <div style="text-align:left; text-indent:1em;"> This function is deprecated, it might be removed on a later update. </div>
+        </div> <br>
+
+
+    Loads a standalone FAM Model
+
+    </ul>
+    </ul>
+    </ul>
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">path</span>
+            <span class="types"><span class="type">string</span></span>
+         Path to the FAM model
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><span class="type">table</span></span>
+        LK3D model data
+    </ol>
+
+
+
+    <h3>Usage:</h3>
+    <ul>
+        <pre class="example"><span class="comment">-- Don't use this
+</span> LK3D.ExportFastAnimatedModel(<span class="string">"lk3d/fam_test/human1.fam"</span>)</pre>
+    </ul>
+
+</dd>
+    <dt>
+    <a name = "LK3D.ExportAnimatedModelFAM"></a>
+    <strong>LK3D.ExportAnimatedModelFAM(index, fpath)</strong>
+    </dt>
+    <dd>
+
+<!-- Added here by loka, im so shit at HTML & CSS :( -->
+
+        <div style="border:4px dotted rgb(209, 194, 143); background-color: rgb(255, 236, 173); padding-bottom:1em;">
+            <div style="text-align:left; text-indent:1em;"> <h2> DEPRECATED </h2> </div>
+            <div style="text-align:left; text-indent:1em;"> This function is deprecated, it might be removed on a later update. </div>
+        </div> <br>
+
+
+    Exports a full FAM model
+
+    </ul>
+    </ul>
+    </ul>
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">index</span>
+            <span class="types"><span class="type">string</span></span>
+         LK3D Model name
+        </li>
+        <li><span class="parameter">fpath</span>
+            <span class="types"><span class="type">string</span></span>
+         Animated model LKPack filepath
+        </li>
+    </ul>
+
+
+
+
+    <h3>Usage:</h3>
+    <ul>
+        <pre class="example"><span class="comment">-- Don't use this
+</span> LK3D.ExportAnimatedModelFAM(<span class="string">"human"</span>, <span class="string">"dd_main/animated/human/"</span>)</pre>
+    </ul>
+
+</dd>
 </dl>
 
 
@@ -975,7 +975,7 @@ LK3D.DeclareModel(<span class="string">"revolver"</span>, data)</pre>
 </div> <!-- id="main" -->
 <div id="about">
 <i>generated by <a href="http://github.com/lunarmodules/LDoc">LDoc 1.4.6</a></i>
-<i style="float:right;">Last updated 2024-05-07 15:17:52 </i>
+<i style="float:right;">Last updated 2024-05-11 13:18:43 </i>
 </div> <!-- id="about" -->
 </div> <!-- id="container" -->
 </body>
