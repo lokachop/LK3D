@@ -925,6 +925,11 @@ function LK3D.SetupBaseMaterials()
 		render.Clear(255, 255, 255, 255)
 	end)
 
+	LK3D.DeclareTextureFromFunc("gray", 16, 16, function()
+		render.Clear(128, 128, 128, 255)
+	end)
+
+
 	LK3D.DeclareTextureFromFunc("lightmap_neutral2", 16, 16, function()
 		render.Clear(128, 128, 128, 255)
 	end, false, true)

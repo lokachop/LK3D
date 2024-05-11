@@ -14,7 +14,11 @@ include("lk3d_radiosa_utils.lua")
 
 include("lk3d_radiosa_uv_pack.lua")
 include("lk3d_radiosa_uv_unwrap.lua")
+
+include("lk3d_radiosa_ftrace.lua") -- FastTrace, fast*er* tracing library for static scenes
+
 include("lk3d_radiosa_patches.lua")
+include("lk3d_radiosa_trilut_genner.lua")
 
 -- Solver to use, only 1 at once!
 LK3D.Radiosa.SOLVER = include("solvers/lk3d_radiosa_solver_radiosity.lua")
