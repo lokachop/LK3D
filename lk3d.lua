@@ -20,7 +20,7 @@ This holds all of the other stuff that doesn't really fit into anything else
 ]]--
 LK3D = LK3D or {}
 LK3D.Debug = true
-concommand.Add("lk3d_toggledebug", function()
+concommand.Add("lk3d_toggle_debug", function()
 	LK3D.Debug = not LK3D.Debug
 	print("Debug is now: " .. (LK3D.Debug and "on" or "off"))
 end)
@@ -391,8 +391,6 @@ include("lk3d_proctex.lua")
 include("physics/lk3d_physics_external_fps.lua")
 include("lk3d_sceneexport.lua")
 include("lk3d_musisynth.lua")
-include("lk3d_modelviewer.lua")
-include("lk3d_univ_explorer.lua")
 include("lk3d_baseshaders.lua")
 include("lk3d_radiosity.lua")
 include("lightmapping/lk3d_radiosa_main.lua")
@@ -400,6 +398,12 @@ include("lightmapping/lk3d_radiosa_main.lua")
 
 include("lk3d_skeleton.lua")
 include("lk3d_intro.lua")
+
+
+
+include("lk3d_model_viewer.lua")
+include("lk3d_universe_explorer.lua")
+include("lk3d_texture_viewer.lua")
 include("lk3d_changelog.lua")
 include("lk3d_about.lua")
 

@@ -246,6 +246,6 @@ local function openUE()
 end
 
 
-concommand.Add("lk3d_openuniverseexplorer", function()
+concommand.Add("lk3d_universe_explorer", function()
 	openUE()
 end)

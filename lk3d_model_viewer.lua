@@ -546,6 +546,6 @@ local function openMV()
 end
 
 
-concommand.Add("lk3d_openmdlview", function()
+concommand.Add("lk3d_model_viewer", function()
 	openMV()
 end)

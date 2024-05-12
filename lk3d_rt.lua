@@ -271,13 +271,13 @@ function LK3D.RaytraceThink()
 	print(currpx .. " / " .. (sWDiv * sHDiv))
 end
 
-concommand.Add("LK3D_raytraceCurrent", function(ply, cmd, args, argstr)
+concommand.Add("lk3d_raytrace_current", function(ply, cmd, args, argstr)
 	if LK3D.Raytracing then
 		return
 	end
 
 	if not args[1] then
-		LK3D.New_D_Print("LK3D_raytraceCurrent (universeName)", LK3D_SEVERITY_WARN, "Base")
+		LK3D.New_D_Print("lk3d_raytrace_current (universeName)", LK3D_SEVERITY_WARN, "Base")
 		return
 	end
 
@@ -301,7 +301,7 @@ end)
 
 
 local fr_scale = 2
-concommand.Add("LK3D_ShowRTRender", function()
+concommand.Add("lk3d_show_rt_render", function()
 	local fr = vgui.Create("DFrame")
 	fr:SetSize((wDiv * fr_scale) + 32, (hDiv * fr_scale) + 32)
 	fr:Center()

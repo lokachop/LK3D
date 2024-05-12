@@ -341,8 +341,6 @@ function LK3D.Radiosa.FTraceTraceLine(from, to)
 	deltaDistY = math_abs(1 / rdY)
 	deltaDistZ = math_abs(1 / rdZ)
 
-	local perpWallDist = 0
-
 	local stepX = 0
 	local stepY = 0
 	local stepZ = 0

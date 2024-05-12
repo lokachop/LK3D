@@ -1,7 +1,7 @@
 LK3D = LK3D or {}
 LK3D.Radiosa = LK3D.Radiosa or {}
 
-local INSET_AMOUNT = (2048 / LK3D.Radiosa.LIGHTMAP_RES) * 0.006
+local INSET_AMOUNT = (2048 / LK3D.Radiosa.LIGHTMAP_RES) * 0.0075
 
 
 local math = math
@@ -17,11 +17,17 @@ local function getTriCenter(uv1, uv2, uv3)
 	return {uSum / 3, vSum / 3}
 end
 
+
+local function lerpNoClamp(t, a, b)
+	return a * (1 - t) + b * t
+end
+
+
 local function getInsetUV(uv, center)
 	local uDirCalc = uv[1] - center[1]
 	local vDirCalc = uv[2] - center[2]
 
-	local len = math_sqrt(uDirCalc * uDirCalc + vDirCalc * vDirCalc)
+	local len = math.sqrt(uDirCalc * uDirCalc + vDirCalc * vDirCalc)
 	uDirCalc = uDirCalc / len
 	vDirCalc = vDirCalc / len
 
@@ -44,8 +50,94 @@ local function uv_inside_tri(uv, uv1, uv2, uv3)
 
 	local d = (uv3[1] - uv2[1]) * (uv[2] - uv2[2]) - (uv3[2] - uv2[2]) * (uv[1] - uv2[1])
 
+
 	return d == 0 or (d < 0) == (s + t <= 0)
 end
+
+
+
+
+local _v0 = {0, 0}
+local _v1 = {0, 0}
+local _v2 = {0, 0}
+
+local _d00, _d01, _d11, _d20, _d21 = 0, 0, 0, 0, 0
+local function barycentric(px, py, ax, ay, bx, by, cx, cy)
+	_v0[1] = bx - ax
+	_v0[2] = by - ay
+
+	_v1[1] = cx - ax
+	_v1[2] = cy - ay
+
+	_v2[1] = px - ax
+	_v2[2] = py - ay
+
+	_d00 = _v0[1] * _v0[1] + _v0[2] * _v0[2]
+
+	_d01 = _v0[1] * _v1[1] + _v0[2] * _v1[2]
+
+	_d11 = _v1[1] * _v1[1] + _v1[2] * _v1[2]
+
+	_d20 = _v2[1] * _v0[1] + _v2[2] * _v0[2]
+
+	_d21 = _v2[1] * _v1[1] + _v2[2] * _v1[2]
+
+	local denom = _d00 * _d11 - _d01 * _d01
+	local v = (_d11 * _d20 - _d01 * _d21) / denom
+	local w = (_d00 * _d21 - _d01 * _d20) / denom
+	local u = 1 - v - w
+
+	return v, w, u
+end
+
+
+
+local CLAMP_LERP = 0.01
+local function clampUV(uv, uv1, uv2, uv3)
+
+	local center = getTriCenter(uv1, uv2, uv3)
+
+	--local uv1_i = getInsetUV(uv1, center)
+	--local uv2_i = getInsetUV(uv2, center)
+	--local uv3_i = getInsetUV(uv3, center)
+
+
+
+
+	local u, v, w = barycentric(
+		uv[1], uv[2],
+		uv1[1], uv1[2],
+		uv2[1], uv2[2],
+		uv3[1], uv3[2]
+	)
+
+	local u2, v2, w2 = barycentric(
+		center[1], center[2],
+		uv1[1], uv1[2],
+		uv2[1], uv2[2],
+		uv3[1], uv3[2]
+	)
+
+	--if len > 1 or len < 0 then
+	--	return
+	--end
+
+
+	u = Lerp(CLAMP_LERP, u, u2) --u - CLAMP_MUL
+	v = Lerp(CLAMP_LERP, v, v2) --v - CLAMP_MUL
+	w = Lerp(CLAMP_LERP, w, w2) --w - CLAMP_MUL
+
+
+	local uc = (w * uv1[1]) + (u * uv2[1]) + (v * uv3[1])
+	local vc = (w * uv1[2]) + (u * uv2[2]) + (v * uv3[2])
+
+	return {uc, vc}
+end
+
+
+
+
+
 
 
 local function getTriangleByTexCoord(triList, uv)
@@ -59,9 +151,17 @@ local function getTriangleByTexCoord(triList, uv)
 
 		local center = getTriCenter(uv1, uv2, uv3)
 
+
+		--local uv_i = getInsetUV(uv, center)
+
 		local uv1_i = getInsetUV(uv1, center)
 		local uv2_i = getInsetUV(uv2, center)
 		local uv3_i = getInsetUV(uv3, center)
+
+		--local checkUV = clampUV(uv, uv1, uv2, uv3)
+		--if not checkUV then
+		--	continue
+		--end
 
 		local inside = uv_inside_tri(uv, uv1_i, uv2_i, uv3_i)
 		if not inside then
@@ -88,16 +188,10 @@ local function triUVToWorld(objPtr, tri, uv)
 	local uv2 = tri[2].lm_uv
 	local uv3 = tri[3].lm_uv
 
-	local center = getTriCenter(uv1, uv2, uv3)
 
-	local uv1_i = getInsetUV(uv1, center)
-	local uv2_i = getInsetUV(uv2, center)
-	local uv3_i = getInsetUV(uv3, center)
-
-
-	local i = 1 / ((uv2_i[2] - uv1_i[2]) * (uv3_i[1] - uv1_i[1]) - (uv2_i[1] - uv1_i[1]) * (uv3_i[2] - uv1_i[2]))
-	local s = i * ( (uv3_i[1] - uv1_i[1]) * (uv[2] - uv1_i[2]) - (uv3_i[2] - uv1_i[2]) * (uv[1] - uv1_i[1]))
-	local t = i * (-(uv2_i[1] - uv1_i[1]) * (uv[2] - uv1_i[2]) + (uv2_i[2] - uv1_i[2]) * (uv[1] - uv1_i[1]))
+	local i = 1 / ((uv2[2] - uv1[2]) * (uv3[1] - uv1[1]) - (uv2[1] - uv1[1]) * (uv3[2] - uv1[2]))
+	local s = i * ( (uv3[1] - uv1[1]) * (uv[2] - uv1[2]) - (uv3[2] - uv1[2]) * (uv[1] - uv1[1]))
+	local t = i * (-(uv2[1] - uv1[1]) * (uv[2] - uv1[2]) + (uv2[2] - uv1[2]) * (uv[1] - uv1[1]))
 
 
 	local retPos = Vector(
@@ -112,25 +206,6 @@ local function triUVToWorld(objPtr, tri, uv)
 	return retPos, norm
 end
 
-
-local function barycentric(px, py, ax, ay, bx, by, cx, cy)
-	local v0 = Vector(bx - ax, by - ay)
-	local v1 = Vector(cx - ax, cy - ay)
-	local v2 = Vector(px - ax, py - ay)
-
-	local d00 = v0:Dot(v0)
-	local d01 = v0:Dot(v1)
-	local d11 = v1:Dot(v1)
-	local d20 = v2:Dot(v0)
-	local d21 = v2:Dot(v1)
-
-	local denom = d00 * d11 - d01 * d01
-	local v = (d11 * d20 - d01 * d21) / denom
-	local w = (d00 * d21 - d01 * d20) / denom
-	local u = 1 - v - w
-
-	return v, w, u
-end
 
 local function getTexUVFromTriCoord(tri, coord)
 	local size = LK3D.Radiosa.LIGHTMAP_RES
@@ -183,6 +258,67 @@ end
 
 
 
+
+local setupTri = nil
+local function patchSetup_pushTriangle(tri)
+	setupTri = tri
+end
+
+local setupObjPtr = nil
+local function patchSetup_pushObjectPointer(objPtr)
+	setupObjPtr = objPtr
+end
+
+local setupObjRGB = {1, 1, 1}
+local function patchSetup_pushObjectColour(col)
+	setupObjRGB = {col.r / 255, col.g / 255, col.b / 255}
+end
+
+local setupTexArray = nil
+local setupTexW = nil
+local setupTexH = nil
+local setupTexEmissive = nil
+local function patchSetup_pushObjectTexParams(texArray, tW, tH, tEmissive)
+	setupTexArray = texArray
+	setupTexW = tW
+	setupTexH = tH
+	setupTexEmissive = tEmissive
+end
+
+local lightmapSize = LK3D.Radiosa.LIGHTMAP_RES
+local function setupPatch(patch, xc, yc)
+	local uv = {(xc + .5) / lightmapSize, (yc + .5) / lightmapSize}
+
+	local pos, norm = triUVToWorld(setupObjPtr, setupTri, uv)
+
+	LK3D.Radiosa.SetPatchPosition(patch, pos)
+	LK3D.Radiosa.SetPatchNormal(patch, norm)
+
+
+	local uvCoord = getTexUVFromTriCoord(setupTri, {xc, yc})
+
+	local tX = math_min(math_max(math_floor(uvCoord[1] * setupTexW), 0), setupTexW - 1)
+	local tY = math_min(math_max(math_floor(uvCoord[2] * setupTexH), 0), setupTexH - 1)
+
+	local texInd = (tX + (tY * setupTexW)) + 1
+	local texData = setupTexArray[texInd]
+
+	local normalizedR = (texData[1] / 255) * setupObjRGB[1]
+	local normalizedG = (texData[2] / 255) * setupObjRGB[2]
+	local normalizedB = (texData[3] / 255) * setupObjRGB[3]
+
+	local normalizedColour = {normalizedR, normalizedG, normalizedB}
+	LK3D.Radiosa.SetPatchReflectivity(patch, normalizedColour)
+
+	if setupTexEmissive then
+		LK3D.Radiosa.SetPatchEmission(patch, normalizedColour)
+	end
+end
+
+
+
+
+
 -- Makes a LUT of which patch each pixel is
 -- It also generates those patches in the first place
 -- Make sure to call after LK3D.Radiosa.PushLightmapUVsToObject()
@@ -196,6 +332,8 @@ function LK3D.Radiosa.GenerateObjectPatchesLUT(obj)
 	end
 
 	local objPtr = LK3D.CurrUniv["objects"][obj]
+	patchSetup_pushObjectPointer(objPtr)
+
 
 	local triList = LK3D.Radiosa.GetTriTable(obj)
 	local size = LK3D.Radiosa.LIGHTMAP_RES
@@ -207,18 +345,17 @@ function LK3D.Radiosa.GenerateObjectPatchesLUT(obj)
 
 	-- Colour
 	local objCol = objPtr.col
-	local colR, colG, colB = objCol:Unpack()
-	colR = colR / 255
-	colG = colG / 255
-	colB = colB / 255
+	patchSetup_pushObjectColour(objCol)
 
 	-- Texture
 	local tex = LK3D.GetTextureByIndex(objPtr.mat).mat
 	local tW, tH = tex:Width(), tex:Width()
 	local texArray = LK3D.GetTexturePixelArray(objPtr.mat, true)
 
+	patchSetup_pushObjectTexParams(texArray, tW, tH, emissive)
 
 	local patchLUT = {}
+	local tempPatchTriangleLUT = {}
 	local itr = (size * size) - 1
 	for i = 0, itr do
 		if (i % 2048) == 0 then
@@ -230,49 +367,160 @@ function LK3D.Radiosa.GenerateObjectPatchesLUT(obj)
 		local xc = i % size
 		local yc = math_floor(i / size)
 
-		local uv = {xc / size, yc / size}
+		local uv = {(xc + .5) / size, (yc + .5) / size}
 
 		local triTarget = getTriangleByTexCoord(triList, uv)
 		if not triTarget then
 			continue
 		end
-
-
-		local pos, norm = triUVToWorld(objPtr, triTarget, uv)
+		patchSetup_pushTriangle(triTarget)
 
 		-- Make the patch
 		local patch = LK3D.Radiosa.NewPatch()
 
-		-- Position/normal setup
-		LK3D.Radiosa.SetPatchPosition(patch, pos)
-		LK3D.Radiosa.SetPatchNormal(patch, norm)
-
-		-- The patch should inherit the reflectivity as the texture value
-		-- so there's a bit of complicated setup
-
-
-		local uvCoord = getTexUVFromTriCoord(triTarget, {xc, yc})
-		--PrintTable(uvCoord)
-
-		local tX = math_min(math_max(math_floor(uvCoord[1] * tW), 0), tW - 1)
-		local tY = math_min(math_max(math_floor(uvCoord[2] * tH), 0), tH - 1)
-
-		local texInd = (tX + (tY * tW)) + 1
-		local texData = texArray[texInd]
-
-		local normalizedR = (texData[1] / 255) * colR
-		local normalizedG = (texData[2] / 255) * colG
-		local normalizedB = (texData[3] / 255) * colB
-
-		local normalizedColour = {normalizedR, normalizedG, normalizedB}
-		LK3D.Radiosa.SetPatchReflectivity(patch, normalizedColour)
-
-		if emissive then
-			LK3D.Radiosa.SetPatchEmission(patch, normalizedColour)
-		end
+		setupPatch(patch, xc, yc)
 
 		patchLUT[i] = LK3D.Radiosa.AddPatchToRegistry(patch)
+		tempPatchTriangleLUT[i] = triTarget
 	end
+
+	-- postExpand LUT
+	local expandItr = 6
+
+	for j = 1, expandItr do
+		local expandItrStr = "[" .. j .. "/" .. expandItr .. "]"
+
+
+
+		local patchesToAdd = {}
+		for i = 0, itr do
+			if (i % 2048) == 0 then
+				LK3D.RenderProcessingMessage("[RADIOSA] " .. expandItrStr .. " Expand pixel->patch LUT", (i / itr) * 100)
+			end
+
+			local xc = i % size
+			local yc = math_floor(i / size)
+
+			local ourIndex = xc + (yc * size)
+
+
+			-- make sure there's no patch already
+			local iCheck = xc + (yc * size)
+			if patchLUT[iCheck] ~= nil then
+				continue
+			end
+
+			-- check all of our 8 neighbours, if any of them have a patch, we will add one later
+
+			-- #--
+			-- - -
+			-- ---
+			iCheck = (xc - 1) + ((yc - 1) * size)
+			if patchLUT[iCheck] ~= nil then
+				patchesToAdd[#patchesToAdd + 1] = {ourIndex, iCheck}
+				continue
+			end
+
+			-- -#-
+			-- - -
+			-- ---
+			iCheck = xc      + ((yc - 1) * size)
+			if patchLUT[iCheck] ~= nil then
+				patchesToAdd[#patchesToAdd + 1] = {ourIndex, iCheck}
+				continue
+			end
+
+			-- --#
+			-- - -
+			-- ---
+			iCheck = (xc + 1) + ((yc - 1) * size)
+			if patchLUT[iCheck] ~= nil then
+				patchesToAdd[#patchesToAdd + 1] = {ourIndex, iCheck}
+				continue
+			end
+
+			-- ---
+			-- # -
+			-- ---
+			iCheck = (xc - 1) + (yc * size)
+			if patchLUT[iCheck] ~= nil then
+				patchesToAdd[#patchesToAdd + 1] = {ourIndex, iCheck}
+				continue
+			end
+
+			-- ---
+			-- - #
+			-- ---
+			iCheck = (xc + 1) + (yc * size)
+			if patchLUT[iCheck] ~= nil then
+				patchesToAdd[#patchesToAdd + 1] = {ourIndex, iCheck}
+				continue
+			end
+
+			-- ---
+			-- - -
+			-- #--
+			iCheck = (xc - 1) + ((yc + 1) * size)
+			if patchLUT[iCheck] ~= nil then
+				patchesToAdd[#patchesToAdd + 1] = {ourIndex, iCheck}
+				continue
+			end
+
+			-- ---
+			-- - -
+			-- -#-
+			iCheck = xc + ((yc + 1) * size)
+			if patchLUT[iCheck] ~= nil then
+				patchesToAdd[#patchesToAdd + 1] = {ourIndex, iCheck}
+				continue
+			end
+
+			-- ---
+			-- - -
+			-- --#
+			iCheck = (xc - 1) + ((yc + 1) * size)
+			if patchLUT[iCheck] ~= nil then
+				patchesToAdd[#patchesToAdd + 1] = {ourIndex, iCheck}
+				continue
+			end
+		end
+
+
+		local patchAddCount = #patchesToAdd
+		for i = 1, patchAddCount do
+			if (i % 1024) == 0 then
+				LK3D.RenderProcessingMessage("[RADIOSA] " .. expandItrStr .. " Adding expanded pixel->patch patches.. ", (i / patchAddCount) * 100)
+			end
+
+			local patchToAdd = patchesToAdd[i]
+
+
+
+			local patchIndex = patchToAdd[1]
+			local patchParent = patchToAdd[2]
+
+
+			local triParent = tempPatchTriangleLUT[patchParent]
+			patchSetup_pushTriangle(triParent)
+
+			local patch = LK3D.Radiosa.NewPatch()
+
+			local xc = patchIndex % size
+			local yc = math_floor(patchIndex / size)
+
+			setupPatch(patch, xc, yc)
+
+			patchLUT[patchIndex] = LK3D.Radiosa.AddPatchToRegistry(patch)
+			tempPatchTriangleLUT[patchIndex] = triParent
+		end
+	end
+
+
+	-- Cleanup
+	for i = 1, #tempPatchTriangleLUT do
+		tempPatchTriangleLUT[i] = nil
+	end
+	tempPatchTriangleLUT = nil
 
 	return patchLUT
 end
