@@ -75,3 +75,18 @@ end
 function LK3D.GetUniverseByTag(tag)
 	return LK3D.UniverseRegistry[tag]
 end
+
+--- Gets the list of objects from the active universe
+-- @warning The returned table is internal and modifying it might lead to crashes!
+-- @tparam ?string tag Universe tag
+-- @treturn table Object list
+-- @usage LK3D.PushUniverse(universe_imaginary)
+--   local objects = LK3D.GetUniverseObjects()
+--   for k, v in pairs(objects) do
+--     print("Object named \"" .. k .. "\"!")
+--   end
+-- LK3D.PopUniverse()
+function LK3D.GetUniverseObjects(univ)
+	univ = univ or LK3D.CurrUniv
+	return univ["objects"]
+end

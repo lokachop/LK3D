@@ -179,7 +179,6 @@ function LK3D.Radiosa.PackUVs(uvs_to_pack)
 
 	local packed_uvs = {}
 	local lightmap_uvs = {}
-	local is_quad_DEBUG = {}
 	local index_list = {}
 	local fail = false
 
@@ -209,12 +208,6 @@ function LK3D.Radiosa.PackUVs(uvs_to_pack)
 		-- add each individual triangle
 		for j = 1, #ret_tri_tbl do
 			local tri = ret_tri_tbl[j]
-
-			if j == 2 then
-				is_quad_DEBUG[#is_quad_DEBUG + 1] = true
-			else
-				is_quad_DEBUG[#is_quad_DEBUG + 1] = false
-			end
 
 
 
@@ -253,26 +246,24 @@ function LK3D.Radiosa.PackUVs(uvs_to_pack)
 		return
 	end
 
-	return packed_uvs, lightmap_uvs, is_quad_DEBUG, index_list
+	return packed_uvs, lightmap_uvs, index_list
 end
 
 
 function LK3D.Radiosa.PushLightmapUVsToObject(object, packed_uvs, lightmap_uvs, index_list)
 	local obj_ptr = LK3D.CurrUniv["objects"][object]
 	if not obj_ptr then
-		print("non object ", object)
 		return
 	end
 
 	obj_ptr.lightmap_uvs = packed_uvs
-	obj_ptr.limap_tex = "lightmap_test" .. LK3D.Radiosa.LIGHTMAP_RES
+	obj_ptr.limap_tex = LK3D.Radiosa.GetObjectLightmapTextureName(object)
 
 	local mdl = obj_ptr.mdl
 	local mdlpointer = LK3D.Models[mdl]
 
 	local indices = mdlpointer.indices
 
-	
 
 	for i = 1, #indices do
 		local indexFixed = index_list[i]

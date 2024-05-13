@@ -114,11 +114,6 @@ include("lk3d_rendertarget.lua")
 -- Camera
 include("lk3d_camera.lua")
 
-
--- RT Utils
-include("lk3d_rt_utils.lua")
-
-
 -- Objects
 include("lk3d_objects.lua")
 

@@ -134,5 +134,13 @@ function LK3D.Radiosa.GetSolver()
 	return LK3D.Radiosa.SOLVER
 end
 
+function LK3D.Radiosa.GetObjectLightmapTextureName(object)
+	local obj_ptr = LK3D.CurrUniv["objects"][object]
+	if not obj_ptr then
+		return
+	end
+
+	return "lm_" .. string.lower(LK3D.CurrUniv["tag"]) .. "_" .. obj_ptr["name"] .. "_" .. LK3D.Radiosa.LIGHTMAP_RES
+end
 
 
