@@ -77,35 +77,15 @@
 
 <h1>Module <code>rendertarget</code></h1>
 <p>
-
+<h2>Rendertarget Module</h2>
+<hr/>
 </p>
-<p>
-
-</p>
+<p>This module handles Rendertargets in LK3D, Rendertargets are where LK3D renders to <br/>
+It also allows you to perform simple operations like clearing them and rendering stuff to them  </p>
 
 
 <h2><a href="#Functions">Functions</a></h2>
 <table class="function_list">
-	<tr>
-	<td class="name" nowrap><a href="#LK3D.RTToMaterial">LK3D.RTToMaterial(rt, transp, ignorez)</a></td>
-	<td class="summary">Turns a rendertarget into a lua material <br/>
- <strong>Not an LK3D Texture</strong></td>
-	</tr>
-	<tr>
-	<td class="name" nowrap><a href="#LK3D.RTToMaterialEx">LK3D.RTToMaterialEx(rt, params)</a></td>
-	<td class="summary">Extended version of LK3D.RTToMaterial() <br/>
- <strong>Not an LK3D Texture</strong></td>
-	</tr>
-	<tr>
-	<td class="name" nowrap><a href="#LK3D.RTToMaterialTL">LK3D.RTToMaterialTL(rt)</a></td>
-	<td class="summary">Translucent version of LK3D.RTToMaterial() <br/>
- <strong>Not an LK3D Texture</strong></td>
-	</tr>
-	<tr>
-	<td class="name" nowrap><a href="#LK3D.RTToMaterialNoZ">LK3D.RTToMaterialNoZ(rt, transp)</a></td>
-	<td class="summary">No-Z version of LK3D.RTToMaterial() <br/>
- <strong>Not an LK3D Texture</strong></td>
-	</tr>
 	<tr>
 	<td class="name" nowrap><a href="#LK3D.PushRenderTarget">LK3D.PushRenderTarget(rt)</a></td>
 	<td class="summary">Pushes a new active rendertarget to the stack</td>
@@ -127,6 +107,26 @@
 	<td class="name" nowrap><a href="#LK3D.RenderQuick">LK3D.RenderQuick(call)</a></td>
 	<td class="summary">Calls a function to be drawn on the active rendertarget</td>
 	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#LK3D.RTToMaterial">LK3D.RTToMaterial(rt, transp, ignorez)</a></td>
+	<td class="summary">Turns a rendertarget into a lua material <br/>
+ <strong>Not an LK3D Texture</strong></td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#LK3D.RTToMaterialEx">LK3D.RTToMaterialEx(rt, params)</a></td>
+	<td class="summary">Extended version of LK3D.RTToMaterial() <br/>
+ <strong>Not an LK3D Texture</strong></td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#LK3D.RTToMaterialTL">LK3D.RTToMaterialTL(rt)</a></td>
+	<td class="summary">Translucent version of LK3D.RTToMaterial() <br/>
+ <strong>Not an LK3D Texture</strong></td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#LK3D.RTToMaterialNoZ">LK3D.RTToMaterialNoZ(rt, transp)</a></td>
+	<td class="summary">No-Z version of LK3D.RTToMaterial() <br/>
+ <strong>Not an LK3D Texture</strong></td>
+	</tr>
 </table>
 
 <br/>
@@ -136,6 +136,175 @@
     <h2 class="section-header "><a name="Functions"></a>Functions</h2>
 
     <dl class="function">
+    <dt>
+    <a name = "LK3D.PushRenderTarget"></a>
+    <strong>LK3D.PushRenderTarget(rt)</strong>
+    </dt>
+    <dd>
+
+<!-- Added here by loka, im so shit at HTML & CSS :( -->
+
+
+
+    Pushes a new active rendertarget to the stack
+
+    </ul>
+    </ul>
+    </ul>
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">rt</span>
+            <span class="types"><span class="type">rendertarget</span></span>
+         Rendertarget to push
+        </li>
+    </ul>
+
+
+
+
+    <h3>Usage:</h3>
+    <ul>
+        <pre class="example">LK3D.PushRenderTarget(rt_render)</pre>
+    </ul>
+
+</dd>
+    <dt>
+    <a name = "LK3D.PopRenderTarget"></a>
+    <strong>LK3D.PopRenderTarget()</strong>
+    </dt>
+    <dd>
+
+<!-- Added here by loka, im so shit at HTML & CSS :( -->
+
+
+
+    Restores the last active rendertarget from the stack
+
+    </ul>
+    </ul>
+    </ul>
+
+
+
+
+
+    <h3>Usage:</h3>
+    <ul>
+        <pre class="example">LK3D.PopRenderTarget()</pre>
+    </ul>
+
+</dd>
+    <dt>
+    <a name = "LK3D.RenderClear"></a>
+    <strong>LK3D.RenderClear(r, g, b, a)</strong>
+    </dt>
+    <dd>
+
+<!-- Added here by loka, im so shit at HTML & CSS :( -->
+
+
+
+    Clears the active rendertarget with a colour <br/>
+ This also clears the depth and stencil buffer
+
+    </ul>
+    </ul>
+    </ul>
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">r</span>
+            <span class="types"><span class="type">number</span></span>
+         Red value
+        </li>
+        <li><span class="parameter">g</span>
+            <span class="types"><span class="type">number</span></span>
+         Green value
+        </li>
+        <li><span class="parameter">b</span>
+            <span class="types"><span class="type">number</span></span>
+         Blue value
+        </li>
+        <li><span class="parameter">a</span>
+            <span class="types">optional <span class="type">number</span></span>
+         Alpha value
+        </li>
+    </ul>
+
+
+
+
+    <h3>Usage:</h3>
+    <ul>
+        <pre class="example">LK3D.RenderClear(<span class="number">32</span>, <span class="number">64</span>, <span class="number">96</span>)</pre>
+    </ul>
+
+</dd>
+    <dt>
+    <a name = "LK3D.RenderClearDepth"></a>
+    <strong>LK3D.RenderClearDepth()</strong>
+    </dt>
+    <dd>
+
+<!-- Added here by loka, im so shit at HTML & CSS :( -->
+
+
+
+    Clears the active rendertarget's depth buffer
+
+    </ul>
+    </ul>
+    </ul>
+
+
+
+
+
+    <h3>Usage:</h3>
+    <ul>
+        <pre class="example">LK3D.RenderClearDepth()</pre>
+    </ul>
+
+</dd>
+    <dt>
+    <a name = "LK3D.RenderQuick"></a>
+    <strong>LK3D.RenderQuick(call)</strong>
+    </dt>
+    <dd>
+
+<!-- Added here by loka, im so shit at HTML & CSS :( -->
+
+
+
+    Calls a function to be drawn on the active rendertarget
+
+    </ul>
+    </ul>
+    </ul>
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">call</span>
+            <span class="types"><span class="type">function</span></span>
+         Function to render stuff
+        </li>
+    </ul>
+
+
+
+
+    <h3>Usage:</h3>
+    <ul>
+        <pre class="example">LK3D.RenderQuick(<span class="keyword">function</span>()
+  surface.SetDrawColor(<span class="number">255</span>, <span class="number">0</span>, <span class="number">0</span>)
+
+  <span class="comment">-- ScrW() and ScrH() are the RT size
+</span>  surface.DrawRect(<span class="number">0</span>, <span class="number">0</span>, ScrW() * .<span class="number">5</span>, ScrH() * .<span class="number">5</span>)
+<span class="keyword">end</span>)</pre>
+    </ul>
+
+</dd>
     <dt>
     <a name = "LK3D.RTToMaterial"></a>
     <strong>LK3D.RTToMaterial(rt, transp, ignorez)</strong>
@@ -330,175 +499,6 @@
     </ul>
 
 </dd>
-    <dt>
-    <a name = "LK3D.PushRenderTarget"></a>
-    <strong>LK3D.PushRenderTarget(rt)</strong>
-    </dt>
-    <dd>
-
-<!-- Added here by loka, im so shit at HTML & CSS :( -->
-
-
-
-    Pushes a new active rendertarget to the stack
-
-    </ul>
-    </ul>
-    </ul>
-
-    <h3>Parameters:</h3>
-    <ul>
-        <li><span class="parameter">rt</span>
-            <span class="types"><span class="type">rendertarget</span></span>
-         Rendertarget to push
-        </li>
-    </ul>
-
-
-
-
-    <h3>Usage:</h3>
-    <ul>
-        <pre class="example">LK3D.PushRenderTarget(rt_render)</pre>
-    </ul>
-
-</dd>
-    <dt>
-    <a name = "LK3D.PopRenderTarget"></a>
-    <strong>LK3D.PopRenderTarget()</strong>
-    </dt>
-    <dd>
-
-<!-- Added here by loka, im so shit at HTML & CSS :( -->
-
-
-
-    Restores the last active rendertarget from the stack
-
-    </ul>
-    </ul>
-    </ul>
-
-
-
-
-
-    <h3>Usage:</h3>
-    <ul>
-        <pre class="example">LK3D.PopRenderTarget()</pre>
-    </ul>
-
-</dd>
-    <dt>
-    <a name = "LK3D.RenderClear"></a>
-    <strong>LK3D.RenderClear(r, g, b, a)</strong>
-    </dt>
-    <dd>
-
-<!-- Added here by loka, im so shit at HTML & CSS :( -->
-
-
-
-    Clears the active rendertarget with a colour <br/>
- This also clears the depth and stencil buffer
-
-    </ul>
-    </ul>
-    </ul>
-
-    <h3>Parameters:</h3>
-    <ul>
-        <li><span class="parameter">r</span>
-            <span class="types"><span class="type">number</span></span>
-         Red value
-        </li>
-        <li><span class="parameter">g</span>
-            <span class="types"><span class="type">number</span></span>
-         Green value
-        </li>
-        <li><span class="parameter">b</span>
-            <span class="types"><span class="type">number</span></span>
-         Blue value
-        </li>
-        <li><span class="parameter">a</span>
-            <span class="types">optional <span class="type">number</span></span>
-         Alpha value
-        </li>
-    </ul>
-
-
-
-
-    <h3>Usage:</h3>
-    <ul>
-        <pre class="example">LK3D.RenderClear(<span class="number">32</span>, <span class="number">64</span>, <span class="number">96</span>)</pre>
-    </ul>
-
-</dd>
-    <dt>
-    <a name = "LK3D.RenderClearDepth"></a>
-    <strong>LK3D.RenderClearDepth()</strong>
-    </dt>
-    <dd>
-
-<!-- Added here by loka, im so shit at HTML & CSS :( -->
-
-
-
-    Clears the active rendertarget's depth buffer
-
-    </ul>
-    </ul>
-    </ul>
-
-
-
-
-
-    <h3>Usage:</h3>
-    <ul>
-        <pre class="example">LK3D.RenderClearDepth()</pre>
-    </ul>
-
-</dd>
-    <dt>
-    <a name = "LK3D.RenderQuick"></a>
-    <strong>LK3D.RenderQuick(call)</strong>
-    </dt>
-    <dd>
-
-<!-- Added here by loka, im so shit at HTML & CSS :( -->
-
-
-
-    Calls a function to be drawn on the active rendertarget
-
-    </ul>
-    </ul>
-    </ul>
-
-    <h3>Parameters:</h3>
-    <ul>
-        <li><span class="parameter">call</span>
-            <span class="types"><span class="type">function</span></span>
-         Function to render stuff
-        </li>
-    </ul>
-
-
-
-
-    <h3>Usage:</h3>
-    <ul>
-        <pre class="example">LK3D.RenderQuick(<span class="keyword">function</span>()
-  surface.SetDrawColor(<span class="number">255</span>, <span class="number">0</span>, <span class="number">0</span>)
-
-  <span class="comment">-- ScrW() and ScrH() are the RT size
-</span>  surface.DrawRect(<span class="number">0</span>, <span class="number">0</span>, ScrW() * .<span class="number">5</span>, ScrH() * .<span class="number">5</span>)
-<span class="keyword">end</span>)</pre>
-    </ul>
-
-</dd>
 </dl>
 
 
@@ -506,7 +506,7 @@
 </div> <!-- id="main" -->
 <div id="about">
 <i>generated by <a href="http://github.com/lunarmodules/LDoc">LDoc 1.4.6</a></i>
-<i style="float:right;">Last updated 2024-05-12 11:05:30 </i>
+<i style="float:right;">Last updated 2024-05-13 20:28:08 </i>
 </div> <!-- id="about" -->
 </div> <!-- id="container" -->
 </body>
