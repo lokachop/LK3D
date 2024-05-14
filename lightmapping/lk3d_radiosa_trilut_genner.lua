@@ -311,8 +311,14 @@ local function setupPatch(patch, xc, yc)
 	LK3D.Radiosa.SetPatchReflectivity(patch, normalizedColour)
 
 	if setupTexEmissive then
-		LK3D.Radiosa.SetPatchEmission(patch, normalizedColour)
+		local emissionColour = {normalizedR * LK3D.Radiosa.EMISSIVE_MUL, normalizedG * LK3D.Radiosa.EMISSIVE_MUL, normalizedB * LK3D.Radiosa.EMISSIVE_MUL}
+		LK3D.Radiosa.SetPatchEmission(patch, emissionColour)
+		LK3D.Radiosa.SetPatchEmitConstant(patch, true)
+
+		emissionColour = nil
 	end
+
+	normalizedColour = nil
 end
 
 

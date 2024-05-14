@@ -32,6 +32,7 @@ function LK3D.Radiosa.NewPatch()
         reflectivity = {1, 1, 1},
         emission = {0, 0, 0},
         luminance = {0, 0, 0}, -- accumulated light
+        emitconstant = false,
     }
 
     return patch
@@ -53,6 +54,9 @@ function LK3D.Radiosa.SetPatchEmission(patch, emission)
     patch.emission = emission or patch.emission
 end
 
+function LK3D.Radiosa.SetPatchEmitConstant(patch, emitConstant)
+    patch.emitconstant = emitConstant or patch.emitconstant
+end
 
 function LK3D.Radiosa.SetPatchLuminance(patch, luminance)
     patch.luminance = luminance or patch.luminance
@@ -62,6 +66,12 @@ function LK3D.Radiosa.AddPatchLuminance(patch, luminance)
     patch.luminance[1] = patch.luminance[1] + (luminance[1] or 0)
     patch.luminance[2] = patch.luminance[2] + (luminance[2] or 0)
     patch.luminance[3] = patch.luminance[3] + (luminance[3] or 0)
+end
+
+function LK3D.Radiosa.AddPatchLuminanceUnpacked(patch, lumaR, lumaG, lumaB)
+    patch.luminance[1] = patch.luminance[1] + (lumaR or 0)
+    patch.luminance[2] = patch.luminance[2] + (lumaG or 0)
+    patch.luminance[3] = patch.luminance[3] + (lumaB or 0)
 end
 
 function LK3D.Radiosa.GetPatchPos(patch)

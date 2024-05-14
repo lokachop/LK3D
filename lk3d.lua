@@ -265,10 +265,47 @@ function LK3D.ToScreenArray(positions)
 	return dataRet
 end
 
+
 -- this uses render.Spin() to render a helpful message over how we're processing sutff
 local rt_nfo = GetRenderTarget("lk3d_processing_rt2", ScrW(), ScrH())
 local REAL_W, REAL_H = ScrW(), ScrH()
 
+
+local PROCESSING_MESSAGE_LOG = {}
+local MAX_MESSAGES = math.floor((REAL_H - (256 * 2) - 24) / 24)
+function LK3D.PushProcessingMessage(message)
+	local timeStamp = os.date("[%H:%M:%S] ")
+
+	local toWrite = timeStamp .. tostring(message)
+	PROCESSING_MESSAGE_LOG[#PROCESSING_MESSAGE_LOG + 1] = toWrite
+
+	local msgCount = #PROCESSING_MESSAGE_LOG
+
+	if msgCount > MAX_MESSAGES then
+		table.remove(PROCESSING_MESSAGE_LOG, 1)
+	end
+end
+
+local colourLog = Color(255, 255, 255)
+local function renderProcessingMessages()
+	surface.SetDrawColor(0, 0, 0, 240)
+	surface.DrawRect(48, 256, ScrW() - (48 * 2), ScrH() - (256 * 2))
+
+	local m_scl = Matrix()
+
+
+	for i = 1, #PROCESSING_MESSAGE_LOG do
+		local inverseOffset = (#PROCESSING_MESSAGE_LOG - i) + 1
+
+		local message = PROCESSING_MESSAGE_LOG[inverseOffset]
+
+		m_scl:SetTranslation(Vector(64, 256 + (i * 24)))
+		m_scl:SetScale(Vector(2, 2))
+		cam.PushModelMatrix(m_scl)
+			draw.SimpleText(message, "BudgetLabel", 0, 0, colourLog, TEXT_ALIGN_LEFT, TEXT_ALIGN_TOP)
+		cam.PopModelMatrix()
+	end
+end
 
 --- Renders a informational processing message, to avoid the game freezing  
 -- **Only use this when computing a lot of stuff**
@@ -337,6 +374,7 @@ function LK3D.RenderProcessingMessage(message, prog, xtrarender)
 			cam.PopModelMatrix()
 		end
 
+		renderProcessingMessages()
 
 		if xtrarender then
 			pcall(xtrarender)
