@@ -23,10 +23,10 @@ include("lk3d_radiosa_trilut_genner.lua")
 include("lk3d_radiosa_solver_handle.lua") -- This file should contain the bulk for how it operates
 
 -- Solver to use, only 1 at once!
-LK3D.Radiosa.SOLVER = include("solvers/lk3d_radiosa_solver_radiosity.lua")
+--LK3D.Radiosa.SOLVER = include("solvers/lk3d_radiosa_solver_radiosity.lua")
 --LK3D.Radiosa.SOLVER = include("solvers/lk3d_radiosa_solver_light_at_pos.lua")
 --LK3D.Radiosa.SOLVER = include("solvers/lk3d_radiosa_solver_ao.lua")
---LK3D.Radiosa.SOLVER = include("solvers/lk3d_radiosa_solver_raytraced.lua")
+LK3D.Radiosa.SOLVER = include("solvers/lk3d_radiosa_solver_raytraced.lua")
 
 
 local objectsMarkedForLightmap = {}

@@ -173,6 +173,7 @@ local function getTriangleByTexCoord(triList, uv)
 end
 
 
+local pixOffset = 1 / (LK3D.Radiosa.LIGHTMAP_RES)
 local function triUVToWorld(objPtr, tri, uv)
 	local v1 = tri[1].pos * 1
 	local v2 = tri[2].pos * 1
@@ -184,14 +185,18 @@ local function triUVToWorld(objPtr, tri, uv)
 	v2:Mul(objMatrix)
 	v3:Mul(objMatrix)
 
+	local u = uv[1] + (pixOffset * .5)
+	local v = uv[2] + (pixOffset * .5)
+
+
 	local uv1 = tri[1].lm_uv
 	local uv2 = tri[2].lm_uv
 	local uv3 = tri[3].lm_uv
 
 
 	local i = 1 / ((uv2[2] - uv1[2]) * (uv3[1] - uv1[1]) - (uv2[1] - uv1[1]) * (uv3[2] - uv1[2]))
-	local s = i * ( (uv3[1] - uv1[1]) * (uv[2] - uv1[2]) - (uv3[2] - uv1[2]) * (uv[1] - uv1[1]))
-	local t = i * (-(uv2[1] - uv1[1]) * (uv[2] - uv1[2]) + (uv2[2] - uv1[2]) * (uv[1] - uv1[1]))
+	local s = i * ( (uv3[1] - uv1[1]) * (v - uv1[2]) - (uv3[2] - uv1[2]) * (u - uv1[1]))
+	local t = i * (-(uv2[1] - uv1[1]) * (v - uv1[2]) + (uv2[2] - uv1[2]) * (u - uv1[1]))
 
 
 	local retPos = Vector(
@@ -303,9 +308,9 @@ local function setupPatch(patch, xc, yc)
 	local texInd = (tX + (tY * setupTexW)) + 1
 	local texData = setupTexArray[texInd]
 
-	local normalizedR = (texData[1] / 255) * setupObjRGB[1]
-	local normalizedG = (texData[2] / 255) * setupObjRGB[2]
-	local normalizedB = (texData[3] / 255) * setupObjRGB[3]
+	local normalizedR = ((texData[1] + 1) / 254) * setupObjRGB[1]
+	local normalizedG = ((texData[2] + 1) / 254) * setupObjRGB[2]
+	local normalizedB = ((texData[3] + 1) / 254) * setupObjRGB[3]
 
 	local normalizedColour = {normalizedR, normalizedG, normalizedB}
 	LK3D.Radiosa.SetPatchReflectivity(patch, normalizedColour)
@@ -313,6 +318,7 @@ local function setupPatch(patch, xc, yc)
 	if setupTexEmissive then
 		local emissionColour = {normalizedR * LK3D.Radiosa.EMISSIVE_MUL, normalizedG * LK3D.Radiosa.EMISSIVE_MUL, normalizedB * LK3D.Radiosa.EMISSIVE_MUL}
 		LK3D.Radiosa.SetPatchEmission(patch, emissionColour)
+		LK3D.Radiosa.SetPatchExcident(patch, emissionColour)
 		LK3D.Radiosa.SetPatchEmitConstant(patch, true)
 
 		emissionColour = nil
@@ -347,7 +353,7 @@ function LK3D.Radiosa.GenerateObjectPatchesLUT(obj)
 
 	-- Material shit
 	-- Emission
-	local emissive = objPtr["RADIOSITY_LIT"]
+	local emissive = objPtr["RADIOSITY_LIT"] == true
 
 	-- Colour
 	local objCol = objPtr.col

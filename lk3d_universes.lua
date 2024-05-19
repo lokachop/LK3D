@@ -90,3 +90,22 @@ function LK3D.GetUniverseObjects(univ)
 	univ = univ or LK3D.CurrUniv
 	return univ["objects"]
 end
+
+--- Gets the list of lights from the active universe
+-- @warning The returned table is internal and modifying it might lead to crashes!
+-- @tparam ?string tag Universe tag
+-- @treturn table Light list, refer to example
+-- @usage LK3D.PushUniverse(universe_imaginary)
+--   local lights = LK3D.GetUniverseLights()
+--   for k, v in pairs(lights) do
+--     print("Light named \"" .. k .. "\"!")
+--	   print("Light pos       : ", v[1])
+--	   print("Light intensity : ", v[2])
+--	   print("Light colourmult: ", v[3])
+--	   print("Light smooth    : ", v[4])
+--   end
+-- LK3D.PopUniverse()
+function LK3D.GetUniverseLights(univ)
+	univ = univ or LK3D.CurrUniv
+	return univ["lights"]
+end

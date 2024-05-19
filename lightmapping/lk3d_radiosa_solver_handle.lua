@@ -72,7 +72,7 @@ local function calculateValueNormal(solver, patchLUT)
 
 	local pixelValuesRet = {}
 	for i = 0, pixelItr do
-		if (i % 2048) == 0 then
+		if (i % 512) == 0 then
 			LK3D.RenderProcessingMessage("[RADIOSA] Calculate... ", (i / pixelItr) * 100)
 		end
 
@@ -85,7 +85,7 @@ local function calculateValueNormal(solver, patchLUT)
 		local pos = LK3D.Radiosa.GetPatchPos(patch)
 		local norm = LK3D.Radiosa.GetPatchNormal(patch)
 
-		local valCol = solver.CalculateValue(patch, pos, norm, patchID)
+		local valCol = solver.CalculateValue(patch, pos, norm, patchID, i)
 		pixelValuesRet[i] = valCol
 	end
 
@@ -170,7 +170,7 @@ local function finalizeMultiPass(solver, patchLUT)
 		local pos = LK3D.Radiosa.GetPatchPos(patch)
 		local norm = LK3D.Radiosa.GetPatchNormal(patch)
 
-		local valCol = solver.FinalPass(patch, pos, norm, patchID)
+		local valCol = solver.FinalPass(patch, pos, norm, patchID, i)
 		pixelValuesRet[i] = valCol
 	end
 
@@ -241,6 +241,8 @@ local function mainLoopNormal()
 	local toLM = LK3D.Radiosa.GetLightmapMarkedObjects()
 
 	for k, v in pairs(toLM) do
+		local patchLUT = objectPatchLUT[k]
+
 		LK3D.PushProcessingMessage("[RADIOSA] Calculating values for object \"" .. k .. "\" [NORMAL]")
 		pixelValues = calculateValueNormal(solver, patchLUT)
 

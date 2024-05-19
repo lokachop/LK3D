@@ -426,6 +426,15 @@ LK3D.SUPER_OPTI_TR = ((LK3D.SUPER_OPTI_TR ~= nil) and LK3D.SUPER_OPTI_TR) or fal
 -- @treturn table UV coords
 -- @treturn number Triangle index
 -- @usage local pos, norm, dist = LK3D.TraceRayScene(Vector(0, 0, 4), Vector(0, 0, -1), true, 512000)
+-- @usage LK3D.SetTraceReturnTable(true)
+-- local tbl = LK3D.TraceRayScene(Vector(0, 0, 4), Vector(0, 0, -1), true, 512000)
+-- LK3D.SetTraceReturnTable(false)
+-- local objTag = tbl.obj
+-- local dist = tbl.dist
+-- local pos = tbl.pos
+-- local norm = tbl.norm
+-- local uv = tbl.uv
+-- local tri = tbl.tri
 function LK3D.TraceRayScene(pos, dir, bfcull, dist)
 	local possib_objs = {}
 	local lo_tr = dist or math.huge

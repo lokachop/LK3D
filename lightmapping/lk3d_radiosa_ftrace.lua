@@ -9,7 +9,7 @@ local NODE_SIZE = 1
 local BIG = 1e30
 local DDA_MAX_ITR = 64 + 32
 
-local BACKFACE_CULL = false
+local BACKFACE_CULL = true
 local EPSILON = 2.2204460492503131e-16
 
 
