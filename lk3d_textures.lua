@@ -78,7 +78,10 @@ function LK3D.UpdateRtEz(rt, call)
 	render.PushRenderTarget(rt)
 	render.PushFilterMag(LK3D.FilterMode)
 	render.PushFilterMin(LK3D.FilterMode)
-		pcall(call)
+		local fine, err = pcall(call)
+		if not fine then
+			LK3D.New_D_Print("UpdateRTEz fail; " .. err, LK3D_SERVERITY_ERROR, "LK3D")
+		end
 	render.PopFilterMag()
 	render.PopFilterMin()
 	render.PopRenderTarget()

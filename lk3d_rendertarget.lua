@@ -145,6 +145,7 @@ function LK3D.RTToMaterialEx(rt, params)
 			["$ignorez"] = params["ignorez"] and 1 or 0,
 			["$vertexcolor"] = params["vertexcolor"] and 1 or 0,
 			["$vertexalpha"] = params["vertexalpha"] and 1 or 0,
+			["$translucent"] = params["translucent"] and 1 or 0,
 			["$alphatest"] = params["alphatest"] and 1 or 0,
 		})
 
@@ -156,6 +157,7 @@ function LK3D.RTToMaterialEx(rt, params)
 				["$ignorez"] = params["ignorez"] and 1 or 0,
 				["$vertexcolor"] = params["vertexcolor"] and 1 or 0,
 				["$vertexalpha"] = params["alphatest"] and 1 or 0,
+				["$translucent"] = params["translucent"] and 1 or 0,
 				["$alphatest"] = params["alphatest"] and 1 or 0,
 			})
 		end
