@@ -351,6 +351,12 @@ function LK3D.DeclareAnimatedModel(name, fpath, flush)
 	local mdlName = params.modelName
 	local mdlFormat = params.modelFormat or "obj"
 
+	LK3D.PushProcessingMessage("Loading animated model \"" .. name .. "\"")
+	LK3D.PushProcessingMessage("LKPack path : " .. fpath)
+	LK3D.PushProcessingMessage("Flush       : " .. tostring(flush))
+	LK3D.PushProcessingMessage("Model name  : " .. mdlName)
+	LK3D.PushProcessingMessage("Model format: " .. mdlFormat)
+
 
 	if mdlFormat == "obj" then
 		local objBase = LK3D.ReadFileFromLKPack("models/" .. fpath .. "/" .. mdlName .. ".obj")
@@ -370,10 +376,13 @@ function LK3D.DeclareAnimatedModel(name, fpath, flush)
 
 	local regTbl = LK3D.AnimatedModelRegistry[name]
 
+	LK3D.PushProcessingMessage("--==Animations==--")
 	for k, v in pairs(params.animations) do
 		local animIndex = k
 		local fStart = tonumber(v.fStart)
 		local fEnd = tonumber(v.fEnd)
+
+		LK3D.PushProcessingMessage("    Animation \"" .. tostring(k) .. "\": " .. "fStart: "  .. tostring(fStart) .. " fEnd: " .. tostring(fEnd))
 
 		if not regTbl.anims[animIndex] or flush then
 			regTbl.anims[animIndex] = {

@@ -117,7 +117,6 @@ include("lk3d_camera.lua")
 -- Objects
 include("lk3d_objects.lua")
 
-
 include("renderers/renderer_soft/lk3d_renderer_soft.lua")
 include("renderers/renderer_hard/lk3d_renderer_hard.lua")
 include("renderers/renderer_hard2/lk3d_renderer_hard2.lua")
@@ -266,6 +265,20 @@ function LK3D.ToScreenArray(positions)
 end
 
 
+-- ModelUtils
+include("lk3d_modelutils.lua")
+
+-- ProcModel
+include("lk3d_procmodel.lua")
+
+-- Models
+include("lk3d_models.lua")
+
+-- Textures
+include("lk3d_textures.lua")
+
+
+
 -- this uses render.Spin() to render a helpful message over how we're processing sutff
 local rt_nfo = GetRenderTarget("lk3d_processing_rt2", ScrW(), ScrH())
 local REAL_W, REAL_H = ScrW(), ScrH()
@@ -398,12 +411,6 @@ end
 
 
 include("lk3d_lkpack.lua") -- lkpack first
-include("lk3d_modelutils.lua")
-
-
-include("lk3d_procmodel.lua")
-include("lk3d_models.lua")
-include("lk3d_textures.lua")
 
 LK3D.ModelInitExtra = LK3D.ModelInitExtra or {}
 for k, v in pairs(LK3D.ModelInitExtra) do

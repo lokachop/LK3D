@@ -54,16 +54,26 @@ end
 -- @tparam string dir Dev directory to turn into an LKPack
 -- @usage LK3D.MakeLKPack("deepdive_content")
 function LK3D.MakeLKPack(dir)
+	if not dir then
+		return
+	end
+
 	local exists = file.Exists("lk3d/lkpack/compile/" .. dir, "DATA")
 	if not exists then
 		LK3D.New_D_Print("Dir doesnt exist!", LK3D_SEVERITY_ERROR, "LKPack")
+		return
 	end
-
 	LK3D.New_D_Print("Make LKPack", LK3D_SEVERITY_INFO, "LKPack")
+
+	LK3D.PushProcessingMessage("Making LKPack for \"" .. dir .. "\"")
 
 	local descriptors = {}
 	recursive_build_file_table("lk3d/lkpack/compile/" .. dir, "/" , descriptors)
 	local descriptorCount = #descriptors
+
+	LK3D.PushProcessingMessage("Descriptor count: " .. tostring(descriptorCount))
+
+
 	local file_count, dir_count = 0, 0
 	for k, v in ipairs(descriptors) do
 		LK3D.RenderProcessingMessage("MakeLKPack; Descriptor build [" .. v.name .. "]", (k / descriptorCount) * 100)
@@ -110,10 +120,12 @@ function LK3D.MakeLKPack(dir)
 	local temp_f = file.Open("lk3d/lkpack/temp/" .. dir .. ".ain.txt", "wb", "DATA")
 	temp_f:Write("LKPA")
 
+	LK3D.PushProcessingMessage("Write descriptorCount")
 	temp_f:WriteULong(#descriptors) -- write descriptor count
 
 	-- write the descriptor_to_name lookup table
 	--temp_f:WriteULong(#descriptor_to_name) -- number of entries
+	LK3D.PushProcessingMessage("Write descriptorToName")
 	for k, v in ipairs(descriptor_to_name) do
 		temp_f:WriteULong(#v)
 		temp_f:Write(v)
@@ -122,6 +134,7 @@ function LK3D.MakeLKPack(dir)
 
 	-- write the descriptor_to_parent lookup table
 	--temp_f:WriteULong(#descriptor_to_parent) -- number of entries
+	LK3D.PushProcessingMessage("Write descriptorToParent")
 	for k, v in ipairs(descriptor_to_parent) do
 		temp_f:WriteULong(#v)
 		temp_f:Write(v)
@@ -130,6 +143,7 @@ function LK3D.MakeLKPack(dir)
 
 	-- write descriptor types
 	--temp_f:WriteULong(#descriptor_to_type)
+	LK3D.PushProcessingMessage("Write descriptorToFile")
 	for k, v in ipairs(descriptor_to_file) do
 		if v == -1 then
 			temp_f:WriteULong(VAL_FOLDER_ID)
@@ -141,6 +155,7 @@ function LK3D.MakeLKPack(dir)
 
 
 	-- now write the content table
+	LK3D.PushProcessingMessage("Write content table")
 	local indexArrCount = #index_arr
 	temp_f:WriteULong(indexArrCount)
 	for k, v in ipairs(index_arr) do
@@ -176,7 +191,6 @@ function LK3D.LoadLKPack(name)
 		return
 	end
 
-
 	local data = file.Read("maps/" .. name .. ".lkp.ain", "GAME")
 	if not data then
 		LK3D.New_D_Print("LKPack doesnt exist! (" .. name .. ") [" .. "maps/" .. name .. ".lkp.ain]", LK3D_SEVERITY_FATAL, "LKPack")
@@ -198,6 +212,8 @@ function LK3D.LoadLKPack(name)
 		return
 	end
 
+	LK3D.PushProcessingMessage("Loading LKPack \"" .. name .. "\"!")
+
 	local header = fp_decomp:Read(4)
 	if header ~= "LKPA" then
 		LK3D.New_D_Print("Header doesnt match! (possible corrupted file or unsupported revision, please update...) (" .. name .. ")", LK3D_SEVERITY_FATAL, "LKPack")
@@ -209,6 +225,7 @@ function LK3D.LoadLKPack(name)
 
 	local descriptor_count = fp_decomp:ReadULong()
 	LK3D.New_D_Print(descriptor_count .. " descriptors...", LK3D_SEVERITY_DEBUG, "LKPack")
+	LK3D.PushProcessingMessage("Descriptor count: " .. tostring(descriptor_count))
 
 	-- name LUT
 	local name_lut = {}
@@ -293,6 +310,11 @@ function LK3D.LoadLKPack(name)
 			continue
 		end
 
+		if i % 64 == 0 then
+			LK3D.PushProcessingMessage("Directory creation progress: " .. tostring(i) .. "/" .. tostring(descriptor_count))
+			LK3D.RenderProcessingMessage("[LKPack] Load directory creation", (i / descriptor_count) * 100)
+		end
+
 		local parent = parent_lut[i]
 		local f_name = name_lut[i]
 		file.CreateDir("lk3d/lkpack/decomp_active/" .. name .. parent .. f_name)
@@ -303,6 +325,11 @@ function LK3D.LoadLKPack(name)
 		local content_id = descriptor_lut[i]
 		if content_id == -1 then
 			continue
+		end
+
+		if i % 64 == 0 then
+			LK3D.PushProcessingMessage("File write progress: " .. tostring(i) .. "/" .. tostring(descriptor_count))
+			LK3D.RenderProcessingMessage("[LKPack] Load file creation", (i / descriptor_count) * 100)
 		end
 
 		local parent = parent_lut[i]
