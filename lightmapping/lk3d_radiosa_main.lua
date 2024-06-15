@@ -26,7 +26,7 @@ include("lk3d_radiosa_solver_handle.lua") -- This file should contain the bulk f
 --LK3D.Radiosa.SOLVER = include("solvers/lk3d_radiosa_solver_radiosity.lua")
 --LK3D.Radiosa.SOLVER = include("solvers/lk3d_radiosa_solver_light_at_pos.lua")
 --LK3D.Radiosa.SOLVER = include("solvers/lk3d_radiosa_solver_ao.lua")
-LK3D.Radiosa.SOLVER = include("solvers/lk3d_radiosa_solver_raytraced.lua")
+LK3D.Radiosa.SOLVER = include("solvers/lk3d_radiosa_solver_radiosity.lua")
 
 
 local objectsMarkedForLightmap = {}

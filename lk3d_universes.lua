@@ -25,11 +25,10 @@ function LK3D.NewUniverse(tag)
 		["lightcount"] = 0,
 		["particles"] = {},
 		["physics"] = {},
-
 	}
 
 	if tag == nil then
-		LK3D.New_D_Print("Calling LK3D.NewUniverse without a tag, universe will not work with baked radiosity...", LK3D_SERVERITY_WARN, "LK3D")
+		LK3D.New_D_Print("Calling LK3D.NewUniverse without a tag, universe will not work with lightmapping...", LK3D_SERVERITY_WARN, "LK3D")
 	else
 		LK3D.New_D_Print("Created universe with tag \"" .. tostring(tag) .. "\"", LK3D_SEVERITY_INFO, "LK3D")
 

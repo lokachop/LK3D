@@ -34,6 +34,7 @@ function LK3D.Radiosa.NewPatch()
         incident = {0, 0, 0}, -- accumulated light
         excident = {0, 0, 0},
         emitconstant = false,
+        isCalculated = {0, 0, 0},
     }
 
     return patch

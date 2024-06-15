@@ -290,6 +290,9 @@ local function patchSetup_pushObjectTexParams(texArray, tW, tH, tEmissive)
 	setupTexEmissive = tEmissive
 end
 
+local lmReflectance = LK3D.Radiosa.PATCH_REFLECTANCE
+local lmEmmision = LK3D.Radiosa.PATCH_EMISSIVE_MUL
+
 local lightmapSize = LK3D.Radiosa.LIGHTMAP_RES
 local function setupPatch(patch, xc, yc)
 	local uv = {(xc + .5) / lightmapSize, (yc + .5) / lightmapSize}
@@ -308,15 +311,15 @@ local function setupPatch(patch, xc, yc)
 	local texInd = (tX + (tY * setupTexW)) + 1
 	local texData = setupTexArray[texInd]
 
-	local normalizedR = ((texData[1] + 1) / 254) * setupObjRGB[1]
-	local normalizedG = ((texData[2] + 1) / 254) * setupObjRGB[2]
-	local normalizedB = ((texData[3] + 1) / 254) * setupObjRGB[3]
+	local normalizedR = ((texData[1] + 1) / 254) * setupObjRGB[1] * lmReflectance
+	local normalizedG = ((texData[2] + 1) / 254) * setupObjRGB[2] * lmReflectance
+	local normalizedB = ((texData[3] + 1) / 254) * setupObjRGB[3] * lmReflectance
 
 	local normalizedColour = {normalizedR, normalizedG, normalizedB}
 	LK3D.Radiosa.SetPatchReflectivity(patch, normalizedColour)
 
 	if setupTexEmissive then
-		local emissionColour = {normalizedR * LK3D.Radiosa.EMISSIVE_MUL, normalizedG * LK3D.Radiosa.EMISSIVE_MUL, normalizedB * LK3D.Radiosa.EMISSIVE_MUL}
+		local emissionColour = {normalizedR * lmEmmision, normalizedG * lmEmmision, normalizedB * lmEmmision}
 		LK3D.Radiosa.SetPatchEmission(patch, emissionColour)
 		LK3D.Radiosa.SetPatchExcident(patch, emissionColour)
 		LK3D.Radiosa.SetPatchEmitConstant(patch, true)

@@ -12,7 +12,7 @@ local render = render
 local render_ReadPixel = render.ReadPixel
 
 -- Tweakables
-local CAPT_BUFF_SIZE = 64
+local CAPT_BUFF_SIZE = LK3D.Radiosa.RADIOSITY_BUFFER_SZ
 local LP_ST_SZ = (256)
 
 
@@ -36,13 +36,6 @@ local LP_MAX_VALUE = 16777216 / LP_ST_SZ
 
 local HP_DMULT = 16
 local function packRGB_LP(int)
-	--[[
-	local b = (int % LP_ST_SZ) * LP_SZ_INV
-	local g = math_floor(int / LP_ST_SZ) * LP_SZ_INV
-	local r = math_floor(math_floor(int / LP_ST_SZ) / LP_ST_SZ) * LP_SZ_INV
-	return intSnap(r, LP_SZ_INV), intSnap(g, LP_SZ_INV), intSnap(b, LP_SZ_INV)
-	]]--
-
 	int = int * HP_DMULT
 	local r = bit.band(bit.rshift(int, 16), 255)
 	local g = bit.band(bit.rshift(int,  8), 255)
@@ -52,15 +45,6 @@ local function packRGB_LP(int)
 end
 
 local function unpackRGB_LP(r, g, b)
-	--[[
-	local bs1 = intSnap(b, LP_SZ_INV) / LP_SZ_INV
-	local bs2 = (intSnap(g, LP_SZ_INV) / LP_SZ_INV) * LP_ST_SZ
-	local bs3 = (intSnap(r, LP_SZ_INV) / LP_SZ_INV) * LP_ST_SZ * LP_ST_SZ
-
-
-	return math_floor(bs1 + bs2 + bs3)
-	]]--
-
 	local var = (bit.lshift(r, 16) + bit.lshift(g, 8) + b)
 
 	return math.floor(var / HP_DMULT)
@@ -172,145 +156,6 @@ local function renderHemicube(pos, dir)
 	LK3D.Debug = old_dbg
 end
 
-
-file.CreateDir("lk3d/radiosa/radiosity/")
-local function getVisListUniverseName()
-	return string.lower(LK3D.CurrUniv["tag"])
-end
-
-local function getVisibilityHash()
-	local toLM = LK3D.Radiosa.GetLightmapMarkedObjects()
-
-	local hashBuff = {}
-	hashBuff[#hashBuff + 1] = LK3D.Radiosa.LIGHTMAP_TRI_SZ
-
-
-
-	for k, v in pairs(toLM) do
-		local objPtr = LK3D.CurrUniv["objects"][k]
-
-
-
-		local tempModelHash = {}
-		tempModelHash[#tempModelHash + 1] = objPtr.mdl
-		tempModelHash[#tempModelHash + 1] = "1V(" .. objPtr.pos[1] .. ", " .. objPtr.pos[2] .. ", " .. objPtr.pos[3] .. ")"
-		tempModelHash[#tempModelHash + 1] = "2A(" .. objPtr.ang[1] .. ", " .. objPtr.ang[2] .. ", " .. objPtr.ang[3] .. ")"
-		tempModelHash[#tempModelHash + 1] = "3V(" .. objPtr.scl[1] .. ", " .. objPtr.scl[2] .. ", " .. objPtr.scl[3] .. ")"
-
-		hashBuff[#hashBuff + 1] = table.concat(tempModelHash, ":")
-	end
-
-	return util.SHA256(table.concat(hashBuff, ";"))
-end
-
-
-local function writeVisibility(fPtr, index, vis)
-	fPtr:WriteULong(index)
-
-	local visCount = #vis
-	fPtr:WriteULong(visCount)
-	for i = 1, visCount do
-		local struct = vis[i]
-
-		fPtr:WriteULong(struct[1]) -- not space efficient but lets be safe
-		fPtr:WriteDouble(struct[2])
-	end
-end
-
-
-
-local function exportPatchVisList()
-	local rootDir = "lk3d/radiosa/radiosity/" .. getVisListUniverseName()
-	file.CreateDir(rootDir)
-
-	local hashVis = getVisibilityHash()
-
-	local fileName = rootDir .. "/" .. hashVis .. "_pvis.dat"
-
-	local fPtr = file.Open(fileName, "wb", "DATA")
-	fPtr:Write("PVIS")
-
-	-- Bad Bad but not realtime
-	local visCount = table.Count(patchVisibilityList)
-	fPtr:WriteULong(visCount)
-
-	for k, v in pairs(patchVisibilityList) do
-		writeVisibility(fPtr, k, v)
-	end
-
-	fPtr:Write("DONE")
-	fPtr:Close()
-
-end
-
-
-local function readVisibility(fPtr)
-	local index = fPtr:ReadULong()
-	patchVisibilityList[index] = {}
-
-
-	local visCount = fPtr:ReadULong()
-	for i = 1, visCount do
-		local otherIndex = fPtr:ReadULong()
-		local otherVis = fPtr:ReadDouble()
-
-		patchVisibilityList[index][i] = {otherIndex, otherVis}
-
-		otherIndex = nil
-		otherVis = nil
-	end
-end
-
-
-local function loadPatchVisList()
-	patchVisibilityList = {}
-
-	local rootDir = "lk3d/radiosa/radiosity/" .. getVisListUniverseName()
-	local hashVis = getVisibilityHash()
-
-	local fileName = rootDir .. "/" .. hashVis .. "_pvis.dat"
-	if not file.Exists(fileName, "DATA") then
-		return false
-	end
-
-	local fPtr = file.Open(fileName, "rb", "DATA")
-	local magic = fPtr:Read(4)
-
-	if magic ~= "PVIS" then
-		fPtr:Close()
-
-		return false
-	end
-
-	local patchCount = fPtr:ReadULong()
-	for i = 1, patchCount do
-		if i % 1000 == 0 then
-			LK3D.PushProcessingMessage("[RADIOSA] Loading patch visibilities from file, " .. tostring(i) .. "/" .. tostring(patchCount))
-			LK3D.RenderProcessingMessage("[RADIOSA] PreProcess... ")
-		end
-
-
-		readVisibility(fPtr)
-	end
-
-
-	magic = fPtr:Read(4)
-	if magic ~= "DONE" then
-		fPtr:Close()
-		patchVisibilityList = {}
-
-		return false
-	end
-
-	return true
-end
-
-
-
-
-
-
-
 local EXCIDENT_DIV = 0
 EXCIDENT_DIV = EXCIDENT_DIV + (CAPT_BUFF_SIZE * CAPT_BUFF_SIZE_H)
 EXCIDENT_DIV = EXCIDENT_DIV + (CAPT_BUFF_SIZE * CAPT_BUFF_SIZE)
@@ -320,50 +165,52 @@ EXCIDENT_DIV = EXCIDENT_DIV + (CAPT_BUFF_SIZE * CAPT_BUFF_SIZE_H)
 
 local ACCUM_TOTAL_EXCIDENT = 0
 local function addPatchToVisibilityList(visListTemp, srcPatch, addPatch, addPatchIndex)
-	if visListTemp[addPatchIndex] then
-		return
-	end
-
-	local srcPos = srcPatch.pos
+	--local srcPos = srcPatch.pos
 	local srcNorm = srcPatch.norm
 
 
-	local addPos = addPatch.pos
+	--local addPos = addPatch.pos
 	local addNorm = addPatch.norm
 
-	local dist = srcPos:Distance(addPos) + 1
+	--local dist = srcPos:Distance(addPos) + 1
 	local dotVal = math.deg(math.acos(srcNorm:Dot(addNorm))) / 180
 	dotVal = math.min(math.max(dotVal, 0), 1)
 
-	--if dotVal > 1 then
-	--	LK3D.PushProcessingMessage("DotVal Wrong: " .. tostring(dotVal))
-	--	dotVal = 1
-	--end
+	if dotVal > 1 then
+		LK3D.PushProcessingMessage("DotVal Wrong: " .. tostring(dotVal))
+		dotVal = 1
+	end
 
-	local energyExcident =  (1 / dist) * dotVal
+	local energyExcident = dotVal
 	ACCUM_TOTAL_EXCIDENT = ACCUM_TOTAL_EXCIDENT + energyExcident
+
+	if visListTemp[addPatchIndex] then
+		visListTemp[addPatchIndex] = visListTemp[addPatchIndex] + energyExcident
+	end
 
 	visListTemp[addPatchIndex] = energyExcident
 end
 
-local function pushVisibilityListForPatch(patchIndex, visListTemp)
-	patchVisibilityList[patchIndex] = {}
+local function getFinalizedVisibility(visListTemp)
+	local ret = {}
 	if #visListTemp > DEBUG_highestVisCount then
 		DEBUG_highestVisCount = #visListTemp
 	end
 
 	for k, v in pairs(visListTemp) do
-		patchVisibilityList[patchIndex][#patchVisibilityList[patchIndex] + 1] = {k, v / EXCIDENT_DIV}
+		ret[#ret + 1] = {k, v / EXCIDENT_DIV}
 
 		visListTemp[k] = nil
 	end
 
 	ACCUM_TOTAL_EXCIDENT = 0
 	visListTemp = nil
+
+	return ret
 end
 
 
-local function setupPatchVisibility(patch, patchIndex)
+local function getPatchVisibility(patch)
 	local patchRegistry = LK3D.Radiosa.GetPatchRegistry()
 
 	local visListTemp = {}
@@ -506,9 +353,12 @@ local function setupPatchVisibility(patch, patchIndex)
 
 	render.SetToneMappingScaleLinear(oldTMSL)
 
+	-- now return the patch visibility
+	return getFinalizedVisibility(visListTemp)
+
 
 	-- now push the patch visibility list
-	pushVisibilityListForPatch(patchIndex, visListTemp)
+	--pushVisibilityListForPatch(patchIndex, visListTemp)
 end
 
 
@@ -516,7 +366,6 @@ end
 
 
 local DO_HIGH_PATCH = false
-
 local function setupCloneObject(tag, objData)
 	LK3D.PushProcessingMessage("[RADIOSA] Cloning object \"" .. tag .. "\"...")
 
@@ -611,84 +460,78 @@ local function doSetup()
 	end
 
 	preProcessLK3DUniv()
-	calcMultiplierTables()
+	--calcMultiplierTables()
 end
 
 
 
 
 
-local patchesPerItr = 4
-local lastPatch = 1
-local didSetup = false
-local didAttemptToLoad = false
 function solver.PreProcess()
-	-- attempt to load first
-	if not didAttemptToLoad then
-		LK3D.PushProcessingMessage("[RADIOSA] Attempting to load visibility list...")
-		LK3D.PushProcessingMessage("[RADIOSA] Universe hash is \"" .. getVisibilityHash() .. "\"...")
-
-		local loadedCorrectly = loadPatchVisList()
-		if loadedCorrectly then
-			LK3D.PushProcessingMessage("[RADIOSA] Loaded visibility list from file...")
-			return true -- Cool ! ! We can not do expensive
-		end
-		didAttemptToLoad = true
-	end
-
-
-
-
-	if not didSetup then
-		doSetup()
-
-		didSetup = true
-	end
-
-	local registry = LK3D.Radiosa.GetPatchRegistry()
-	for i = lastPatch, lastPatch + patchesPerItr do
-		if i % 1000 == 0 then
-			LK3D.PushProcessingMessage("[RADIOSA] Calculating patch visibility, " .. tostring(i) .. "/" .. tostring(#registry))
-			LK3D.RenderProcessingMessage("[RADIOSA] PreProcess... ", nil, function()
-				renderHemicubeRTsTest(ScrW() - 128, 64)
-			end)
-		end
-
-		if i % 6000 == 0 then
-			LK3D.PushProcessingMessage("[RADIOSA] Collecting garbage...")
-			LK3D.RenderProcessingMessage("[RADIOSA] PreProcess... ")
-			collectgarbage("collect")
-		end
-
-
-
-		lastPatch = lastPatch + 1
-		local patch = registry[i]
-
-		if not patch then
-			break
-		end
-
-		setupPatchVisibility(patch, i)
-	end
-
-	if lastPatch > #registry then
-		LK3D.PushProcessingMessage("[RADIOSA] Done calculating patch visibilities!")
-
-		LK3D.PushProcessingMessage("[RADIOSA] Exporting patch visibility list!")
-		exportPatchVisList()
-
-
-
-		return true
-	end
+	doSetup()
+	return true
 end
 
+
+--[[
+-- emmissive-shoot method
+-- seems broken?
 function solver.CalculateValue(patch, pos, norm, index)
-	local visibilities = patchVisibilityList[index]
-	if not visibilities then
+	local exciSelf = patch.excident
+	if exciSelf[1] == 0 and exciSelf[2] == 0 and exciSelf[3] == 0 then
 		return
 	end
+
+	local visibilities = getPatchVisibility(patch)
+	if not visibilities then
+		LK3D.PushProcessingMessage("[RADIOSA] No visibilities for patch, WRONG!")
+		return
+	end
+
+	if #visibilities == 0 then
+		return
+	end
+
+
+
+	local registry = LK3D.Radiosa.GetPatchRegistry()
+	for i = 1, #visibilities do
+		local struct = visibilities[i]
+		local otherPatchIndex = struct[1]
+		local otherPatch = registry[otherPatchIndex]
+		if not otherPatch then
+			continue
+		end
+
+		local giveAmount = struct[2]
+
+		otherPatch.incident[1] = otherPatch.incident[1] + (exciSelf[1] * giveAmount)
+		otherPatch.incident[2] = otherPatch.incident[2] + (exciSelf[2] * giveAmount)
+		otherPatch.incident[3] = otherPatch.incident[3] + (exciSelf[3] * giveAmount)
+	end
+
+
+	visibilities = nil
+end
+]]--
+
+
+-- emmissive-gather method
+-- slower but works
+function solver.CalculateValue(patch, pos, norm, index)
+	local visibilities = getPatchVisibility(patch)
+	if not visibilities then
+		LK3D.PushProcessingMessage("[RADIOSA] No visibilities for patch, WRONG!")
+		return
+	end
+
+	if #visibilities == 0 then
+		patch.incident[1] = 0
+		patch.incident[2] = 0
+		patch.incident[3] = 0
+		return
+	end
+
 
 	if patch.emitconstant then
 		--patch.excident[1] = patch.emission[1]
@@ -741,7 +584,10 @@ local bayer4 = {
 	15 / 16,  7 / 16, 14 / 16,  6 / 16,
 }
 
+
+local _e = 2.718281828
 local texSz = LK3D.Radiosa.LIGHTMAP_RES
+local bIntensity = LK3D.Radiosa.BRIGHTNESS_INTENSITY
 function solver.FinalPass(patch, pos, norm, index, texIndex)
 	local xc = texIndex % texSz
 	local yc = math_floor(texIndex / texSz)
@@ -749,36 +595,25 @@ function solver.FinalPass(patch, pos, norm, index, texIndex)
 	local bayerIdx = (xc % 4) + ((yc % 4) * 4) + 1
 
 	local luma = patch.incident
-	local bayer = bayer4[bayerIdx]
+	local bayer = bayer4[bayerIdx] * .5
 
-	local valR = math.min((luma[1] * bMul) + bayer, 255)
-	local valG = math.min((luma[2] * bMul) + bayer, 255)
-	local valB = math.min((luma[3] * bMul) + bayer, 255)
 
+	local brR = 1 - math.exp(-(luma[1] * bIntensity))
+	local brG = 1 - math.exp(-(luma[2] * bIntensity))
+	local brB = 1 - math.exp(-(luma[3] * bIntensity))
+
+	local valR = math.min((brR * bMul) + bayer, 255)
+	local valG = math.min((brG * bMul) + bayer, 255)
+	local valB = math.min((brB * bMul) + bayer, 255)
 	return {valR, valG, valB}
+
+
+	--local calculated = patch.isCalculated
+	--return {calculated[1] * 255, calculated[2] * 255, calculated[3] * 255}
 end
 
 -- clean up mem garbage here
 function solver.Cleanup()
-	local itrCount = #patchVisibilityList
-
-	for i = 1, itrCount do
-		if i % 2000 == 0 then
-			LK3D.PushProcessingMessage("[RADIOSA] Cleaning up visibility table, " .. tostring(i) .. "/" .. tostring(itrCount))
-			LK3D.RenderProcessingMessage("[RADIOSA] Cleanup...")
-		end
-
-		local visList = patchVisibilityList[i]
-
-		for j = 1, #visList do
-			visList[j] = nil
-		end
-
-		patchVisibilityList[i] = nil
-	end
-
-	patchVisibilityList = {}
-
 	collectgarbage("collect")
 end
 

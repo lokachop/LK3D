@@ -745,6 +745,11 @@ function Renderer.Render()
 			ortho = LK3D.Ortho and LK3D.OrthoParams or nil
 		})
 
+		if LK3D.CurrUniv["CUSTOM_RENDER_CALL"] then
+			LK3D.CurrUniv["CUSTOM_RENDER_CALL"](LK3D.CurrUniv["objects"])
+		end
+
+
 
 		local hasSH = false
 		local hasParams = false
