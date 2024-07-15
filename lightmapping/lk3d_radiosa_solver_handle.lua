@@ -150,9 +150,14 @@ local function calculateValueMultiPass(solver, patchLUT, pass)
 	local spacing = LK3D.Radiosa.RADIOSITY_SPACING * 1
 	local quality = LK3D.Radiosa.RADIOSITY_QUALITY * 1
 
+
+
+	local sX = 1
+	local sY = 1
+
 	local itr = 0
-	for y = 1, size, spacing do
-		for x = 1, size, spacing do
+	for y = 1 - sY, size, spacing do
+		for x = 1 - sX, size, spacing do
 			itr = itr + 1
 			if (itr % 1024) == 0 then
 				LK3D.PushProcessingMessage("PreMultipass; " .. tostring(itr))
@@ -161,7 +166,7 @@ local function calculateValueMultiPass(solver, patchLUT, pass)
 
 
 
-			local patchID = patchLUT[coordToPatchIndex(x - 1, y - 1)]
+			local patchID = patchLUT[coordToPatchIndex(x, y)]
 			if not patchID then
 				continue
 			end
@@ -180,20 +185,23 @@ local function calculateValueMultiPass(solver, patchLUT, pass)
 	local x1 = 0
 	local y1 = 0
 
-	for i = 1, 16 do
+
+
+	for i = 1, 4 do
 		local threshold = math.pow(quality, spacing)
 
 		local halfSpacing = spacing * .5
-		local halfSpacingP1 = halfSpacing + 0
+		local halfSpacingP1 = halfSpacing + 1
 
 
-		for y = halfSpacingP1, (size + halfSpacing), spacing do
-			for x = halfSpacingP1, (size + halfSpacing), spacing do
+		for y = halfSpacingP1 - sY, (size + halfSpacing), spacing do
+			for x = halfSpacingP1 - sX, (size + halfSpacing), spacing do
 				itr = itr + 1
 				if (itr % 1024) == 0 then
 					LK3D.PushProcessingMessage("PreMultipass; " .. tostring(itr))
 					LK3D.RenderProcessingMessage("[RADIOSA] Calculate PreMultiPass[P2]" .. passStr)
 				end
+
 
 
 				if x < size then
@@ -235,6 +243,7 @@ local function calculateValueMultiPass(solver, patchLUT, pass)
 						solver.CalculateValue(patch, pos, norm, patchID)
 					end
 				end
+
 
 				if y < size then
 					x1 = x - halfSpacing
@@ -278,8 +287,8 @@ local function calculateValueMultiPass(solver, patchLUT, pass)
 		end
 
 
-		for y = halfSpacingP1, size - halfSpacing, spacing do
-			for x = halfSpacingP1, size - halfSpacing, spacing do
+		for y = halfSpacingP1 - sY, size - halfSpacing, spacing do
+			for x = halfSpacingP1 - sX, size - halfSpacing, spacing do
 				itr = itr + 1
 				if (itr % 1024) == 0 then
 					LK3D.PushProcessingMessage("PreMultipass; " .. tostring(itr))

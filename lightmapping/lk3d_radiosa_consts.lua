@@ -1,6 +1,6 @@
 LK3D = LK3D or {}
 LK3D.Radiosa = LK3D.Radiosa or {}
-LK3D.Radiosa.LIGHTMAP_RES = 1024
+LK3D.Radiosa.LIGHTMAP_RES = 512
 LK3D.Radiosa.LIGHTMAP_TRI_SZ = 20
 LK3D.Radiosa.LIGHTMAP_TRI_PAD = 32
 LK3D.Radiosa.LIGHTMAP_AUTO_EXPORT = true -- export when done
