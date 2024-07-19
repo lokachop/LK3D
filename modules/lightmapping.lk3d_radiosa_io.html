@@ -39,11 +39,11 @@
 
 <h2>Modules</h2>
 <ul class="nowrap">
-  <li><strong>baseshaders</strong></li>
+  <li><a href="../modules/baseshaders.html">baseshaders</a></li>
   <li><a href="../modules/camera.html">camera</a></li>
   <li><a href="../modules/debugutils.html">debugutils</a></li>
   <li><a href="../modules/dumps.html">dumps</a></li>
-  <li><a href="../modules/lightmapping.lk3d_radiosa_io.html">lightmapping.lk3d_radiosa_io</a></li>
+  <li><strong>lightmapping.lk3d_radiosa_io</strong></li>
   <li><a href="../modules/lights.html">lights</a></li>
   <li><a href="../modules/lk3d.html">lk3d</a></li>
   <li><a href="../modules/lkpack.html">lkpack</a></li>
@@ -76,21 +76,30 @@
 
 <div id="content">
 
-<h1>Module <code>baseshaders</code></h1>
+<h1>Module <code>lightmapping.lk3d_radiosa_io</code></h1>
 <p>
-<h2>Prefab shader module</h2>
+<h2>Lightmapping / Radiosity</h2>
 <hr/>
 </p>
-<p>These are built-in helper shaders in LK3D to do neat effects like sphere mapping among other things <br/>
-For a list of shaders with examples, refer to the Base Shaders manual page! <br/>
-<strong>These only work on the Hardware1 renderer!</strong>  </p>
+<p>Module that generates calculates lightmaps on objects using radiosity <br/>
+Rewritten from scratch again, major issues solved and speed increased!! <br/>
+This module is basically a GLua implementation of <a href="https://www.jmeiners.com/Hugo-Elias-Radiosity/">this radiosity article</a> <br/>
+<a href="../manual/lightmapper-radiosity.md.html">Reading the manual entry on the lightmapper is recommended!</a></p>
 
 
 <h2><a href="#Functions">Functions</a></h2>
 <table class="function_list">
 	<tr>
-	<td class="name" nowrap><a href="#LK3D.SetObjectPrefabShader">LK3D.SetObjectPrefabShader(obj, shader)</a></td>
-	<td class="summary">Sets the shader of an object to a prefab one</td>
+	<td class="name" nowrap><a href="#LK3D.ExportLightmaps">LK3D.ExportLightmaps()</a></td>
+	<td class="summary">Exports all of the lightmaps on the active universe</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#LK3D.LoadLightmapFromFile">LK3D.LoadLightmapFromFile(obj_idx)</a></td>
+	<td class="summary">Loads a lightmap of an object from a file in LKPack</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#LK3D.ClearLightmapCache">LK3D.ClearLightmapCache()</a></td>
+	<td class="summary">Clears the PNG lightmap cache</td>
 	</tr>
 </table>
 
@@ -102,8 +111,8 @@ For a list of shaders with examples, refer to the Base Shaders manual page! <br/
 
     <dl class="function">
     <dt>
-    <a name = "LK3D.SetObjectPrefabShader"></a>
-    <strong>LK3D.SetObjectPrefabShader(obj, shader)</strong>
+    <a name = "LK3D.ExportLightmaps"></a>
+    <strong>LK3D.ExportLightmaps()</strong>
     </dt>
     <dd>
 
@@ -111,7 +120,33 @@ For a list of shaders with examples, refer to the Base Shaders manual page! <br/
 
 
 
-    Sets the shader of an object to a prefab one
+    Exports all of the lightmaps on the active universe
+
+    </ul>
+    </ul>
+    </ul>
+
+
+
+
+
+    <h3>Usage:</h3>
+    <ul>
+        <pre class="example">LK3D.ExportLightmaps()</pre>
+    </ul>
+
+</dd>
+    <dt>
+    <a name = "LK3D.LoadLightmapFromFile"></a>
+    <strong>LK3D.LoadLightmapFromFile(obj_idx)</strong>
+    </dt>
+    <dd>
+
+<!-- Added here by loka, im so shit at HTML & CSS :( -->
+
+
+
+    Loads a lightmap of an object from a file in LKPack
 
     </ul>
     </ul>
@@ -119,19 +154,45 @@ For a list of shaders with examples, refer to the Base Shaders manual page! <br/
 
     <h3>Parameters:</h3>
     <ul>
-        <li><span class="parameter">obj</span>
+        <li><span class="parameter">obj_idx</span>
             <span class="types"><span class="type">string</span></span>
-         the tag of the object
-        </li>
-        <li><span class="parameter">shader</span>
-            <span class="types"><span class="type">string</span></span>
-         the name of the shader
+         Index tag of the object
         </li>
     </ul>
 
 
 
 
+    <h3>Usage:</h3>
+    <ul>
+        <pre class="example">LK3D.LoadLightmapFromFile(<span class="string">"sub_lower"</span>)</pre>
+    </ul>
+
+</dd>
+    <dt>
+    <a name = "LK3D.ClearLightmapCache"></a>
+    <strong>LK3D.ClearLightmapCache()</strong>
+    </dt>
+    <dd>
+
+<!-- Added here by loka, im so shit at HTML & CSS :( -->
+
+
+
+    Clears the PNG lightmap cache
+
+    </ul>
+    </ul>
+    </ul>
+
+
+
+
+
+    <h3>Usage:</h3>
+    <ul>
+        <pre class="example">LK3D.ClearLightmapCache()</pre>
+    </ul>
 
 </dd>
 </dl>
