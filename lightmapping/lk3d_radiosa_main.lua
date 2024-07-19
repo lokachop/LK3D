@@ -20,6 +20,8 @@ include("lk3d_radiosa_ftrace.lua") -- FastTrace, fast*er* tracing library for st
 include("lk3d_radiosa_patches.lua")
 include("lk3d_radiosa_trilut_genner.lua")
 
+include("lk3d_radiosa_io.lua") -- Handles input / output (Loading / exporting lightmaps)
+
 include("lk3d_radiosa_solver_handle.lua") -- This file should contain the bulk for how it operates
 
 -- Solver to use, only 1 at once!
@@ -27,6 +29,8 @@ include("lk3d_radiosa_solver_handle.lua") -- This file should contain the bulk f
 --LK3D.Radiosa.SOLVER = include("solvers/lk3d_radiosa_solver_light_at_pos.lua")
 --LK3D.Radiosa.SOLVER = include("solvers/lk3d_radiosa_solver_ao.lua")
 LK3D.Radiosa.SOLVER = include("solvers/lk3d_radiosa_solver_radiosity.lua")
+
+
 
 
 local objectsMarkedForLightmap = {}

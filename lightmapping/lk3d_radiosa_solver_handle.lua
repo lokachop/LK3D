@@ -6,19 +6,22 @@ local function setupObject(tag)
 	local packed, lightmap_uvs, index_list = LK3D.Radiosa.PackUVs(unwrapped_tris)
 
 	-- make the tex
+	local size = LK3D.Radiosa.LIGHTMAP_RES
+	local pixelItr = (size * size) - 1
+
+
 	local texName = LK3D.Radiosa.GetObjectLightmapTextureName(tag)
 	LK3D.DeclareTextureFromFunc(texName, LK3D.Radiosa.LIGHTMAP_RES, LK3D.Radiosa.LIGHTMAP_RES, function() -- generate an OK texture as a placeholder
-		surface.SetDrawColor(255, 0, 255)
-		surface.DrawRect(0, 0, ScrW(), ScrH())
+		local oldW, oldH = ScrW(), ScrH()
+		for i = 0, pixelItr do
+			local xc = i % size
+			local yc = math.floor(i / size)
 
-		local gradItr = 64
-		local stepSize = LK3D.Radiosa.LIGHTMAP_RES / gradItr
-		for i = 0, gradItr do
-			local delta = i / gradItr
-
-			surface.SetDrawColor(delta * 255, 0, 255)
-			surface.DrawRect(0, i * stepSize, ScrW(), stepSize)
+			render.SetViewPort(xc, yc, 1, 1)
+			render.Clear((xc / size) * 255, (yc / size) * 255, 0, 255)
 		end
+
+		render.SetViewPort(0, 0, oldW, oldH)
 	end)
 
 
@@ -421,6 +424,123 @@ local function finalizeMultiPass(solver, patchLUT)
 	return pixelValuesRet
 end
 
+local function cmp(coord)
+	local size = LK3D.Radiosa.LIGHTMAP_RES
+	return coord % size
+end
+
+
+-- This to fix the seams on linear filtering
+local function expandBorders(pixelValues)
+	LK3D.PushProcessingMessage("[RADIOSA] Expanding borders for linear...")
+
+	local size = LK3D.Radiosa.LIGHTMAP_RES
+	local pixelItr = (size * size) - 1
+
+	local patchesToAdd = {}
+	for i = 0, pixelItr do
+		local xc = i % size
+		local yc = math.floor(i / size)
+
+		local ourIndex = xc + (yc * size)
+
+		if pixelValues[i] then
+			continue
+		end
+
+		-- check all of our 8 neighbours, if any of them have a patch, we will add one later
+
+		-- #--
+		-- - -
+		-- ---
+		iCheck = cmp(xc - 1) + (cmp(yc - 1) * size)
+		if pixelValues[iCheck] ~= nil then
+			patchesToAdd[#patchesToAdd + 1] = {ourIndex, iCheck}
+			continue
+		end
+
+		-- -#-
+		-- - -
+		-- ---
+		iCheck = xc      + (cmp(yc - 1) * size)
+		if pixelValues[iCheck] ~= nil then
+			patchesToAdd[#patchesToAdd + 1] = {ourIndex, iCheck}
+			continue
+		end
+
+		-- --#
+		-- - -
+		-- ---
+		iCheck = cmp(xc + 1) + (cmp(yc - 1) * size)
+		if pixelValues[iCheck] ~= nil then
+			patchesToAdd[#patchesToAdd + 1] = {ourIndex, iCheck}
+			continue
+		end
+
+		-- ---
+		-- # -
+		-- ---
+		iCheck = cmp(xc - 1) + (yc * size)
+		if pixelValues[iCheck] ~= nil then
+			patchesToAdd[#patchesToAdd + 1] = {ourIndex, iCheck}
+			continue
+		end
+
+		-- ---
+		-- - #
+		-- ---
+		iCheck = cmp(xc + 1) + (yc * size)
+		if pixelValues[iCheck] ~= nil then
+			patchesToAdd[#patchesToAdd + 1] = {ourIndex, iCheck}
+			continue
+		end
+
+		-- ---
+		-- - -
+		-- #--
+		iCheck = cmp(xc - 1) + (cmp(yc + 1) * size)
+		if pixelValues[iCheck] ~= nil then
+			patchesToAdd[#patchesToAdd + 1] = {ourIndex, iCheck}
+			continue
+		end
+
+		-- ---
+		-- - -
+		-- -#-
+		iCheck = xc + (cmp(yc + 1) * size)
+		if pixelValues[iCheck] ~= nil then
+			patchesToAdd[#patchesToAdd + 1] = {ourIndex, iCheck}
+			continue
+		end
+
+		-- ---
+		-- - -
+		-- --#
+		iCheck = cmp(xc - 1) + (cmp(yc + 1) * size)
+		if pixelValues[iCheck] ~= nil then
+			patchesToAdd[#patchesToAdd + 1] = {ourIndex, iCheck}
+			continue
+		end
+	end
+
+	for i = 1, #patchesToAdd do
+		local patchToAdd = patchesToAdd[i]
+
+		local patchIndex = patchToAdd[1]
+		local patchParent = patchToAdd[2]
+
+		local xc = patchIndex % size
+		local yc = math.floor(patchIndex / size)
+
+		local value = pixelValues[patchParent]
+
+		pixelValues[patchIndex] = {value[1], value[2], value[3]}
+
+		render.SetViewPort(xc, yc, 1, 1)
+		render.Clear(value[1], value[2], value[3], 255)
+	end
+end
+
 
 
 local function renderPixelValuesToTex(tag, pixelValues)
@@ -443,6 +563,10 @@ local function renderPixelValuesToTex(tag, pixelValues)
 
 			render.SetViewPort(xc, yc, 1, 1)
 			render.Clear(value[1], value[2], value[3], 255)
+		end
+
+		for i = 1, 3 do
+			expandBorders(pixelValues)
 		end
 
 		render.SetViewPort(0, 0, oldW, oldH)
@@ -523,25 +647,34 @@ end
 
 
 function LK3D.Radiosa.BeginLightmapping()
-	print("::Start lightmapping")
+	LK3D.New_D_Print("Start lightmapping", LK3D_SEVERITY_INFO, "Radiosity")
 	LK3D.PushProcessingMessage("[RADIOSA] Start lightmapping")
 
 	prePreProcess()
 	LK3D.PushProcessingMessage("[RADIOSA] PrePreProcess done")
-	print("::PrePreProcess done")
+	LK3D.New_D_Print("PrePreProcess done", LK3D_SEVERITY_INFO, "Radiosity")
 
 	preProcess()
 	LK3D.PushProcessingMessage("[RADIOSA] PreProcess done")
-	print(":: PreProcess done")
+	LK3D.New_D_Print("PreProcess done", LK3D_SEVERITY_INFO, "Radiosity")
 
 	-- Main processing
 	mainLoop()
 	LK3D.PushProcessingMessage("[RADIOSA] Main Loop done")
-	print(":: Main Loop done")
+	LK3D.New_D_Print("Main Loop done", LK3D_SEVERITY_INFO, "Radiosity")
 
 	doCleanup()
 	LK3D.PushProcessingMessage("[RADIOSA] Cleanup done")
-	print(":: Cleanup done")
+	LK3D.New_D_Print("Cleanup done", LK3D_SEVERITY_INFO, "Radiosity")
+
+	if LK3D.Radiosa.LIGHTMAP_AUTO_EXPORT then
+		LK3D.PushProcessingMessage("[RADIOSA] AutoExporting")
+		LK3D.New_D_Print("Lightmap done! Automatically exporting...", LK3D_SEVERITY_INFO, "Radiosity")
+
+		LK3D.ExportLightmaps()
+	else
+		LK3D.New_D_Print("Lightmap done! Please export with \"lk3d_exportlightmaps " .. LK3D.CurrUniv["tag"] .. "\"", LK3D_SEVERITY_INFO, "Radiosity")
+	end
 
 
 	-- Audio cue when done

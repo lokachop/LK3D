@@ -13,24 +13,10 @@ local render_ReadPixel = render.ReadPixel
 
 -- Tweakables
 local CAPT_BUFF_SIZE = LK3D.Radiosa.RADIOSITY_BUFFER_SZ
-local LP_ST_SZ = (256)
 
-
-
-
-
-local patchVisibilityList = {}
 local DEBUG_highestVisCount = 0
-local EPSILON = 0.01
 
-
-local function intSnap(int, base)
-	local bh = (base * .5)
-	return math_floor((int + bh) - ((int + bh) % base))
-end
-
-local LP_SZ_INV = 256 / LP_ST_SZ
-local LP_MAX_VALUE = 16777216 / LP_ST_SZ
+local MAX_RGB = 16777216
 
 
 
@@ -452,8 +438,8 @@ end
 local function doSetup()
 	local maxIndex = #LK3D.Radiosa.GetPatchRegistry()
 
-	if maxIndex > LP_MAX_VALUE then
-		LK3D.PushProcessingMessage("[RADIOSA] Too many patches for LowPatch mode! (" .. maxIndex .. ">" .. LP_MAX_VALUE .. ")")
+	if maxIndex > MAX_RGB then
+		LK3D.PushProcessingMessage("[RADIOSA] Too many patches for LowPatch mode! (" .. maxIndex .. ">" .. MAX_RGB .. ")")
 		LK3D.PushProcessingMessage("[RADIOSA] Enabling HighPatch mode (slower...)")
 
 		DO_HIGH_PATCH = true -- TODO: implement
