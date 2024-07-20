@@ -163,7 +163,7 @@ local function calculateValueMultiPass(solver, patchLUT, pass)
 		for x = 1 - sX, size, spacing do
 			itr = itr + 1
 			if (itr % 1024) == 0 then
-				LK3D.PushProcessingMessage("PreMultipass; " .. tostring(itr))
+				--LK3D.PushProcessingMessage("PreMultipass; " .. tostring(itr))
 				LK3D.RenderProcessingMessage("[RADIOSA] Calculate PreMultiPass[P1]" .. passStr)
 			end
 
@@ -180,7 +180,6 @@ local function calculateValueMultiPass(solver, patchLUT, pass)
 			local pos = LK3D.Radiosa.GetPatchPos(patch)
 			local norm = LK3D.Radiosa.GetPatchNormal(patch)
 
-			patch.isCalculated = {1, 0, 1}
 			solver.CalculateValue(patch, pos, norm, patchID)
 		end
 	end
@@ -201,7 +200,7 @@ local function calculateValueMultiPass(solver, patchLUT, pass)
 			for x = halfSpacingP1 - sX, (size + halfSpacing), spacing do
 				itr = itr + 1
 				if (itr % 1024) == 0 then
-					LK3D.PushProcessingMessage("PreMultipass; " .. tostring(itr))
+					--LK3D.PushProcessingMessage("PreMultipass; " .. tostring(itr))
 					LK3D.RenderProcessingMessage("[RADIOSA] Calculate PreMultiPass[P2]" .. passStr)
 				end
 
@@ -226,7 +225,6 @@ local function calculateValueMultiPass(solver, patchLUT, pass)
 						end
 						local patch = LK3D.Radiosa.GetPatchFromRegistry(patchID)
 
-						patch.isCalculated = {0, 1, 0}
 						LK3D.Radiosa.SetPatchIncident(patch, {
 							(I1[1] + I2[1]) * 0.5,
 							(I1[2] + I2[2]) * 0.5,
@@ -242,7 +240,6 @@ local function calculateValueMultiPass(solver, patchLUT, pass)
 						local pos = LK3D.Radiosa.GetPatchPos(patch)
 						local norm = LK3D.Radiosa.GetPatchNormal(patch)
 
-						patch.isCalculated = {1, 0, 0}
 						solver.CalculateValue(patch, pos, norm, patchID)
 					end
 				end
@@ -267,7 +264,6 @@ local function calculateValueMultiPass(solver, patchLUT, pass)
 						end
 						local patch = LK3D.Radiosa.GetPatchFromRegistry(patchID)
 
-						patch.isCalculated = {0, 1, 0}
 						LK3D.Radiosa.SetPatchIncident(patch, {
 							(I1[1] + I2[1]) * 0.5,
 							(I1[2] + I2[2]) * 0.5,
@@ -282,7 +278,6 @@ local function calculateValueMultiPass(solver, patchLUT, pass)
 						local pos = LK3D.Radiosa.GetPatchPos(patch)
 						local norm = LK3D.Radiosa.GetPatchNormal(patch)
 
-						patch.isCalculated = {1, 0, 0}
 						solver.CalculateValue(patch, pos, norm, patchID)
 					end
 				end
@@ -294,7 +289,7 @@ local function calculateValueMultiPass(solver, patchLUT, pass)
 			for x = halfSpacingP1 - sX, size - halfSpacing, spacing do
 				itr = itr + 1
 				if (itr % 1024) == 0 then
-					LK3D.PushProcessingMessage("PreMultipass; " .. tostring(itr))
+					--LK3D.PushProcessingMessage("PreMultipass; " .. tostring(itr))
 					LK3D.RenderProcessingMessage("[RADIOSA] Calculate PreMultiPass[P3]" .. passStr)
 				end
 
@@ -315,7 +310,6 @@ local function calculateValueMultiPass(solver, patchLUT, pass)
 					end
 					local patch = LK3D.Radiosa.GetPatchFromRegistry(patchID)
 
-					patch.isCalculated = {0, 1, 0}
 					LK3D.Radiosa.SetPatchIncident(patch, {
 						(I1[1] + I2[1] + I3[1] + I4[1]) * 0.25,
 						(I1[2] + I2[2] + I3[2] + I4[2]) * 0.25,
@@ -331,7 +325,6 @@ local function calculateValueMultiPass(solver, patchLUT, pass)
 					local pos = LK3D.Radiosa.GetPatchPos(patch)
 					local norm = LK3D.Radiosa.GetPatchNormal(patch)
 
-					patch.isCalculated = {1, 0, 0}
 					solver.CalculateValue(patch, pos, norm, patchID)
 				end
 			end
@@ -344,7 +337,7 @@ local function calculateValueMultiPass(solver, patchLUT, pass)
 			break
 		end
 	end
-	LK3D.PushProcessingMessage("[RADIOSA] Done with OptiCalc!")
+	--LK3D.PushProcessingMessage("[RADIOSA] Done with OptiCalc!")
 
 
 	--[[

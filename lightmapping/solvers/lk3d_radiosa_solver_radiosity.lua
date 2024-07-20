@@ -7,9 +7,29 @@ solver.PassCount = LK3D.Radiosa.RADIOSITY_STEPS
 
 local math = math
 local math_floor = math.floor
+local math_exp = math.exp
+local math_min = math.min
+local math_max = math.max
+local math_deg = math.deg
+local math_acos = math.acos
+
+
+local bit = bit
+local bit_band = bit.band
+local bit_rshift = bit.rshift
+local bit_lshift = bit.lshift
 
 local render = render
+local render_CapturePixels = render.CapturePixels
 local render_ReadPixel = render.ReadPixel
+local render_PushRenderTarget = render.PushRenderTarget
+local render_PopRenderTarget = render.PopRenderTarget
+local render_GetToneMappingScaleLinear = render.GetToneMappingScaleLinear
+local render_SetToneMappingScaleLinear = render.SetToneMappingScaleLinear
+local render_SetViewPort = render.SetViewPort
+local render_Clear = render.Clear
+
+
 
 -- Tweakables
 local CAPT_BUFF_SIZE = LK3D.Radiosa.RADIOSITY_BUFFER_SZ
@@ -23,17 +43,17 @@ local MAX_RGB = 16777216
 local HP_DMULT = 16
 local function packRGB_LP(int)
 	int = int * HP_DMULT
-	local r = bit.band(bit.rshift(int, 16), 255)
-	local g = bit.band(bit.rshift(int,  8), 255)
-	local b = bit.band(bit.rshift(int,  0), 255)
+	local r = int / 65536 % 256
+	local g = int / 256 % 256
+	local b = int % 256
 
 	return r, g, b
 end
 
 local function unpackRGB_LP(r, g, b)
-	local var = (bit.lshift(r, 16) + bit.lshift(g, 8) + b)
+	local var = (r * 65536 + g * 256 + b)
 
-	return math.floor(var / HP_DMULT)
+	return math_floor(var / HP_DMULT)
 end
 
 local CAPT_BUFF_SIZE_H = CAPT_BUFF_SIZE * .5
@@ -83,8 +103,8 @@ local function renderHemicube(pos, dir)
 	LK3D.SetCamPos(pos)
 	LK3D.SetCamFOV(LK3D.RADIOSITY_FOV)
 
-	local oldTMSL = render.GetToneMappingScaleLinear()
-	render.SetToneMappingScaleLinear(nilToneMappingScale)
+	local oldTMSL = render_GetToneMappingScaleLinear()
+	render_SetToneMappingScaleLinear(nilToneMappingScale)
 		-- up
 		LK3D.PushRenderTarget(CaptureRT_UP)
 			LK3D.RenderClear(0, 0, 0)
@@ -135,7 +155,7 @@ local function renderHemicube(pos, dir)
 			LK3D.SetCamAng(mat_dw:GetAngles())
 			LK3D.RenderActiveUniverse()
 		LK3D.PopRenderTarget()
-	render.SetToneMappingScaleLinear(oldTMSL)
+		render_SetToneMappingScaleLinear(oldTMSL)
 
 	LK3D.SetCamPos(old_pos)
 	LK3D.SetCamAng(old_ang)
@@ -159,8 +179,8 @@ local function addPatchToVisibilityList(visListTemp, srcPatch, addPatch, addPatc
 	local addNorm = addPatch.norm
 
 	--local dist = srcPos:Distance(addPos) + 1
-	local dotVal = math.deg(math.acos(srcNorm:Dot(addNorm))) / 180
-	dotVal = math.min(math.max(dotVal, 0), 1)
+	local dotVal = math_deg(math_acos(srcNorm:Dot(addNorm))) / 180
+	dotVal = math_min(math_max(dotVal, 0), 1)
 
 	if dotVal > 1 then
 		LK3D.PushProcessingMessage("DotVal Wrong: " .. tostring(dotVal))
@@ -218,13 +238,13 @@ local function getPatchVisibility(patch)
 	local yc = 0
 
 
-	local oldTMSL = render.GetToneMappingScaleLinear()
-	render.SetToneMappingScaleLinear(nilToneMappingScale)
+	local oldTMSL = render_GetToneMappingScaleLinear()
+	render_SetToneMappingScaleLinear(nilToneMappingScale)
 
 	-- top
 	captItr = (CAPT_BUFF_SIZE * CAPT_BUFF_SIZE_H) - 1
-	render.PushRenderTarget(CaptureRT_UP)
-		render.CapturePixels()
+	render_PushRenderTarget(CaptureRT_UP)
+		render_CapturePixels()
 		for i = 0, captItr do
 			xc = i % CAPT_BUFF_SIZE
 			yc = CAPT_BUFF_SIZE_H + math_floor(i / CAPT_BUFF_SIZE)
@@ -241,14 +261,14 @@ local function getPatchVisibility(patch)
 
 			addPatchToVisibilityList(visListTemp, patch, patchGet, indexGet)
 		end
-	render.PopRenderTarget()
+	render_PopRenderTarget()
 
 
 
 	-- forward
 	captItr = (CAPT_BUFF_SIZE * CAPT_BUFF_SIZE) - 1
-	render.PushRenderTarget(CaptureRT_FORWARD)
-		render.CapturePixels()
+	render_PushRenderTarget(CaptureRT_FORWARD)
+		render_CapturePixels()
 		for i = 0, captItr do
 			xc = i % CAPT_BUFF_SIZE
 			yc = math_floor(i / CAPT_BUFF_SIZE)
@@ -265,14 +285,14 @@ local function getPatchVisibility(patch)
 
 			addPatchToVisibilityList(visListTemp, patch, patchGet, indexGet)
 		end
-	render.PopRenderTarget()
+	render_PopRenderTarget()
 
 
 
 	-- left
 	captItr = (CAPT_BUFF_SIZE * CAPT_BUFF_SIZE_H) - 1
-	render.PushRenderTarget(CaptureRT_LEFT)
-		render.CapturePixels()
+	render_PushRenderTarget(CaptureRT_LEFT)
+		render_CapturePixels()
 		for i = 0, captItr do
 			xc = CAPT_BUFF_SIZE_H + (i % CAPT_BUFF_SIZE_H)
 			yc = math_floor(i / CAPT_BUFF_SIZE_H)
@@ -289,13 +309,13 @@ local function getPatchVisibility(patch)
 
 			addPatchToVisibilityList(visListTemp, patch, patchGet, indexGet)
 		end
-	render.PopRenderTarget()
+	render_PopRenderTarget()
 
 
 	-- right
 	captItr = (CAPT_BUFF_SIZE * CAPT_BUFF_SIZE_H) - 1
-	render.PushRenderTarget(CaptureRT_RIGHT)
-		render.CapturePixels()
+	render_PushRenderTarget(CaptureRT_RIGHT)
+		render_CapturePixels()
 		for i = 0, captItr do
 			xc = (i % CAPT_BUFF_SIZE_H)
 			yc = math_floor(i / CAPT_BUFF_SIZE_H)
@@ -312,13 +332,13 @@ local function getPatchVisibility(patch)
 
 			addPatchToVisibilityList(visListTemp, patch, patchGet, indexGet)
 		end
-	render.PopRenderTarget()
+	render_PopRenderTarget()
 
 
 	-- bottom
 	captItr = (CAPT_BUFF_SIZE * CAPT_BUFF_SIZE_H) - 1
-	render.PushRenderTarget(CaptureRT_DOWN)
-		render.CapturePixels()
+	render_PushRenderTarget(CaptureRT_DOWN)
+		render_CapturePixels()
 		for i = 0, captItr do
 			xc = i % CAPT_BUFF_SIZE
 			yc = math_floor(i / CAPT_BUFF_SIZE)
@@ -335,9 +355,9 @@ local function getPatchVisibility(patch)
 
 			addPatchToVisibilityList(visListTemp, patch, patchGet, indexGet)
 		end
-	render.PopRenderTarget()
+	render_PopRenderTarget()
 
-	render.SetToneMappingScaleLinear(oldTMSL)
+	render_SetToneMappingScaleLinear(oldTMSL)
 
 	-- now return the patch visibility
 	return getFinalizedVisibility(visListTemp)
@@ -373,12 +393,12 @@ local function setupCloneObject(tag, objData)
 	if patchLUT then
 		local texTag = LK3D.CurrUniv["tag"] .. "_" .. tag .. "_patchMap_" .. size
 		LK3D.DeclareTextureFromFunc(texTag, size, size, function()
-			render.Clear(0, 0, 0, 255)
+			render_Clear(0, 0, 0, 255)
 
 			local oW, oH = ScrW(), ScrH()
 
-			local oldTMSL = render.GetToneMappingScaleLinear()
-			render.SetToneMappingScaleLinear(nilToneMappingScale)
+			local oldTMSL = render_GetToneMappingScaleLinear()
+			render_SetToneMappingScaleLinear(nilToneMappingScale)
 			local itr = (size * size) - 1
 			for i = 0, itr do
 				local patchIndex = patchLUT[i]
@@ -390,12 +410,12 @@ local function setupCloneObject(tag, objData)
 				--surface.SetDrawColor(r, g, b)
 				--surface.DrawRect(i % size, math_floor(i / size), 1, 1)
 
-				render.SetViewPort(i % size, math_floor(i / size), 1, 1)
-				render.Clear(r, g, b, 255)
+				render_SetViewPort(i % size, math_floor(i / size), 1, 1)
+				render_Clear(r, g, b, 255)
 			end
-			render.SetToneMappingScaleLinear(oldTMSL)
+			render_SetToneMappingScaleLinear(oldTMSL)
 
-			render.SetViewPort(0, 0, oW, oH)
+			render_SetViewPort(0, 0, oW, oH)
 		end)
 
 		LK3D.SetObjectFlag(tag_1, "lightmap_uvs", objData.lightmap_uvs)
@@ -518,18 +538,6 @@ function solver.CalculateValue(patch, pos, norm, index)
 		return
 	end
 
-
-	if patch.emitconstant then
-		--patch.excident[1] = patch.emission[1]
-		--patch.excident[2] = patch.emission[2]
-		--patch.excident[3] = patch.emission[3]
-
-		--patch.incident[1] = patch.emission[1]
-		--patch.incident[2] = patch.emission[2]
-		--patch.incident[3] = patch.emission[3]
-	end
-
-
 	-- emit out emmision out to others
 	local registry = LK3D.Radiosa.GetPatchRegistry()
 
@@ -584,18 +592,14 @@ function solver.FinalPass(patch, pos, norm, index, texIndex)
 	local bayer = bayer4[bayerIdx] * .5
 
 
-	local brR = 1 - math.exp(-(luma[1] * bIntensity))
-	local brG = 1 - math.exp(-(luma[2] * bIntensity))
-	local brB = 1 - math.exp(-(luma[3] * bIntensity))
+	local brR = 1 - math_exp(-(luma[1] * bIntensity))
+	local brG = 1 - math_exp(-(luma[2] * bIntensity))
+	local brB = 1 - math_exp(-(luma[3] * bIntensity))
 
-	local valR = math.min((brR * bMul) + bayer, 255)
-	local valG = math.min((brG * bMul) + bayer, 255)
-	local valB = math.min((brB * bMul) + bayer, 255)
+	local valR = math_min((brR * bMul) + bayer, 255)
+	local valG = math_min((brG * bMul) + bayer, 255)
+	local valB = math_min((brB * bMul) + bayer, 255)
 	return {valR, valG, valB}
-
-
-	--local calculated = patch.isCalculated
-	--return {calculated[1] * 255, calculated[2] * 255, calculated[3] * 255}
 end
 
 -- clean up mem garbage here

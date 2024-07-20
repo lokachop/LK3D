@@ -412,7 +412,9 @@ local function loadLightmapObject(data, tag, obj_idx)
 			surface.SetDrawColor(255, 255, 255, 255)
 			surface.DrawTexturedRect(0, 0, tw, th)
 		end)
+
 		LK3D.SetFilterMode(prevFilter)
+
 		--file.Delete(thing_path, "DATA") -- this breaks lightmapping
 	end)
 

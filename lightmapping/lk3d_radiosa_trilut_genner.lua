@@ -319,7 +319,14 @@ local function setupPatch(patch, xc, yc)
 	LK3D.Radiosa.SetPatchReflectivity(patch, normalizedColour)
 
 	if setupTexEmissive then
-		local emissionColour = {normalizedR * lmEmmision, normalizedG * lmEmmision, normalizedB * lmEmmision}
+		local emmMul = tonumber(setupObjPtr["RADIOSITY_BRIGHT_MUL"])
+
+		local patchEmmision = lmEmmision
+		if emmMul then
+			patchEmmision = lmEmmision * emmMul
+		end
+
+		local emissionColour = {normalizedR * patchEmmision, normalizedG * patchEmmision, normalizedB * patchEmmision}
 		LK3D.Radiosa.SetPatchEmission(patch, emissionColour)
 		LK3D.Radiosa.SetPatchExcident(patch, emissionColour)
 		LK3D.Radiosa.SetPatchEmitConstant(patch, true)
