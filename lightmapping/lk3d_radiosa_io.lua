@@ -1,12 +1,5 @@
---[[--
-## Lightmapping / Radiosity
 ---
-
-Module that generates calculates lightmaps on objects using radiosity  
-Rewritten from scratch again, major issues solved and speed increased!!  
-This module is basically a GLua implementation of [this radiosity article](https://www.jmeiners.com/Hugo-Elias-Radiosity/)  
-[Reading the manual entry on the lightmapper is recommended!](../manual/lightmapper-radiosity.md.html)
-]]
+--@module lightmapping
 
 LK3D = LK3D or {}
 LK3D.Radiosa = LK3D.Radiosa or {}
@@ -540,6 +533,7 @@ end
 
 
 --- Clears the PNG lightmap cache  
+-- @warning This can break the lightmaps until restart if used!
 -- @usage LK3D.ClearLightmapCache()
 function LK3D.ClearLightmapCache()
 	if LK3D_LIGHTMAP_HAVE_WE_CLEARED_GLOBAL then

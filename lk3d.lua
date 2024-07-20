@@ -432,7 +432,6 @@ include("physics/lk3d_physics_external_fps.lua")
 include("lk3d_sceneexport.lua")
 include("lk3d_musisynth.lua")
 include("lk3d_baseshaders.lua")
-include("lk3d_radiosity.lua")
 include("lightmapping/lk3d_radiosa_main.lua")
 
 
