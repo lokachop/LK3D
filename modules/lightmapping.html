@@ -43,7 +43,7 @@
   <li><a href="../modules/camera.html">camera</a></li>
   <li><a href="../modules/debugutils.html">debugutils</a></li>
   <li><a href="../modules/dumps.html">dumps</a></li>
-  <li><strong>lightmapping.lk3d_radiosa_io</strong></li>
+  <li><strong>lightmapping</strong></li>
   <li><a href="../modules/lights.html">lights</a></li>
   <li><a href="../modules/lk3d.html">lk3d</a></li>
   <li><a href="../modules/lkpack.html">lkpack</a></li>
@@ -55,7 +55,6 @@
   <li><a href="../modules/physics.html">physics</a></li>
   <li><a href="../modules/procmodel.html">procmodel</a></li>
   <li><a href="../modules/proctex.html">proctex</a></li>
-  <li><a href="../modules/radiosity.html">radiosity</a></li>
   <li><a href="../modules/rendertarget.html">rendertarget</a></li>
   <li><a href="../modules/textures.html">textures</a></li>
   <li><a href="../modules/trace.html">trace</a></li>
@@ -76,19 +75,36 @@
 
 <div id="content">
 
-<h1>Module <code>lightmapping.lk3d_radiosa_io</code></h1>
+<h1>Module <code>lightmapping</code></h1>
 <p>
 <h2>Lightmapping / Radiosity</h2>
 <hr/>
 </p>
 <p>Module that generates calculates lightmaps on objects using radiosity <br/>
-Rewritten from scratch again, major issues solved and speed increased!! <br/>
+Rewritten from scratch again, major issues solved and speed increased <br/>
+Docs for this are currently unfinished! <br/>
 This module is basically a GLua implementation of <a href="https://www.jmeiners.com/Hugo-Elias-Radiosity/">this radiosity article</a> <br/>
 <a href="../manual/lightmapper-radiosity.md.html">Reading the manual entry on the lightmapper is recommended!</a></p>
 
 
 <h2><a href="#Functions">Functions</a></h2>
 <table class="function_list">
+	<tr>
+	<td class="name" nowrap><a href="#LK3D.MarkForLightmapping">LK3D.MarkForLightmapping(objectID)</a></td>
+	<td class="summary">Marks an object to be lightmapped</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#LK3D.Radiosa.ClearLightmapMarkedObjects">LK3D.Radiosa.ClearLightmapMarkedObjects()</a></td>
+	<td class="summary">Clears the list of objects to be lightmapped</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#LK3D.Radiosa.GetLightmapMarkedObjects">LK3D.Radiosa.GetLightmapMarkedObjects()</a></td>
+	<td class="summary">Returns the list of objects to be lightmapped</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#LK3D.CommitLightmapping">LK3D.CommitLightmapping()</a></td>
+	<td class="summary">Runs the lightmapper</td>
+	</tr>
 	<tr>
 	<td class="name" nowrap><a href="#LK3D.ExportLightmaps">LK3D.ExportLightmaps()</a></td>
 	<td class="summary">Exports all of the lightmaps on the active universe</td>
@@ -110,6 +126,129 @@ This module is basically a GLua implementation of <a href="https://www.jmeiners.
     <h2 class="section-header "><a name="Functions"></a>Functions</h2>
 
     <dl class="function">
+    <dt>
+    <a name = "LK3D.MarkForLightmapping"></a>
+    <strong>LK3D.MarkForLightmapping(objectID)</strong>
+    </dt>
+    <dd>
+
+<!-- Added here by loka, im so shit at HTML & CSS :( -->
+
+
+
+    Marks an object to be lightmapped
+
+    </ul>
+    </ul>
+    </ul>
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">objectID</span>
+
+
+
+        </li>
+    </ul>
+
+
+
+
+    <h3>Usage:</h3>
+    <ul>
+        <pre class="example">LK3D.MarkForLightmapping(<span class="string">"corn_box_a"</span>)</pre>
+    </ul>
+
+</dd>
+    <dt>
+    <a name = "LK3D.Radiosa.ClearLightmapMarkedObjects"></a>
+    <strong>LK3D.Radiosa.ClearLightmapMarkedObjects()</strong>
+    </dt>
+    <dd>
+
+<!-- Added here by loka, im so shit at HTML & CSS :( -->
+
+
+
+    Clears the list of objects to be lightmapped
+
+    </ul>
+    </ul>
+    </ul>
+
+
+
+
+
+    <h3>Usage:</h3>
+    <ul>
+        <pre class="example">LK3D.Radiosa.ClearLightmapMarkedObjects()</pre>
+    </ul>
+
+</dd>
+    <dt>
+    <a name = "LK3D.Radiosa.GetLightmapMarkedObjects"></a>
+    <strong>LK3D.Radiosa.GetLightmapMarkedObjects()</strong>
+    </dt>
+    <dd>
+
+<!-- Added here by loka, im so shit at HTML & CSS :( -->
+
+
+
+    Returns the list of objects to be lightmapped
+
+    </ul>
+    </ul>
+    </ul>
+
+
+
+
+
+    <h3>Usage:</h3>
+    <ul>
+        <pre class="example">LK3D.Radiosa.GetLightmapMarkedObjects()</pre>
+    </ul>
+
+</dd>
+    <dt>
+    <a name = "LK3D.CommitLightmapping"></a>
+    <strong>LK3D.CommitLightmapping()</strong>
+    </dt>
+    <dd>
+
+<!-- Added here by loka, im so shit at HTML & CSS :( -->
+
+
+        <div style="border:4px dotted rgb(209, 143, 143); background-color: rgb(255, 173, 173); padding-bottom:1em;">
+            <div style="text-align:left; text-indent:1em;"> <h2> WARNING </h2> </div>
+            <div style="text-align:left; text-indent:1em;"> This function is horribly slow! </div>
+        </div> <br>
+
+    Runs the lightmapper
+
+    </ul>
+    </ul>
+    </ul>
+
+
+
+
+
+    <h3>Usage:</h3>
+    <ul>
+        <pre class="example"><span class="comment">-- mark a few things to lightmap
+</span>LK3D.MarkForLightmapping(<span class="string">"sub_lower"</span>)
+LK3D.MarkForLightmapping(<span class="string">"sub_stairs"</span>)
+LK3D.MarkForLightmapping(<span class="string">"sub_upper"</span>)
+LK3D.MarkForLightmapping(<span class="string">"sub_engine"</span>)
+
+<span class="comment">-- now run the lightmapper
+</span>LK3D.CommitLightmapping()</pre>
+    </ul>
+
+</dd>
     <dt>
     <a name = "LK3D.ExportLightmaps"></a>
     <strong>LK3D.ExportLightmaps()</strong>
@@ -178,6 +317,10 @@ This module is basically a GLua implementation of <a href="https://www.jmeiners.
 <!-- Added here by loka, im so shit at HTML & CSS :( -->
 
 
+        <div style="border:4px dotted rgb(209, 143, 143); background-color: rgb(255, 173, 173); padding-bottom:1em;">
+            <div style="text-align:left; text-indent:1em;"> <h2> WARNING </h2> </div>
+            <div style="text-align:left; text-indent:1em;"> This can break the lightmaps until restart if used! </div>
+        </div> <br>
 
     Clears the PNG lightmap cache
 
@@ -202,7 +345,7 @@ This module is basically a GLua implementation of <a href="https://www.jmeiners.
 </div> <!-- id="main" -->
 <div id="about">
 <i>generated by <a href="http://github.com/lunarmodules/LDoc">LDoc 1.4.6</a></i>
-<i style="float:right;">Last updated 2024-07-20 15:25:31 </i>
+<i style="float:right;">Last updated 2024-07-20 15:34:43 </i>
 </div> <!-- id="about" -->
 </div> <!-- id="container" -->
 </body>
