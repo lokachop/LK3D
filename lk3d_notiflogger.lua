@@ -254,7 +254,7 @@ function LK3D.New_D_Print(text, severity, lk_module)
 	MsgC(Color(64, 196, 64), nice_str_t, sev_col, "[" .. fancy_sev_str .. "]", Color(100, 255, 100), " [LK3D] ", m_col, "[" .. lk_module .. "]", m_col_brighter, ": ", text, "\n")
 
 	-- error cuz nice if fatal
-	if severity == 5 then
+	if severity == LK3D_SEVERITY_FATAL then
 		ErrorNoHaltWithStack("[LK3D FATAL]: " .. text)
 	end
 end

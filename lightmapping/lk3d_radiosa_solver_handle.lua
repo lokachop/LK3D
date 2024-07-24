@@ -1,9 +1,28 @@
 LK3D = LK3D or {}
+LK3D.Radiosa = LK3D.Radiosa or {}
+local _doAbort = false
+function LK3D.Radiosa.Abort()
+	_doAbort = true
+	LK3D.New_D_Print("Aborting lightmapping!, this is usually caused by an error!", LK3D_SEVERITY_FATAL, "Radiosity")
+end
+
+
 
 local objectPatchLUT = {}
 local function setupObject(tag)
 	local unwrapped_tris = LK3D.Radiosa.GetUVUnwrappedTris(tag)
 	local packed, lightmap_uvs, index_list = LK3D.Radiosa.PackUVs(unwrapped_tris)
+
+	if not packed then
+		LK3D.New_D_Print("Failed to pack UVs!", LK3D_SEVERITY_FATAL, "Radiosity")
+		LK3D.New_D_Print("This is caused due to LIGHTMAP_TRI_SZ being too large with the current LIGHTMAP_RES", LK3D_SEVERITY_FATAL, "Radiosity")
+		LK3D.New_D_Print("Solve by either increasing LK3D.Radiosa.LIGHTMAP_RES", LK3D_SEVERITY_FATAL, "Radiosity")
+		LK3D.New_D_Print("or by lowering LK3D.Radiosa.LIGHTMAP_TRI_SZ", LK3D_SEVERITY_FATAL, "Radiosity")
+
+		LK3D.Radiosa.Abort()
+		return
+	end
+
 
 	-- make the tex
 	local size = LK3D.Radiosa.LIGHTMAP_RES
@@ -425,7 +444,7 @@ end
 
 -- This to fix the seams on linear filtering
 local function expandBorders(pixelValues)
-	LK3D.PushProcessingMessage("[RADIOSA] Expanding borders for linear...")
+	LK3D.PushProcessingMessage("[RADIOSA] Expanding vis borders...")
 
 	local size = LK3D.Radiosa.LIGHTMAP_RES
 	local pixelItr = (size * size) - 1
@@ -577,6 +596,10 @@ local function mainLoopMultiPass()
 
 	for i = 1, solver.PassCount do
 		for k, v in pairs(toLM) do
+			if _doAbort then
+				return
+			end
+
 			local patchLUT = objectPatchLUT[k]
 
 			LK3D.PushProcessingMessage("[RADIOSA] Calculating values for object \"" .. k .. "\" [MULTIPASS]")
@@ -585,6 +608,10 @@ local function mainLoopMultiPass()
 
 
 		for k, v in pairs(toLM) do
+			if _doAbort then
+				return
+			end
+
 			local patchLUT = objectPatchLUT[k]
 
 			LK3D.PushProcessingMessage("[RADIOSA] Calculating AfterIteration for object \"" .. k .. "\" [MULTIPASS]")
@@ -593,6 +620,10 @@ local function mainLoopMultiPass()
 	end
 
 	for k, v in pairs(toLM) do
+		if _doAbort then
+			return
+		end
+
 		local patchLUT = objectPatchLUT[k]
 
 		LK3D.PushProcessingMessage("[RADIOSA] Finalizing MultiPass for object \"" .. k .. "\" [MULTIPASS]")
@@ -607,6 +638,10 @@ local function mainLoopNormal()
 	local toLM = LK3D.Radiosa.GetLightmapMarkedObjects()
 
 	for k, v in pairs(toLM) do
+		if _doAbort then
+			return
+		end
+
 		local patchLUT = objectPatchLUT[k]
 
 		LK3D.PushProcessingMessage("[RADIOSA] Calculating values for object \"" .. k .. "\" [NORMAL]")
@@ -640,23 +675,37 @@ end
 
 
 function LK3D.Radiosa.BeginLightmapping()
+	_doAbort = false
+
 	LK3D.New_D_Print("Start lightmapping", LK3D_SEVERITY_INFO, "Radiosity")
 	LK3D.PushProcessingMessage("[RADIOSA] Start lightmapping")
 
 	prePreProcess()
+	if _doAbort then
+		return
+	end
 	LK3D.PushProcessingMessage("[RADIOSA] PrePreProcess done")
 	LK3D.New_D_Print("PrePreProcess done", LK3D_SEVERITY_INFO, "Radiosity")
 
 	preProcess()
+	if _doAbort then
+		return
+	end
 	LK3D.PushProcessingMessage("[RADIOSA] PreProcess done")
 	LK3D.New_D_Print("PreProcess done", LK3D_SEVERITY_INFO, "Radiosity")
 
 	-- Main processing
 	mainLoop()
+	if _doAbort then
+		return
+	end
 	LK3D.PushProcessingMessage("[RADIOSA] Main Loop done")
 	LK3D.New_D_Print("Main Loop done", LK3D_SEVERITY_INFO, "Radiosity")
 
 	doCleanup()
+	if _doAbort then
+		return
+	end
 	LK3D.PushProcessingMessage("[RADIOSA] Cleanup done")
 	LK3D.New_D_Print("Cleanup done", LK3D_SEVERITY_INFO, "Radiosity")
 

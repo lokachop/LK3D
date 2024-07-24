@@ -36,11 +36,9 @@ local CAPT_BUFF_SIZE = LK3D.Radiosa.RADIOSITY_BUFFER_SZ
 
 local DEBUG_highestVisCount = 0
 
-local MAX_RGB = 16777216
-
-
-
 local HP_DMULT = 16
+local MAX_RGB = 16777216 / HP_DMULT
+
 local function packRGB_LP(int)
 	int = int * HP_DMULT
 	local r = int / 65536 % 256
@@ -463,6 +461,9 @@ local function doSetup()
 		LK3D.PushProcessingMessage("[RADIOSA] Enabling HighPatch mode (slower...)")
 
 		DO_HIGH_PATCH = true -- TODO: implement
+
+		LK3D.New_D_Print("Too many patches, aborting! (scene too complex, lightmap too hi-res...)", LK3D_SEVERITY_FATAL, "Radiosity")
+		LK3D.Radiosa.Abort()
 	end
 
 	preProcessLK3DUniv()
